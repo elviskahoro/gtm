@@ -8,7 +8,7 @@ _tracer = None
 
 
 def init_tracer(service_name: str = "elvis-cli"):
-    """Initialize OTEL tracer. No-op if HYPERDX_API_KEY or OTEL_EXPORTER_OTLP_ENDPOINT not set."""
+    """Initialize OTEL tracer. No-op if neither HYPERDX_API_KEY nor OTEL_EXPORTER_OTLP_ENDPOINT is set."""
     global _tracer  # noqa: PLW0603
 
     hyperdx_key = os.environ.get("HYPERDX_API_KEY")
@@ -31,7 +31,15 @@ def init_tracer(service_name: str = "elvis-cli"):
         }
     )
 
-    endpoint = otel_endpoint or "https://in-otel.hyperdx.io/v1/traces"
+    endpoint = otel_endpoint
+    if hyperdx_key and not endpoint:
+        endpoint = os.environ.get(
+            "HYPERDX_OTLP_ENDPOINT",
+            "https://in-otel.hyperdx.io/v1/traces",
+        )
+    if not endpoint:
+        return None
+
     headers: dict[str, str] = {}
     if hyperdx_key:
         headers["authorization"] = (

@@ -40,12 +40,13 @@ The deployment respects the `MODAL_APP` environment variable. If set, functions 
 
 ## Telemetry
 
-gtm emits OpenTelemetry traces to HyperDX when configured. Set one or both of these environment variables:
+gtm emits OpenTelemetry traces when configured. Set any of these environment variables:
 
 - `HYPERDX_API_KEY` — enables direct HyperDX ingestion
-- `OTEL_EXPORTER_OTLP_ENDPOINT` — sends traces to an OpenTelemetry collector
+- `HYPERDX_OTLP_ENDPOINT` — HyperDX OTLP endpoint (defaults to `https://in-otel.hyperdx.io/v1/traces` when `HYPERDX_API_KEY` is set, optional)
+- `OTEL_EXPORTER_OTLP_ENDPOINT` — sends traces to a custom OpenTelemetry collector
 
-If neither is set, telemetry is disabled and no traces are emitted.
+If none are set, telemetry is disabled and no traces are emitted.
 
 ## Contributing
 
