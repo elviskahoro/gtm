@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 
 import modal
 
-from libs.modal_app import MODAL_APP
+from src.modal_app import MODAL_APP
 
 # Force deployment with timestamp
 _deploy_ts = time.time()

@@ -4,8 +4,8 @@ from typing import Any, cast
 
 import modal
 
-from libs.modal_app import MODAL_APP
 from src.attio import people as modal_people
+from src.modal_app import MODAL_APP
 
 
 def test_runtime_metadata_includes_fingerprint_and_capabilities() -> None:

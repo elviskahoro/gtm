@@ -14,10 +14,10 @@ from libs.attio.people import (
     update_person,
     upsert_person,
 )
-from libs.modal_app import MODAL_APP
 from src.api_keys import inject_api_keys
 from src.app import app, image, secrets_attio
 from src.attio.http_responses import error_response_from_payload
+from src.modal_app import MODAL_APP
 
 ENABLE_ATTIO_PERSON_UPSERT_HTTP = (
     os.environ.get("ENABLE_ATTIO_PERSON_UPSERT_HTTP", "0") == "1"

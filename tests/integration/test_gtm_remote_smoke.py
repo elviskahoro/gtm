@@ -5,7 +5,7 @@ import os
 import modal
 import pytest
 
-from libs.modal_app import MODAL_APP
+from src.modal_app import MODAL_APP
 
 REQUIRED_ENV_VARS = [
     "MODAL_TOKEN_ID",

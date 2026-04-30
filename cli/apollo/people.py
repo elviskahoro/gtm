@@ -8,8 +8,8 @@ from pydantic import ValidationError
 
 from cli.json_encoder import dumps_with_datetime
 from cli.json_validation import emit_json_payload_validation_telemetry
-from libs.modal_app import MODAL_APP
 from src.apollo.people import PersonEnrichQuery, PersonSearchQuery
+from src.modal_app import MODAL_APP
 
 app = typer.Typer(help="People enrichment and search via Apollo.")
 

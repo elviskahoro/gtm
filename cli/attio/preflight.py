@@ -11,8 +11,8 @@ from libs.attio.errors import (
     ConnectivityError,
     DeploymentMismatchError,
 )
-from libs.modal_app import MODAL_APP
 from src.attio.deployment_parity import ParityStatus, ensure_modal_parity
+from src.modal_app import MODAL_APP
 
 
 def run_people_preflight(

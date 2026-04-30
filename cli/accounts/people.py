@@ -8,8 +8,8 @@ import typer
 from pydantic import ValidationError
 
 from cli.json_validation import emit_json_payload_validation_telemetry
-from libs.modal_app import MODAL_APP
 from src.accounts.people import FindPeopleQuery
+from src.modal_app import MODAL_APP
 
 
 def find_people_command(

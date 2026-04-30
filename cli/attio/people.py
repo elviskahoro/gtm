@@ -13,13 +13,13 @@ from cli.attio.preflight import run_people_preflight
 from cli.json_validation import emit_json_payload_validation_telemetry
 from libs.attio.contracts import ReliabilityEnvelope
 from libs.attio.people import error_envelope
-from libs.modal_app import MODAL_APP
 from src.attio.people import (
     PersonAddQuery,
     PersonSearchQuery,
     PersonUpdateQuery,
     PersonUpsertQuery,
 )
+from src.modal_app import MODAL_APP
 
 app = typer.Typer(help="Manage people records in Attio.")
 
