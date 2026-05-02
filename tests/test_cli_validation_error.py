@@ -9,6 +9,11 @@ def _run_cli(
     *args: str,
 ) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
+    # Ensure Modal credentials are not malformed or empty strings
+    # (test isolation can sometimes leave empty strings instead of unset)
+    for token_key in ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET"):
+        if token_key in env and not env[token_key].strip():
+            del env[token_key]
     return subprocess.run(
         [sys.executable, "-m", "cli.main", *args],
         check=False,
