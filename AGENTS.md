@@ -64,3 +64,14 @@ If you finish a task and need to communicate what was done, output the summary a
 ## Git Branch Naming
 
 Always use the `agent/` prefix for branches created by AI agents (e.g., `agent/add-email-validation`). Never use `claude/` or other provider-specific prefixes.
+## Git Worktrees
+
+When creating git worktrees for this repository, always create them under `worktrees/` at the repository root unless the user explicitly requests a different location.
+
+Before creating a worktree:
+
+- Ensure `worktrees/` exists or create it
+- Ensure `worktrees/` is ignored by git
+- Use paths like `worktrees/<branch-name>`
+
+Do not rely on git internal module paths such as `.git/modules/...` as user-facing worktree locations.
