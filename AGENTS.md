@@ -6,6 +6,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 Use these boundaries when adding or refactoring code:
 
+- `data_gen/` = data generation and enrichment pipelines. Reusable data products (marketplace products, enrichment workflows, ETL scripts) belong here. Keep products independent and composable.
 - `libs/` = reusable domain logic and adapters. Single-SDK adapters for external services (Attio, Apollo, Gmail) belong here. Keep modules composable and callable from multiple contexts.
 - `src/` = workflow orchestration. Any multi-step flow that chains operations, coordinates side effects, or runs pipeline logic belongs here.
 - `cli/` = thin command surface only. Parse flags, perform preflight, call `src/` workflows, and render output/errors.
