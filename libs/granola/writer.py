@@ -28,7 +28,9 @@ def _meeting_date(meeting: NormalizedMeeting, exported_at: dt.datetime) -> dt.da
 
 
 def write_meeting_export(
-    meeting: NormalizedMeeting, output_root: Path, exported_at: dt.datetime
+    meeting: NormalizedMeeting,
+    output_root: Path,
+    exported_at: dt.datetime,
 ) -> WrittenPaths:
     try:
         meeting_date = _meeting_date(meeting, exported_at)
@@ -53,7 +55,7 @@ def write_meeting_export(
                         f"- {segment.speaker + ': ' if segment.speaker else ''}{segment.text}"
                         for segment in meeting.transcript_segments
                     ],
-                ]
+                ],
             ).rstrip()
             + "\n"
         )
@@ -72,5 +74,5 @@ def write_meeting_export(
 def append_manifest(manifest_path: Path, entry: dict[str, Any]) -> None:
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.open("a", encoding="utf-8").write(
-        json.dumps(entry, ensure_ascii=False) + "\n"
+        json.dumps(entry, ensure_ascii=False) + "\n",
     )

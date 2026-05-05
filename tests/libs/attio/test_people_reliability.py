@@ -52,7 +52,7 @@ def test_optional_field_degrades_with_warning_and_skipped_fields() -> None:
         if "associated_company" in values or "company" in values:
             raise _Err("boom")
         return SimpleNamespace(
-            data=SimpleNamespace(id=SimpleNamespace(record_id="rec_1"), values={})
+            data=SimpleNamespace(id=SimpleNamespace(record_id="rec_1"), values={}),
         )
 
     _, warnings, skipped = attempt_person_write_with_optional_fallback(
@@ -99,7 +99,7 @@ def test_company_optional_field_retries_with_alias_before_skipping() -> None:
             raise _Err("boom")
         if "company" in values:
             return SimpleNamespace(
-                data=SimpleNamespace(id=SimpleNamespace(record_id="rec_1"), values={})
+                data=SimpleNamespace(id=SimpleNamespace(record_id="rec_1"), values={}),
             )
         raise AssertionError("expected fallback to company alias")
 
@@ -230,7 +230,7 @@ def test_upsert_multi_match_strict_raises_conflict(monkeypatch) -> None:
 
 def test_classify_error_maps_modal_signature_mismatch_code() -> None:
     err = TypeError(
-        "attio_upsert_person() got an unexpected keyword argument 'additional_emails'"
+        "attio_upsert_person() got an unexpected keyword argument 'additional_emails'",
     )
     mapped = classify_error(translate_modal_signature_error(err))
     assert mapped.code == "modal_signature_mismatch"

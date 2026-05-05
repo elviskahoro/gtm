@@ -21,7 +21,7 @@ def attio_api_key() -> str:
     key = os.environ.get("ATTIO_API_KEY", "").strip()
     if not key:
         pytest.skip(
-            "Attio integration tests gated by credentials preflight failure in tests/test_validation_type_error.py"
+            "Attio integration tests gated by credentials preflight failure in tests/test_validation_type_error.py",
         )
     return key
 

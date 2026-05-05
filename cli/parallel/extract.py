@@ -18,7 +18,9 @@ def excerpts(
     url: str = typer.Argument("", help="URL to extract content from"),
     objective: str = typer.Argument("", help="Focus extraction on this objective"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -29,7 +31,10 @@ def excerpts(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "parallel.extract.excerpts", e, ExtractExcerptsQuery, json_input
+                "parallel.extract.excerpts",
+                e,
+                ExtractExcerptsQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -61,7 +66,9 @@ def excerpts(
 def full(
     url: str = typer.Argument("", help="URL to extract content from"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -72,7 +79,10 @@ def full(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "parallel.extract.full", e, ExtractFullContentQuery, json_input
+                "parallel.extract.full",
+                e,
+                ExtractFullContentQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

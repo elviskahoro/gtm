@@ -24,10 +24,15 @@ def create(
     conditions: str = typer.Argument("[]", help="Match conditions as JSON array"),
     match_limit: int = typer.Option(10, "--limit", "-n", help="Max matches (5-1000)"),
     generator: str = typer.Option(
-        "base", "--generator", "-g", help="Generator: base, core, pro, preview"
+        "base",
+        "--generator",
+        "-g",
+        help="Generator: base, core, pro, preview",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -38,7 +43,10 @@ def create(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "parallel.findall.create", e, FindAllCreateQuery, json_input
+                "parallel.findall.create",
+                e,
+                FindAllCreateQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -86,7 +94,9 @@ def create(
 def result(
     findall_id: str = typer.Argument("", help="FindAll run ID"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -97,14 +107,18 @@ def result(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "parallel.findall.result", e, FindAllResultQuery, json_input
+                "parallel.findall.result",
+                e,
+                FindAllResultQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
     else:
         if not findall_id:
             print(
-                "Error: findall_id is required when --json is not used", file=sys.stderr
+                "Error: findall_id is required when --json is not used",
+                file=sys.stderr,
             )
             raise typer.Exit(code=1)
         payload = {"findall_id": findall_id}
@@ -128,7 +142,9 @@ def result(
 def status(
     findall_id: str = typer.Argument("", help="FindAll run ID"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -139,14 +155,18 @@ def status(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "parallel.findall.status", e, FindAllStatusQuery, json_input
+                "parallel.findall.status",
+                e,
+                FindAllStatusQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
     else:
         if not findall_id:
             print(
-                "Error: findall_id is required when --json is not used", file=sys.stderr
+                "Error: findall_id is required when --json is not used",
+                file=sys.stderr,
             )
             raise typer.Exit(code=1)
         payload = {"findall_id": findall_id}

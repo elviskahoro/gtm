@@ -21,13 +21,14 @@ def _handle_etl_request(payload: dict) -> dict:
     except Exception as e:
         logger.error(f"Validation error: {e}")
         raise HTTPException(
-            status_code=422, detail=f"Invalid booking payload: {str(e)}"
+            status_code=422,
+            detail=f"Invalid booking payload: {str(e)}",
         )
 
     # Check if this webhook family has ETL support
     if not webhook.etl_is_valid_webhook():
         logger.warning(
-            f"Raw-only webhook family: {webhook.etl_get_invalid_webhook_error_msg()}"
+            f"Raw-only webhook family: {webhook.etl_get_invalid_webhook_error_msg()}",
         )
         raise HTTPException(
             status_code=422,

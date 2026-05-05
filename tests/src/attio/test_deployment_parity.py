@@ -13,7 +13,7 @@ def test_evaluate_parity_returns_match_when_capability_present() -> None:
         {
             "capabilities": {
                 "attio_people_upsert.additional_emails": True,
-            }
+            },
         },
     )
     assert status is ParityStatus.MATCH

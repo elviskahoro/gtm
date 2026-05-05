@@ -52,7 +52,8 @@ def test_preflight_missing_modal_token_returns_configuration_error(monkeypatch) 
 
     runner = CliRunner()
     result = runner.invoke(
-        app, ["attio", "people", "search", "--email", "a@example.com"]
+        app,
+        ["attio", "people", "search", "--email", "a@example.com"],
     )
     payload = json.loads(result.stdout)
 
@@ -72,7 +73,8 @@ def test_preflight_modal_token_secret_whitespace_is_stripped(monkeypatch) -> Non
 
     runner = CliRunner()
     result = runner.invoke(
-        app, ["attio", "people", "search", "--email", "a@example.com"]
+        app,
+        ["attio", "people", "search", "--email", "a@example.com"],
     )
     payload = json.loads(result.stdout)
 
@@ -309,7 +311,7 @@ def test_upsert_modal_sync_check_returns_mismatch_error(monkeypatch) -> None:
 
     def _preflight(**_kwargs):
         raise TypeError(
-            "attio_upsert_person() got an unexpected keyword argument 'additional_emails'"
+            "attio_upsert_person() got an unexpected keyword argument 'additional_emails'",
         )
 
     monkeypatch.setattr(people_cli, "run_people_preflight", _preflight)

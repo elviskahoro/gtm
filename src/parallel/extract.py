@@ -25,13 +25,14 @@ def _decorate_parallel_key_error(exc: ValueError) -> ValueError:
 
 @app.function(image=image, secrets=[secrets_parallel])
 def parallel_extract_excerpts(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ExtractResponse:
     with inject_api_keys(api_keys or {}):
         query = ExtractExcerptsQuery.model_validate(payload)
         try:
             return extract_excerpts(
-                ExtractExcerptsInput(url=query.url, objective=query.objective)
+                ExtractExcerptsInput(url=query.url, objective=query.objective),
             )
         except ValueError as exc:
             raise _decorate_parallel_key_error(exc) from None
@@ -43,7 +44,8 @@ def parallel_extract_excerpts(
 
 @app.function(image=image, secrets=[secrets_parallel])
 def parallel_extract_full_content(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ExtractResponse:
     with inject_api_keys(api_keys or {}):
         query = ExtractFullContentQuery.model_validate(payload)

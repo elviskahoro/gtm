@@ -21,7 +21,8 @@ def _decorate_apollo_key_error(exc: ValueError) -> ValueError:
 
 @app.function(image=image, secrets=[secrets_apollo])
 def apollo_enrich_person(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     with inject_api_keys(api_keys or {}):
         query = PersonEnrichQuery.model_validate(payload)
@@ -35,7 +36,7 @@ def apollo_enrich_person(
                     domain=query.domain,
                     linkedin_url=query.linkedin_url,
                     organization_name=query.organization_name,
-                )
+                ),
             )
         except ValueError as exc:
             raise _decorate_apollo_key_error(exc) from None
@@ -47,7 +48,8 @@ def apollo_enrich_person(
 
 @app.function(image=image, secrets=[secrets_apollo])
 def apollo_search_people(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     with inject_api_keys(api_keys or {}):
         query = PersonSearchQuery.model_validate(payload)
@@ -63,7 +65,7 @@ def apollo_search_people(
                     organization_num_employees_ranges=query.organization_num_employees_ranges,
                     page=query.page,
                     per_page=query.per_page,
-                )
+                ),
             )
         except ValueError as exc:
             raise _decorate_apollo_key_error(exc) from None

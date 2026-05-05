@@ -23,7 +23,7 @@ def _skip_if_missing_env() -> None:
     missing = _missing_env_vars()
     if missing:
         pytest.skip(
-            "Remote smoke tests gated by credentials preflight failure in this module"
+            "Remote smoke tests gated by credentials preflight failure in this module",
         )
 
 

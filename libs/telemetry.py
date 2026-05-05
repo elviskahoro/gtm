@@ -28,7 +28,7 @@ def init_tracer(service_name: str = "elvis-cli"):
         {
             service_attributes.SERVICE_NAME: service_name,
             service_attributes.SERVICE_VERSION: "0.1.0",
-        }
+        },
     )
 
     endpoint = otel_endpoint
@@ -50,7 +50,7 @@ def init_tracer(service_name: str = "elvis-cli"):
 
     provider = TracerProvider(resource=resource)
     provider.add_span_processor(
-        BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, headers=headers))
+        BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, headers=headers)),
     )
     trace.set_tracer_provider(provider)
     _tracer = trace.get_tracer(service_name)

@@ -68,7 +68,9 @@ def test_request_builders_use_runtime_model_lookup(
         PostV2NotesData=_FakePostNoteRequest,
     )
     monkeypatch.setattr(
-        sdk_boundary, "_import_attio_models_module", lambda: fake_models
+        sdk_boundary,
+        "_import_attio_models_module",
+        lambda: fake_models,
     )
 
     post = sdk_boundary.build_post_record_request({"x": 1})

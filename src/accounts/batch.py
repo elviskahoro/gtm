@@ -25,21 +25,23 @@ class BatchAddCompaniesQuery(BaseModel):
 
 @app.function(image=image, secrets=[secrets_attio])
 def gtm_batch_add_people(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> BatchMutationResult:
     with inject_api_keys(api_keys or {}):
         query = BatchAddPeopleQuery.model_validate(payload)
         return BatchMutationResult.model_validate(
-            tasks.batch_add_people(query.records, apply=query.apply)
+            tasks.batch_add_people(query.records, apply=query.apply),
         )
 
 
 @app.function(image=image, secrets=[secrets_attio])
 def gtm_batch_add_companies(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> BatchMutationResult:
     with inject_api_keys(api_keys or {}):
         query = BatchAddCompaniesQuery.model_validate(payload)
         return BatchMutationResult.model_validate(
-            tasks.batch_add_companies(query.records, apply=query.apply)
+            tasks.batch_add_companies(query.records, apply=query.apply),
         )

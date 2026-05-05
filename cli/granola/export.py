@@ -18,7 +18,9 @@ from src.granola.export import run_export
 
 def export_command(
     source: Literal["local", "api", "hybrid"] = typer.Option(
-        "hybrid", "--source", help="Export source strategy"
+        "hybrid",
+        "--source",
+        help="Export source strategy",
     ),
     output: Path = typer.Option(
         Path("/Users/elvis/Documents/elviskahoro/zotero/zotero-granola"),
@@ -26,11 +28,15 @@ def export_command(
         help="Output root",
     ),
     since: str | None = typer.Option(
-        None, "--since", help="Optional ISO timestamp filter"
+        None,
+        "--since",
+        help="Optional ISO timestamp filter",
     ),
     debug: bool = typer.Option(False, "--debug", help="Print debug output"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
 ) -> None:
     if json_input:
@@ -38,7 +44,10 @@ def export_command(
             q = ExportCliJsonPayload.model_validate_json(json_input)
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "granola.export", e, ExportCliJsonPayload, json_input
+                "granola.export",
+                e,
+                ExportCliJsonPayload,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

@@ -16,7 +16,10 @@ app = typer.Typer(help="Gmail URL decoding.")
 def decode(
     url_or_token: str = typer.Argument(help="A Gmail web URL or FMfcg... token"),
     read: bool = typer.Option(
-        False, "--read", "-r", help="Fetch the message via gws after decoding"
+        False,
+        "--read",
+        "-r",
+        help="Fetch the message via gws after decoding",
     ),
 ) -> None:
     """Decode a Gmail URL or token to a hex API ID."""
@@ -50,7 +53,7 @@ def decode(
                         "id": hex_id,
                         "format": "metadata",
                         "metadataHeaders": ["Subject", "From", "To", "Date"],
-                    }
+                    },
                 ),
             ],
             capture_output=True,

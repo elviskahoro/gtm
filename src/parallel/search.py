@@ -22,7 +22,8 @@ def _decorate_parallel_key_error(exc: ValueError) -> ValueError:
 
 @app.function(image=image, secrets=[secrets_parallel])
 def parallel_search(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> SearchResponse:
     with inject_api_keys(api_keys or {}):
         query = SearchQuery.model_validate(payload)
@@ -32,7 +33,7 @@ def parallel_search(
                     objective=query.objective,
                     mode=query.mode,
                     max_results=query.max_results,
-                )
+                ),
             )
         except ValueError as exc:
             raise _decorate_parallel_key_error(exc) from None

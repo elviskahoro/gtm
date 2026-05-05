@@ -45,14 +45,14 @@ def add_emails(conn: sqlite3.Connection, emails: list[dict[str, Any]]) -> None:
 
 def get_pending_emails(conn: sqlite3.Connection) -> list[dict[str, Any]]:
     rows = conn.execute(
-        "SELECT * FROM emails WHERE status = 'pending' ORDER BY rowid"
+        "SELECT * FROM emails WHERE status = 'pending' ORDER BY rowid",
     ).fetchall()
     return [dict(r) for r in rows]
 
 
 def get_error_emails(conn: sqlite3.Connection) -> list[dict[str, Any]]:
     rows = conn.execute(
-        "SELECT * FROM emails WHERE status = 'error' ORDER BY rowid"
+        "SELECT * FROM emails WHERE status = 'error' ORDER BY rowid",
     ).fetchall()
     return [dict(r) for r in rows]
 
@@ -88,7 +88,7 @@ def mark_error(conn: sqlite3.Connection, email_id: str, error: str) -> None:
 
 def get_stats(conn: sqlite3.Connection) -> dict[str, Any]:
     rows = conn.execute(
-        "SELECT status, COUNT(*) as count FROM emails GROUP BY status"
+        "SELECT status, COUNT(*) as count FROM emails GROUP BY status",
     ).fetchall()
     return {r["status"]: r["count"] for r in rows}
 

@@ -29,7 +29,7 @@ def test_api_transcript_overrides_missing_local() -> None:
     assert meeting.transcript_source == "api"
     assert meeting.transcript_status == "present"
     assert meeting.transcript_segments == [
-        TranscriptSegment(text="api", start_ms=None, end_ms=None, speaker=None)
+        TranscriptSegment(text="api", start_ms=None, end_ms=None, speaker=None),
     ]
 
 

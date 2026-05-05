@@ -38,7 +38,8 @@ def attio_people_runtime_metadata() -> dict[str, object]:
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_add_person(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ReliabilityEnvelope:
     query = None
     with inject_api_keys(api_keys or {}):
@@ -57,7 +58,7 @@ def attio_add_person(
                     notes=query.notes,
                     strict=query.strict,
                     location_mode=cast(Literal["raw", "city"], query.location_mode),
-                )
+                ),
             )
         except Exception as exc:
             return error_envelope(
@@ -68,7 +69,8 @@ def attio_add_person(
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_search_people(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ReliabilityEnvelope:
     with inject_api_keys(api_keys or {}):
         try:
@@ -88,7 +90,8 @@ def attio_search_people(
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_update_person(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ReliabilityEnvelope:
     query = None
     with inject_api_keys(api_keys or {}):
@@ -121,7 +124,8 @@ def attio_update_person(
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_upsert_person(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ReliabilityEnvelope:
     query = None
     with inject_api_keys(api_keys or {}):
@@ -233,7 +237,7 @@ def _envelope_or_error_response(payload: Any) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_person_add_http(query: PersonAddQuery) -> Any:
     result = attio_add_person.remote(
-        payload=query.model_dump()
+        payload=query.model_dump(),
     )  # pyright: ignore[reportFunctionMemberAccess]
     return _envelope_or_error_response(_normalize_remote_payload(result))
 
@@ -242,7 +246,7 @@ def attio_person_add_http(query: PersonAddQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_people_search_http(query: PersonSearchQuery) -> Any:
     result = attio_search_people.remote(
-        payload=query.model_dump()
+        payload=query.model_dump(),
     )  # pyright: ignore[reportFunctionMemberAccess]
     return _envelope_or_error_response(_normalize_remote_payload(result))
 
@@ -251,7 +255,7 @@ def attio_people_search_http(query: PersonSearchQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_person_update_http(query: PersonUpdateQuery) -> Any:
     result = attio_update_person.remote(
-        payload=query.model_dump()
+        payload=query.model_dump(),
     )  # pyright: ignore[reportFunctionMemberAccess]
     return _envelope_or_error_response(_normalize_remote_payload(result))
 
@@ -262,6 +266,6 @@ if ENABLE_ATTIO_PERSON_UPSERT_HTTP:
     @modal.fastapi_endpoint(method="POST", docs=True)
     def attio_person_upsert_http(query: PersonUpsertQuery) -> Any:
         result = attio_upsert_person.remote(
-            payload=query.model_dump()
+            payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return _envelope_or_error_response(_normalize_remote_payload(result))

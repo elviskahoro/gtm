@@ -21,7 +21,8 @@ def _decorate_apollo_key_error(exc: ValueError) -> ValueError:
 
 @app.function(image=image, secrets=[secrets_apollo])
 def apollo_enrich_organization(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     with inject_api_keys(api_keys or {}):
         query = OrgEnrichQuery.model_validate(payload)
@@ -37,7 +38,8 @@ def apollo_enrich_organization(
 
 @app.function(image=image, secrets=[secrets_apollo])
 def apollo_search_organizations(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     with inject_api_keys(api_keys or {}):
         query = OrgSearchQuery.model_validate(payload)
@@ -49,7 +51,7 @@ def apollo_search_organizations(
                     organization_num_employees_ranges=query.organization_num_employees_ranges,
                     page=query.page,
                     per_page=query.per_page,
-                )
+                ),
             )
         except ValueError as exc:
             raise _decorate_apollo_key_error(exc) from None

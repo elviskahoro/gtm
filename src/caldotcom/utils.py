@@ -1,10 +1,7 @@
 """Utilities for Cal.com webhook pipeline."""
 
-import json
 import re
-import uuid
 from datetime import datetime
-from pathlib import Path
 
 import flatsplode
 import orjson

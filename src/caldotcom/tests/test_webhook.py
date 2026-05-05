@@ -1,7 +1,6 @@
 """Unit tests for Cal.com webhook ETL contract."""
 
 import json
-from datetime import datetime
 from pathlib import Path
 
 import pytest

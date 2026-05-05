@@ -12,13 +12,17 @@ from libs.granola.errors import RateLimitError, SourceReadError
 
 class GranolaApiClient:
     def __init__(
-        self, api_key: str, base_url: str = "https://api.granola.ai/v1"
+        self,
+        api_key: str,
+        base_url: str = "https://api.granola.ai/v1",
     ) -> None:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
 
     def _request(
-        self, path: str, params: dict[str, str] | None = None
+        self,
+        path: str,
+        params: dict[str, str] | None = None,
     ) -> dict[str, Any]:
         query = f"?{urlencode(params)}" if params else ""
         url = f"{self.base_url}{path}{query}"
@@ -36,7 +40,8 @@ class GranolaApiClient:
         )
         try:
             with urlopen(
-                req, timeout=30
+                req,
+                timeout=30,
             ) as response:  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected  # noqa: S310
                 raw = response.read().decode("utf-8")
         except HTTPError as exc:
@@ -75,7 +80,10 @@ class GranolaApiClient:
                 return notes
 
     def get_note(
-        self, note_id: str, *, include_transcript: bool = True
+        self,
+        note_id: str,
+        *,
+        include_transcript: bool = True,
     ) -> dict[str, Any]:
         params = {"include": "transcript"} if include_transcript else None
         return self._request(f"/notes/{note_id}", params=params)

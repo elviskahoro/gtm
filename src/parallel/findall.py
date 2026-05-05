@@ -28,7 +28,8 @@ def _decorate_parallel_key_error(exc: ValueError) -> ValueError:
 
 @app.function(image=image, secrets=[secrets_parallel])
 def parallel_findall_create(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> FindAllRunData:
     with inject_api_keys(api_keys or {}):
         query = FindAllCreateQuery.model_validate(payload)
@@ -40,7 +41,7 @@ def parallel_findall_create(
                     match_conditions=query.match_conditions,
                     match_limit=query.match_limit,
                     generator=query.generator,
-                )
+                ),
             )
         except ValueError as exc:
             raise _decorate_parallel_key_error(exc) from None
@@ -52,7 +53,8 @@ def parallel_findall_create(
 
 @app.function(image=image, secrets=[secrets_parallel])
 def parallel_findall_result(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> FindAllResultData:
     with inject_api_keys(api_keys or {}):
         query = FindAllResultQuery.model_validate(payload)
@@ -68,7 +70,8 @@ def parallel_findall_result(
 
 @app.function(image=image, secrets=[secrets_parallel])
 def parallel_findall_status(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> FindAllRunData:
     with inject_api_keys(api_keys or {}):
         query = FindAllStatusQuery.model_validate(payload)

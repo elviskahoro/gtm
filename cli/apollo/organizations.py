@@ -18,7 +18,9 @@ app = typer.Typer(help="Organization enrichment and search via Apollo.")
 def enrich(
     domain: str = typer.Argument("", help="Company domain (e.g. apollo.io)"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     apollo_api_key_override: str | None = typer.Option(None, "--apollo-api-key"),
 ) -> None:
@@ -29,7 +31,10 @@ def enrich(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "apollo.organizations.enrich", e, OrgEnrichQuery, json_input
+                "apollo.organizations.enrich",
+                e,
+                OrgEnrichQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -56,7 +61,9 @@ def enrich(
 def search(
     keywords: str = typer.Argument("", help="Organization name search"),
     locations: list[str] | None = typer.Option(
-        None, "--location", help="HQ locations (repeatable)"
+        None,
+        "--location",
+        help="HQ locations (repeatable)",
     ),
     employees: list[str] | None = typer.Option(
         None,
@@ -66,7 +73,9 @@ def search(
     page: int = typer.Option(1, "--page", "-p", help="Page number"),
     per_page: int = typer.Option(10, "--per-page", "-n", help="Results per page"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     apollo_api_key_override: str | None = typer.Option(None, "--apollo-api-key"),
 ) -> None:
@@ -77,7 +86,10 @@ def search(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "apollo.organizations.search", e, OrgSearchQuery, json_input
+                "apollo.organizations.search",
+                e,
+                OrgSearchQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

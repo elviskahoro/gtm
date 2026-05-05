@@ -74,7 +74,7 @@ def search(input: SearchInput) -> SearchResponse:
                 title=getattr(r, "title", None),
                 publish_date=getattr(r, "publish_date", None),
                 excerpts=excerpts,
-            )
+            ),
         )
     return SearchResponse(search_id=response.search_id, results=results)
 

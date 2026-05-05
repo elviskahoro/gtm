@@ -36,7 +36,7 @@ def test_company_add_http_returns_structured_409_on_conflict(monkeypatch) -> Non
 def test_note_update_http_infers_401_from_error_message(monkeypatch) -> None:
     def _raise_auth(**_kwargs):
         raise RuntimeError(
-            "API error occurred: Status 401 Content-Type application/json"
+            "API error occurred: Status 401 Content-Type application/json",
         )
 
     monkeypatch.setattr(modal_notes.attio_update_note, "remote", _raise_auth)

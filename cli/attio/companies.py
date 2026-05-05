@@ -23,10 +23,14 @@ def add(
     name: str = typer.Argument("", help="Company name (required when --json not used)"),
     domain: str | None = typer.Option(None, "--domain", help="Company domain"),
     description: str | None = typer.Option(
-        None, "--description", help="Company description"
+        None,
+        "--description",
+        help="Company description",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -38,7 +42,10 @@ def add(
 
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "attio.companies.add", e, CompanyAddQuery, json_input
+                "attio.companies.add",
+                e,
+                CompanyAddQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -72,7 +79,9 @@ def search(
     domain: str | None = typer.Option(None, "--domain", help="Search by exact domain"),
     limit: int = typer.Option(25, "--limit", help="Max results to return"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -83,7 +92,10 @@ def search(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "attio.companies.search", e, CompanySearchQuery, json_input
+                "attio.companies.search",
+                e,
+                CompanySearchQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -112,15 +124,21 @@ def search(
 @app.command()
 def update(
     domain: str | None = typer.Option(
-        None, "--domain", help="Domain to look up company"
+        None,
+        "--domain",
+        help="Domain to look up company",
     ),
     record_id: str | None = typer.Option(None, "--id", help="Attio record ID"),
     name: str | None = typer.Option(None, "--name", help="New company name"),
     description: str | None = typer.Option(
-        None, "--description", help="New description"
+        None,
+        "--description",
+        help="New description",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -131,7 +149,10 @@ def update(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "attio.companies.update", e, CompanyUpdateQuery, json_input
+                "attio.companies.update",
+                e,
+                CompanyUpdateQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -175,7 +196,9 @@ def create_attribute_type(
     is_unique: bool = typer.Option(False, "--is-unique/--no-is-unique"),
     apply: bool = typer.Option(False, "--apply"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:

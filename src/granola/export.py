@@ -69,7 +69,10 @@ def run_export(options: ExportRunOptions) -> ExportRunResult:
             api_note = (options.api_notes or {}).get(meeting_id)
             previous_export = _load_previous_sidecar(options.output_root, meeting_id)
             meeting = normalize_meeting(
-                doc, local_transcript, api_note, previous_export
+                doc,
+                local_transcript,
+                api_note,
+                previous_export,
             )
             digest = compute_meeting_hash(meeting)
 

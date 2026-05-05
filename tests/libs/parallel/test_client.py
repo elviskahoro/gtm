@@ -54,7 +54,7 @@ def test_search_handles_none_excerpts(monkeypatch) -> None:
                 title=None,
                 publish_date=None,
                 excerpts=None,
-            )
+            ),
         ],
     )
 

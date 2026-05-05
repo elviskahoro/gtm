@@ -24,7 +24,8 @@ class EnrichQuery(BaseModel):
 
 @app.function(image=image, secrets=[secrets_parallel])
 def gtm_research(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> ResearchResult:
     with inject_api_keys(api_keys or {}):
         query = ResearchQuery.model_validate(payload)
@@ -33,7 +34,8 @@ def gtm_research(
 
 @app.function(image=image, secrets=[secrets_parallel])
 def gtm_enrich(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> EnrichResult:
     with inject_api_keys(api_keys or {}):
         query = EnrichQuery.model_validate(payload)

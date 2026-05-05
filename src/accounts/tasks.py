@@ -88,7 +88,7 @@ def map_account_hierarchy(account: str) -> MapAccountHierarchyResult:
     raw = cast(
         object,
         parallel_client.search(
-            SearchInput(objective=f"account hierarchy for {account}")
+            SearchInput(objective=f"account hierarchy for {account}"),
         ),
     )
     if isinstance(raw, SearchResponse):
@@ -103,7 +103,8 @@ def map_account_hierarchy(account: str) -> MapAccountHierarchyResult:
 
 
 def batch_add_people(
-    records: list[dict[str, Any]], apply: bool = False
+    records: list[dict[str, Any]],
+    apply: bool = False,
 ) -> BatchMutationResult:
     _validate_people_records(records)
     if not apply:
@@ -140,7 +141,7 @@ def batch_add_people(
         except Exception as exc:
             errors += 1
             results.append(
-                {"status": "error", "email": record.get("email"), "error": str(exc)}
+                {"status": "error", "email": record.get("email"), "error": str(exc)},
             )
 
     return BatchMutationResult(
@@ -195,7 +196,7 @@ def batch_add_companies(
         except Exception as exc:
             errors += 1
             results.append(
-                {"status": "error", "domain": record.get("domain"), "error": str(exc)}
+                {"status": "error", "domain": record.get("domain"), "error": str(exc)},
             )
 
     return BatchMutationResult(

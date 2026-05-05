@@ -59,7 +59,8 @@ def test_export_to_gcp_etl_gcs_failure(booking_accepted):
     from fastapi import HTTPException
 
     with patch(
-        "src.caldotcom.handlers.write_to_gcs", side_effect=Exception("GCS error")
+        "src.caldotcom.handlers.write_to_gcs",
+        side_effect=Exception("GCS error"),
     ):
         with pytest.raises(HTTPException) as exc_info:
             _handle_etl_request(booking_accepted)
@@ -107,7 +108,8 @@ def test_export_to_gcp_raw_gcs_failure(booking_accepted):
     from fastapi import HTTPException
 
     with patch(
-        "src.caldotcom.handlers.write_to_gcs", side_effect=Exception("GCS error")
+        "src.caldotcom.handlers.write_to_gcs",
+        side_effect=Exception("GCS error"),
     ):
         with pytest.raises(HTTPException) as exc_info:
             _handle_raw_request(booking_accepted)

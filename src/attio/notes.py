@@ -13,7 +13,8 @@ from src.attio.http_responses import error_response_from_exception
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_add_note(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> NoteResult:
     with inject_api_keys(api_keys or {}):
         query = NoteAddQuery.model_validate(payload)
@@ -26,13 +27,14 @@ def attio_add_note(
                 parent_email=query.email,
                 parent_domain=query.domain,
                 format=query.format,
-            )
+            ),
         )
 
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_update_note(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> NoteResult:
     with inject_api_keys(api_keys or {}):
         query = NoteUpdateQuery.model_validate(payload)
@@ -79,7 +81,7 @@ class NoteUpdateQuery(BaseModel):
 def attio_note_add_http(query: NoteAddQuery) -> Any:
     try:
         result = attio_add_note.remote(
-            payload=query.model_dump()
+            payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
     except Exception as exc:
@@ -91,7 +93,7 @@ def attio_note_add_http(query: NoteAddQuery) -> Any:
 def attio_note_update_http(query: NoteUpdateQuery) -> Any:
     try:
         result = attio_update_note.remote(
-            payload=query.model_dump()
+            payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
     except Exception as exc:

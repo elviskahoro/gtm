@@ -45,7 +45,9 @@ def test_build_core_person_values_partial_omits_emails_when_not_explicit() -> No
 
 def test_location_mode_raw_retains_line_1() -> None:
     input_data = PersonInput(
-        email="a@example.com", location="123 Main, SF, CA", location_mode="raw"
+        email="a@example.com",
+        location="123 Main, SF, CA",
+        location_mode="raw",
     )
     values = build_optional_person_values(
         company_domain=input_data.company_domain,

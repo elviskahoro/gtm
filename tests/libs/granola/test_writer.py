@@ -22,7 +22,9 @@ def _meeting() -> NormalizedMeeting:
 
 def test_writer_path_and_sidecar_contract(tmp_path: Path) -> None:
     written = write_meeting_export(
-        _meeting(), tmp_path, dt.datetime(2026, 3, 29, tzinfo=dt.UTC)
+        _meeting(),
+        tmp_path,
+        dt.datetime(2026, 3, 29, tzinfo=dt.UTC),
     )
     assert "notes/2026/2026-03-29_weekly-sync_m_123.md" in str(written.markdown_path)
     assert written.json_path.exists()

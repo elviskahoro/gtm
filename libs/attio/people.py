@@ -183,14 +183,14 @@ def _search_people_raw(
     if email_domain:
         domain = email_domain.lstrip("@")
         conditions.append(
-            {"email_addresses": {"email_address": {"$ends_with": f"@{domain}"}}}
+            {"email_addresses": {"email_address": {"$ends_with": f"@{domain}"}}},
         )
     if phone:
         conditions.append({"phone_numbers": {"$contains": phone}})
 
     if not sample and not conditions and not company:
         raise AttioValidationError(
-            "Provide at least one search criterion or use --sample to browse recent records."
+            "Provide at least one search criterion or use --sample to browse recent records.",
         )
 
     with get_client() as client:
@@ -248,7 +248,9 @@ def _search_people_raw(
                             break
                 except Exception as exc:
                     logger.debug(
-                        "Failed to resolve company name for company id %s: %s", cid, exc
+                        "Failed to resolve company name for company id %s: %s",
+                        cid,
+                        exc,
                     )
             for r in results:
                 if r.company and r.company in name_map:
@@ -421,7 +423,7 @@ def update_person(
         if not record_id:
             if not email:
                 raise AttioNotFoundError(
-                    "Provide --id or --email to identify the person."
+                    "Provide --id or --email to identify the person.",
                 )
             query_response = client.records.post_v2_objects_object_records_query(
                 object="people",

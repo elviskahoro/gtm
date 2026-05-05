@@ -96,7 +96,8 @@ def _invoke_people_fn(
 @app.command()
 def add(
     email: str = typer.Argument(
-        "", help="Email address (required when --json not used)"
+        "",
+        help="Email address (required when --json not used)",
     ),
     add_email: Annotated[
         list[str],
@@ -109,19 +110,27 @@ def add(
     last_name: str | None = typer.Option(None, "--last-name", help="Last name"),
     phone: str | None = typer.Option(None, "--phone", help="Phone number"),
     linkedin: str | None = typer.Option(
-        None, "--linkedin", help="LinkedIn profile URL"
+        None,
+        "--linkedin",
+        help="LinkedIn profile URL",
     ),
     location: str | None = typer.Option(None, "--location", help="Primary location"),
     company_domain: str | None = typer.Option(None, "--company", help="Company domain"),
     notes: str | None = typer.Option(None, "--notes", help="Intake notes"),
     strict: bool = typer.Option(
-        False, "--strict", help="Fail fast on optional-field mismatches"
+        False,
+        "--strict",
+        help="Fail fast on optional-field mismatches",
     ),
     location_mode: str = typer.Option(
-        "city", "--location-mode", help="Location normalization mode: city|raw"
+        "city",
+        "--location-mode",
+        help="Location normalization mode: city|raw",
     ),
     no_connectivity_probe: bool = typer.Option(
-        False, "--no-connectivity-probe", help="Skip Modal connectivity preflight"
+        False,
+        "--no-connectivity-probe",
+        help="Skip Modal connectivity preflight",
     ),
     modal_sync: str = typer.Option(
         "check",
@@ -129,7 +138,9 @@ def add(
         help="Modal sync strategy for mutation commands: check|deploy|skip",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(
         None,
@@ -143,7 +154,10 @@ def add(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as exc:
             emit_json_payload_validation_telemetry(
-                "attio.people.add", exc, PersonAddQuery, json_input
+                "attio.people.add",
+                exc,
+                PersonAddQuery,
+                json_input,
             )
             _print_envelope_and_exit(error_envelope(exc))
             return
@@ -153,7 +167,7 @@ def add(
     else:
         if not email:
             _print_envelope_and_exit(
-                error_envelope(ValueError("email is required when --json is not used"))
+                error_envelope(ValueError("email is required when --json is not used")),
             )
             return
         payload = {
@@ -187,19 +201,29 @@ def add(
 @app.command()
 def search(
     name: str | None = typer.Option(
-        None, "--name", help="Search by name (fuzzy, case-insensitive)"
+        None,
+        "--name",
+        help="Search by name (fuzzy, case-insensitive)",
     ),
     email: str | None = typer.Option(
-        None, "--email", help="Search by exact email address"
+        None,
+        "--email",
+        help="Search by exact email address",
     ),
     email_domain: str | None = typer.Option(
-        None, "--email-domain", help="Search by email domain (e.g. continue.dev)"
+        None,
+        "--email-domain",
+        help="Search by email domain (e.g. continue.dev)",
     ),
     phone: str | None = typer.Option(
-        None, "--phone", help="Search by phone number (partial match)"
+        None,
+        "--phone",
+        help="Search by phone number (partial match)",
     ),
     company: str | None = typer.Option(
-        None, "--company", help="Search by company name or domain"
+        None,
+        "--company",
+        help="Search by company name or domain",
     ),
     sample: bool = typer.Option(
         False,
@@ -208,10 +232,14 @@ def search(
     ),
     limit: int = typer.Option(25, "--limit", help="Max results to return"),
     no_connectivity_probe: bool = typer.Option(
-        False, "--no-connectivity-probe", help="Skip Modal connectivity preflight"
+        False,
+        "--no-connectivity-probe",
+        help="Skip Modal connectivity preflight",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(
         None,
@@ -225,7 +253,10 @@ def search(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as exc:
             emit_json_payload_validation_telemetry(
-                "attio.people.search", exc, PersonSearchQuery, json_input
+                "attio.people.search",
+                exc,
+                PersonSearchQuery,
+                json_input,
             )
             _print_envelope_and_exit(error_envelope(exc))
             return
@@ -238,9 +269,9 @@ def search(
                 error_envelope(
                     ValueError(
                         "Provide at least one search criterion: --name, --email, --email-domain, --phone, --company. "
-                        "Or use --sample to browse recent records without filtering."
-                    )
-                )
+                        "Or use --sample to browse recent records without filtering.",
+                    ),
+                ),
             )
             return
         payload = {
@@ -288,19 +319,27 @@ def update(
     last_name: str | None = typer.Option(None, "--last-name", help="Last name"),
     phone: str | None = typer.Option(None, "--phone", help="Phone number"),
     linkedin: str | None = typer.Option(
-        None, "--linkedin", help="LinkedIn profile URL"
+        None,
+        "--linkedin",
+        help="LinkedIn profile URL",
     ),
     location: str | None = typer.Option(None, "--location", help="Primary location"),
     company_domain: str | None = typer.Option(None, "--company", help="Company domain"),
     notes: str | None = typer.Option(None, "--notes", help="Intake notes"),
     strict: bool = typer.Option(
-        False, "--strict", help="Fail fast on optional-field mismatches"
+        False,
+        "--strict",
+        help="Fail fast on optional-field mismatches",
     ),
     location_mode: str = typer.Option(
-        "city", "--location-mode", help="Location normalization mode: city|raw"
+        "city",
+        "--location-mode",
+        help="Location normalization mode: city|raw",
     ),
     no_connectivity_probe: bool = typer.Option(
-        False, "--no-connectivity-probe", help="Skip Modal connectivity preflight"
+        False,
+        "--no-connectivity-probe",
+        help="Skip Modal connectivity preflight",
     ),
     modal_sync: str = typer.Option(
         "check",
@@ -308,7 +347,9 @@ def update(
         help="Modal sync strategy for mutation commands: check|deploy|skip",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(
         None,
@@ -322,7 +363,10 @@ def update(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as exc:
             emit_json_payload_validation_telemetry(
-                "attio.people.update", exc, PersonUpdateQuery, json_input
+                "attio.people.update",
+                exc,
+                PersonUpdateQuery,
+                json_input,
             )
             _print_envelope_and_exit(error_envelope(exc))
             return
@@ -333,8 +377,8 @@ def update(
         if not email and not record_id:
             _print_envelope_and_exit(
                 error_envelope(
-                    ValueError("provide --email or --id to identify the person.")
-                )
+                    ValueError("provide --email or --id to identify the person."),
+                ),
             )
             return
         payload = {
@@ -370,7 +414,8 @@ def update(
 @app.command()
 def upsert(
     email: str = typer.Argument(
-        "", help="Email address used as deterministic identity key"
+        "",
+        help="Email address used as deterministic identity key",
     ),
     add_email: Annotated[
         list[str],
@@ -389,19 +434,27 @@ def upsert(
     last_name: str | None = typer.Option(None, "--last-name", help="Last name"),
     phone: str | None = typer.Option(None, "--phone", help="Phone number"),
     linkedin: str | None = typer.Option(
-        None, "--linkedin", help="LinkedIn profile URL"
+        None,
+        "--linkedin",
+        help="LinkedIn profile URL",
     ),
     location: str | None = typer.Option(None, "--location", help="Primary location"),
     company_domain: str | None = typer.Option(None, "--company", help="Company domain"),
     notes: str | None = typer.Option(None, "--notes", help="Intake notes"),
     strict: bool = typer.Option(
-        False, "--strict", help="Fail fast on ambiguity or optional-field mismatches"
+        False,
+        "--strict",
+        help="Fail fast on ambiguity or optional-field mismatches",
     ),
     location_mode: str = typer.Option(
-        "city", "--location-mode", help="Location normalization mode: city|raw"
+        "city",
+        "--location-mode",
+        help="Location normalization mode: city|raw",
     ),
     no_connectivity_probe: bool = typer.Option(
-        False, "--no-connectivity-probe", help="Skip Modal connectivity preflight"
+        False,
+        "--no-connectivity-probe",
+        help="Skip Modal connectivity preflight",
     ),
     modal_sync: str = typer.Option(
         "check",
@@ -409,7 +462,9 @@ def upsert(
         help="Modal sync strategy for mutation commands: check|deploy|skip",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(
         None,
@@ -423,7 +478,10 @@ def upsert(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as exc:
             emit_json_payload_validation_telemetry(
-                "attio.people.upsert", exc, PersonUpsertQuery, json_input
+                "attio.people.upsert",
+                exc,
+                PersonUpsertQuery,
+                json_input,
             )
             _print_envelope_and_exit(error_envelope(exc))
             return
@@ -433,7 +491,7 @@ def upsert(
     else:
         if not email:
             _print_envelope_and_exit(
-                error_envelope(ValueError("email is required when --json is not used"))
+                error_envelope(ValueError("email is required when --json is not used")),
             )
             return
         payload = {

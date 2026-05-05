@@ -25,7 +25,7 @@ def test_local_source_exports(tmp_path: Path) -> None:
             output_root=tmp_path / "out",
             granola_dir=granola_home,
             now=dt.datetime(2026, 3, 29, tzinfo=dt.UTC),
-        )
+        ),
     )
     assert result.processed == 1
     assert result.written == 1
@@ -44,7 +44,7 @@ def test_hybrid_can_use_api_transcript(tmp_path: Path) -> None:
             api_key="k",
             api_notes={"m1": {"id": "m1", "transcript": [{"text": "api"}]}},
             now=dt.datetime(2026, 3, 29, tzinfo=dt.UTC),
-        )
+        ),
     )
     assert result.processed == 1
 
@@ -63,7 +63,7 @@ def test_record_error_accumulates_and_continues(tmp_path: Path) -> None:
             output_root=tmp_path / "out",
             granola_dir=granola_home,
             now=dt.datetime(2026, 3, 29, tzinfo=dt.UTC),
-        )
+        ),
     )
     assert result.processed == 2
     assert result.errors == 1
@@ -74,8 +74,10 @@ def test_fatal_preflight_raises(tmp_path: Path) -> None:
     try:
         run_export(
             ExportRunOptions(
-                source="local", output_root=tmp_path / "out", granola_dir=bad
-            )
+                source="local",
+                output_root=tmp_path / "out",
+                granola_dir=bad,
+            ),
         )
     except Exception as exc:  # noqa: BLE001
         assert "cache" in str(exc).lower() or "granola" in str(exc).lower()

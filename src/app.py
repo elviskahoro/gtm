@@ -42,7 +42,7 @@ image = (
         {
             "AI_BUILD_GIT_SHA": _resolve_git_sha(),
             "AI_DEPLOYED_AT": datetime.now(UTC).isoformat(),
-        }
+        },
     )
     .add_local_python_source("libs")
     .add_local_python_source("src")

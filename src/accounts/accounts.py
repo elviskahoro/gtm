@@ -18,10 +18,11 @@ class MapAccountHierarchyQuery(BaseModel):
 
 @app.function(image=image, secrets=[secrets_parallel])
 def gtm_map_account_hierarchy(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> MapAccountHierarchyResult:
     with inject_api_keys(api_keys or {}):
         query = MapAccountHierarchyQuery.model_validate(payload)
         return MapAccountHierarchyResult.model_validate(
-            tasks.map_account_hierarchy(query.account)
+            tasks.map_account_hierarchy(query.account),
         )

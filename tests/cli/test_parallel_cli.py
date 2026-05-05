@@ -492,7 +492,7 @@ def test_findall_create_flags_forwarded(monkeypatch) -> None:
     assert call["payload"]["objective"] == "find saas companies"
     assert call["payload"]["entity_type"] == "company"
     assert call["payload"]["match_conditions"] == [
-        {"name": "revenue", "description": "annual revenue > 1M"}
+        {"name": "revenue", "description": "annual revenue > 1M"},
     ]
     assert call["payload"]["match_limit"] == 20
     assert call["payload"]["generator"] == "pro"
@@ -512,7 +512,7 @@ def test_findall_create_json_override(monkeypatch) -> None:
             "match_conditions": [{"name": "role", "description": "VP or above"}],
             "match_limit": 50,
             "generator": "core",
-        }
+        },
     )
     result = runner.invoke(
         app,
@@ -545,7 +545,7 @@ def test_findall_create_json_empty_conditions_rejected(monkeypatch) -> None:
             "objective": "find saas",
             "entity_type": "company",
             "match_conditions": [],
-        }
+        },
     )
     result = runner.invoke(
         app,

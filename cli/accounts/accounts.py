@@ -15,7 +15,9 @@ from src.modal_app import MODAL_APP
 def map_account_hierarchy_command(
     account: str = typer.Argument("", help="Account domain or name"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:

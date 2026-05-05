@@ -15,7 +15,9 @@ from src.modal_app import MODAL_APP
 def find_people_command(
     query: str = typer.Argument("", help="Search query for people"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -26,7 +28,10 @@ def find_people_command(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "gtm.people.find", e, FindPeopleQuery, json_input
+                "gtm.people.find",
+                e,
+                FindPeopleQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

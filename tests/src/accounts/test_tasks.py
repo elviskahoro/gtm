@@ -33,7 +33,7 @@ def test_map_account_hierarchy_supports_search_response_model(
         lambda input: SearchResponse(  # pyright: ignore[reportUnknownLambdaType]
             search_id="s_model_2",
             results=[
-                SearchResultItem(title="Acme Parent", url="https://parent.example.com")
+                SearchResultItem(title="Acme Parent", url="https://parent.example.com"),
             ],
         ),
     )
@@ -69,7 +69,9 @@ def test_model_batch_mutation_mode_is_required() -> None:
 
     with pytest.raises(Exception):
         BatchMutationResult(
-            requested=1, created=0, skipped=1
+            requested=1,
+            created=0,
+            skipped=1,
         )  # pyright: ignore[reportCallIssue]
 
 
@@ -89,7 +91,8 @@ def test_model_json_dump_is_dict_compatible() -> None:
     from src.accounts.models import ResearchResult
 
     model = ResearchResult(
-        objective="find companies", results=[{"url": "https://example.com"}]
+        objective="find companies",
+        results=[{"url": "https://example.com"}],
     )
     dumped = model.model_dump(mode="json")
     assert isinstance(dumped, dict)
@@ -260,7 +263,7 @@ def test_batch_failure_all_success_statuses_are_stable(
     monkeypatch.setattr(
         "libs.attio.people.add_person",
         lambda _payload: {
-            "record_id": "p_1"
+            "record_id": "p_1",
         },  # pyright: ignore[reportUnknownLambdaType]
     )
 
@@ -307,7 +310,7 @@ def test_batch_failure_all_failed_summary_is_deterministic(
     monkeypatch.setattr(
         "libs.attio.people.add_person",
         lambda _payload: (_ for _ in ()).throw(
-            RuntimeError("boom")
+            RuntimeError("boom"),
         ),  # pyright: ignore[reportUnknownLambdaType]
     )
 

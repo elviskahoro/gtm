@@ -20,10 +20,12 @@ def _write_cache(path: Path, payload: dict[str, Any]) -> None:
 
 def test_picks_highest_cache_version(tmp_path: Path) -> None:
     _write_cache(
-        tmp_path / "cache-v1.json", {"state": {"documents": {}, "transcripts": {}}}
+        tmp_path / "cache-v1.json",
+        {"state": {"documents": {}, "transcripts": {}}},
     )
     _write_cache(
-        tmp_path / "cache-v3.json", {"state": {"documents": {}, "transcripts": {}}}
+        tmp_path / "cache-v3.json",
+        {"state": {"documents": {}, "transcripts": {}}},
     )
     assert find_latest_cache_file(tmp_path).name == "cache-v3.json"
 
@@ -49,7 +51,7 @@ def test_extract_documents_and_transcripts_maps(tmp_path: Path) -> None:
             "state": {
                 "documents": {"a": {"id": "a", "title": "T"}},
                 "transcripts": {"a": [{"text": "hello"}]},
-            }
+            },
         },
     )
     payload = load_local_cache(cache)
@@ -69,8 +71,8 @@ def test_extract_documents_and_transcripts_maps_from_nested_cache_state(
                 "state": {
                     "documents": {"a": {"id": "a", "title": "T"}},
                     "transcripts": {"a": [{"text": "hello"}]},
-                }
-            }
+                },
+            },
         },
     )
     payload = load_local_cache(cache)

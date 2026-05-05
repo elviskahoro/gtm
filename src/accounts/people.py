@@ -18,7 +18,8 @@ class FindPeopleQuery(BaseModel):
 
 @app.function(image=image, secrets=[secrets_parallel])
 def gtm_find_people(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> FindPeopleResult:
     with inject_api_keys(api_keys or {}):
         q = FindPeopleQuery.model_validate(payload)

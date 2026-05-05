@@ -21,7 +21,9 @@ def _print_json(value: object) -> None:
 def research_command(
     objective: str = typer.Argument("", help="Research objective"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -32,14 +34,18 @@ def research_command(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "gtm.research.research", e, ResearchQuery, json_input
+                "gtm.research.research",
+                e,
+                ResearchQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
     else:
         if not objective:
             print(
-                "Error: objective is required when --json is not used", file=sys.stderr
+                "Error: objective is required when --json is not used",
+                file=sys.stderr,
             )
             raise typer.Exit(code=1)
         payload = {"objective": objective}
@@ -62,7 +68,9 @@ def enrich_command(
     url: str = typer.Argument("", help="URL to enrich"),
     objective: str = typer.Argument("", help="Enrichment objective"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -73,7 +81,10 @@ def enrich_command(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "gtm.research.enrich", e, EnrichQuery, json_input
+                "gtm.research.enrich",
+                e,
+                EnrichQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

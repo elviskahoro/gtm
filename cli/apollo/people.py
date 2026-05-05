@@ -22,13 +22,20 @@ def enrich(
     last_name: str | None = typer.Option(None, "--last-name", help="Last name"),
     domain: str | None = typer.Option(None, "--domain", "-d", help="Company domain"),
     linkedin_url: str | None = typer.Option(
-        None, "--linkedin", "-l", help="LinkedIn profile URL"
+        None,
+        "--linkedin",
+        "-l",
+        help="LinkedIn profile URL",
     ),
     organization_name: str | None = typer.Option(
-        None, "--org", help="Organization name"
+        None,
+        "--org",
+        help="Organization name",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     apollo_api_key_override: str | None = typer.Option(None, "--apollo-api-key"),
 ) -> None:
@@ -39,7 +46,10 @@ def enrich(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "apollo.people.enrich", e, PersonEnrichQuery, json_input
+                "apollo.people.enrich",
+                e,
+                PersonEnrichQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -77,21 +87,34 @@ def enrich(
 def search(
     keywords: str = typer.Argument("", help="Keyword search"),
     titles: list[str] | None = typer.Option(
-        None, "--title", "-t", help="Job titles to filter by (repeatable)"
+        None,
+        "--title",
+        "-t",
+        help="Job titles to filter by (repeatable)",
     ),
     seniorities: list[str] | None = typer.Option(
-        None, "--seniority", "-s", help="Seniority levels (repeatable)"
+        None,
+        "--seniority",
+        "-s",
+        help="Seniority levels (repeatable)",
     ),
     locations: list[str] | None = typer.Option(
-        None, "--location", help="Person locations (repeatable)"
+        None,
+        "--location",
+        help="Person locations (repeatable)",
     ),
     domains: list[str] | None = typer.Option(
-        None, "--domain", "-d", help="Company domains (repeatable)"
+        None,
+        "--domain",
+        "-d",
+        help="Company domains (repeatable)",
     ),
     page: int = typer.Option(1, "--page", "-p", help="Page number"),
     per_page: int = typer.Option(10, "--per-page", "-n", help="Results per page"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     apollo_api_key_override: str | None = typer.Option(None, "--apollo-api-key"),
 ) -> None:
@@ -102,7 +125,10 @@ def search(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "apollo.people.search", e, PersonSearchQuery, json_input
+                "apollo.people.search",
+                e,
+                PersonSearchQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

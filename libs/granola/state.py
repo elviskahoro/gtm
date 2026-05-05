@@ -15,7 +15,9 @@ class ExportState(BaseModel):
 
 def compute_meeting_hash(meeting: NormalizedMeeting) -> str:
     body = json.dumps(
-        meeting.model_dump(mode="json"), sort_keys=True, ensure_ascii=False
+        meeting.model_dump(mode="json"),
+        sort_keys=True,
+        ensure_ascii=False,
     )
     return hashlib.sha256(body.encode("utf-8")).hexdigest()
 

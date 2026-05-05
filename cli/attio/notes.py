@@ -18,18 +18,26 @@ def add(
     title: str = typer.Argument("", help="Note title (required when --json not used)"),
     content: str = typer.Argument("", help="Note content"),
     parent_object: str = typer.Option(
-        "", "--object", help="Parent object: 'people' or 'companies'"
+        "",
+        "--object",
+        help="Parent object: 'people' or 'companies'",
     ),
     record_id: str | None = typer.Option(None, "--record-id", help="Parent record ID"),
     email: str | None = typer.Option(None, "--email", help="Look up person by email"),
     domain: str | None = typer.Option(
-        None, "--domain", help="Look up company by domain"
+        None,
+        "--domain",
+        help="Look up company by domain",
     ),
     format: str = typer.Option(
-        "plaintext", "--format", help="Content format: plaintext or markdown"
+        "plaintext",
+        "--format",
+        help="Content format: plaintext or markdown",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -40,7 +48,10 @@ def add(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "attio.notes.add", e, NoteAddQuery, json_input
+                "attio.notes.add",
+                e,
+                NoteAddQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
@@ -80,10 +91,14 @@ def update(
     title: str | None = typer.Option(None, "--title", help="New title"),
     content: str | None = typer.Option(None, "--content", help="New content"),
     format: str = typer.Option(
-        "plaintext", "--format", help="Content format: plaintext or markdown"
+        "plaintext",
+        "--format",
+        help="Content format: plaintext or markdown",
     ),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -94,7 +109,10 @@ def update(
             payload = query.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "attio.notes.update", e, NoteUpdateQuery, json_input
+                "attio.notes.update",
+                e,
+                NoteUpdateQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)

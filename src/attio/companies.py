@@ -19,20 +19,24 @@ from src.attio.http_responses import error_response_from_exception
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_add_company(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> CompanyResult:
     with inject_api_keys(api_keys or {}):
         query = CompanyAddQuery.model_validate(payload)
         return add_company(
             CompanyInput(
-                name=query.name, domain=query.domain, description=query.description
-            )
+                name=query.name,
+                domain=query.domain,
+                description=query.description,
+            ),
         )
 
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_search_companies(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> list[CompanySearchResult]:
     with inject_api_keys(api_keys or {}):
         query = CompanySearchQuery.model_validate(payload)
@@ -41,7 +45,8 @@ def attio_search_companies(
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_update_company(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> CompanyResult:
     with inject_api_keys(api_keys or {}):
         query = CompanyUpdateQuery.model_validate(payload)
@@ -58,7 +63,8 @@ def attio_update_company(
 
 @app.function(image=image, secrets=[secrets_attio])
 def attio_create_companies_attribute(
-    payload: dict[str, Any], api_keys: dict[str, str] | None = None
+    payload: dict[str, Any],
+    api_keys: dict[str, str] | None = None,
 ) -> AttributeCreateResult:
     with inject_api_keys(api_keys or {}):
         query = CompanyCreateAttributeQuery.model_validate(payload)
@@ -123,7 +129,7 @@ class CompanyCreateAttributeQuery(BaseModel):
 def attio_company_add_http(query: CompanyAddQuery) -> Any:
     try:
         result = attio_add_company.remote(
-            payload=query.model_dump()
+            payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
 
@@ -136,7 +142,7 @@ def attio_company_add_http(query: CompanyAddQuery) -> Any:
 def attio_companies_search_http(query: CompanySearchQuery) -> Any:
     try:
         results = attio_search_companies.remote(
-            payload=query.model_dump()
+            payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return [r.model_dump() for r in results]
 
@@ -149,7 +155,7 @@ def attio_companies_search_http(query: CompanySearchQuery) -> Any:
 def attio_company_update_http(query: CompanyUpdateQuery) -> Any:
     try:
         result = attio_update_company.remote(
-            payload=query.model_dump()
+            payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
     except Exception as exc:

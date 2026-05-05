@@ -115,7 +115,7 @@ def normalize_meeting(
     local_segments = _segments_from_raw(local_transcript)
     api_segments = _segments_from_raw((api_note or {}).get("transcript"))
     previous_segments = _segments_from_raw(
-        (previous_export or {}).get("transcript_segments")
+        (previous_export or {}).get("transcript_segments"),
     )
 
     if local_segments:

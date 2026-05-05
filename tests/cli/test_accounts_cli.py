@@ -198,7 +198,8 @@ def test_contract_matrix_batch_add_companies_modal_binding_and_env(monkeypatch) 
     runner = CliRunner()
     payload = json.dumps([{"name": "Acme", "domain": "acme.com"}])
     result = runner.invoke(
-        app, ["accounts", "batch-add-companies", "--records", payload]
+        app,
+        ["accounts", "batch-add-companies", "--records", payload],
     )
 
     assert result.exit_code == 0
@@ -220,13 +221,15 @@ def test_contract_matrix_non_mutating_commands_reject_apply() -> None:
     )
     assert (
         runner.invoke(
-            app, ["accounts", "enrich", "https://acme.com", "funding", "--apply"]
+            app,
+            ["accounts", "enrich", "https://acme.com", "funding", "--apply"],
         ).exit_code
         != 0
     )
     assert (
         runner.invoke(
-            app, ["accounts", "map-account-hierarchy", "acme", "--apply"]
+            app,
+            ["accounts", "map-account-hierarchy", "acme", "--apply"],
         ).exit_code
         != 0
     )
@@ -311,7 +314,7 @@ def test_batch_add_people_accepts_model_like_response(monkeypatch) -> None:
                     "created": 1,
                     "skipped": 0,
                     "errors": 0,
-                }
+                },
             )
 
     monkeypatch.setattr(
@@ -324,7 +327,8 @@ def test_batch_add_people_accepts_model_like_response(monkeypatch) -> None:
     runner = CliRunner()
     payload = json.dumps([{"email": "ada@example.com"}])
     result = runner.invoke(
-        app, ["accounts", "batch-add-people", "--records", payload, "--apply"]
+        app,
+        ["accounts", "batch-add-people", "--records", payload, "--apply"],
     )
     assert result.exit_code == 0
     assert json.loads(result.stdout)["created"] == 1
@@ -362,7 +366,8 @@ def test_validation_limits_cli_rejects_non_array_records(monkeypatch) -> None:
     monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
     runner = CliRunner()
     result = runner.invoke(
-        app, ["accounts", "batch-add-people", "--records", '{"email":"a@b.com"}']
+        app,
+        ["accounts", "batch-add-people", "--records", '{"email":"a@b.com"}'],
     )
     assert result.exit_code == 1
     assert "--records must decode to a JSON array" in result.stderr
@@ -372,7 +377,8 @@ def test_validation_limits_cli_rejects_non_object_record_items(monkeypatch) -> N
     monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
     runner = CliRunner()
     result = runner.invoke(
-        app, ["accounts", "batch-add-people", "--records", '["not-an-object"]']
+        app,
+        ["accounts", "batch-add-people", "--records", '["not-an-object"]'],
     )
     assert result.exit_code == 1
     assert "records must contain JSON objects" in result.stderr

@@ -40,7 +40,9 @@ def batch_add_people_command(
     records: str = typer.Option("", "--records", help="JSON array of person records"),
     apply: bool = typer.Option(False, "--apply", help="Perform writes to Attio"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -52,14 +54,18 @@ def batch_add_people_command(
             apply = q.apply
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "gtm.batch.add-people", e, BatchAddPeopleQuery, json_input
+                "gtm.batch.add-people",
+                e,
+                BatchAddPeopleQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
     else:
         if not records:
             print(
-                "Error: --records is required when --json is not used", file=sys.stderr
+                "Error: --records is required when --json is not used",
+                file=sys.stderr,
             )
             raise typer.Exit(code=1)
         try:
@@ -88,7 +94,9 @@ def batch_add_companies_command(
     records: str = typer.Option("", "--records", help="JSON array of company records"),
     apply: bool = typer.Option(False, "--apply", help="Perform writes to Attio"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     attio_api_key_override: str | None = typer.Option(None, "--attio-api-key"),
 ) -> None:
@@ -100,14 +108,18 @@ def batch_add_companies_command(
             apply = q.apply
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "gtm.batch.add-companies", e, BatchAddCompaniesQuery, json_input
+                "gtm.batch.add-companies",
+                e,
+                BatchAddCompaniesQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
     else:
         if not records:
             print(
-                "Error: --records is required when --json is not used", file=sys.stderr
+                "Error: --records is required when --json is not used",
+                file=sys.stderr,
             )
             raise typer.Exit(code=1)
         try:

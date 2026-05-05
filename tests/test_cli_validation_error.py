@@ -37,7 +37,7 @@ def _missing_modal_credentials() -> list[str]:
 def _skip_if_missing_modal_credentials() -> None:
     if _missing_modal_credentials():
         pytest.skip(
-            "CLI integration tests gated by credentials preflight failure in this module"
+            "CLI integration tests gated by credentials preflight failure in this module",
         )
 
 
@@ -77,7 +77,7 @@ def test_cli_add_person_with_valid_data() -> None:
     # Skip if auth error occurs (can happen if other tests modify credentials)
     if result.returncode != 0 and "Token ID is malformed" in result.stdout:
         pytest.skip(
-            "Skipping due to malformed Modal token (likely from test isolation issue)"
+            "Skipping due to malformed Modal token (likely from test isolation issue)",
         )
 
     assert result.returncode == 0

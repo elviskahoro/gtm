@@ -17,11 +17,16 @@ app = typer.Typer(help="Search the web using Parallel API.")
 def query(
     objective: str = typer.Argument("", help="What to search for"),
     mode: str = typer.Option(
-        "one-shot", "--mode", "-m", help="Search mode: one-shot, agentic, fast"
+        "one-shot",
+        "--mode",
+        "-m",
+        help="Search mode: one-shot, agentic, fast",
     ),
     max_results: int = typer.Option(10, "--max", "-n", help="Max results (1-20)"),
     json_input: str | None = typer.Option(
-        None, "--json", help="JSON payload (overrides flags)"
+        None,
+        "--json",
+        help="JSON payload (overrides flags)",
     ),
     parallel_api_key_override: str | None = typer.Option(None, "--parallel-api-key"),
 ) -> None:
@@ -32,14 +37,18 @@ def query(
             payload = q.model_dump()
         except (ValidationError, json.JSONDecodeError) as e:
             emit_json_payload_validation_telemetry(
-                "parallel.search.query", e, SearchQuery, json_input
+                "parallel.search.query",
+                e,
+                SearchQuery,
+                json_input,
             )
             print(f"Error: {e}", file=sys.stderr)
             raise typer.Exit(code=1)
     else:
         if not objective:
             print(
-                "Error: objective is required when --json is not used", file=sys.stderr
+                "Error: objective is required when --json is not used",
+                file=sys.stderr,
             )
             raise typer.Exit(code=1)
         payload = {"objective": objective, "mode": mode, "max_results": max_results}

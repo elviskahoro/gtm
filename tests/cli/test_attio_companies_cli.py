@@ -115,7 +115,7 @@ def test_create_attribute_type_json_only_without_title_flags(monkeypatch) -> Non
             "api_slug": "from_json_slug",
             "attribute_type": "select",
             "apply": False,
-        }
+        },
     )
     runner = CliRunner()
     result = runner.invoke(
