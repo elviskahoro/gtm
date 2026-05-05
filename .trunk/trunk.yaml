@@ -160,6 +160,9 @@ lint:
         - data/**
         - tmp/**
         - worktrees/**
+        - "**/*.openapi.json"
+        - "**/*.openapi.yaml"
+        - "**/*.openapi.yml"
 
     - linters: [ruff]
       paths:
