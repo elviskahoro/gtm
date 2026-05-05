@@ -27,6 +27,11 @@ dependencies = [
   "opentelemetry-exporter-otlp-proto-http",
   "opentelemetry-semantic-conventions",
   "dlthub>=0.22.1",
+  "logfire>=4.32.1",
+  "openai>=2.34.0",
+  "emoji>=2.15.0",
+  "phonenumbers>=9.0.29",
+  "resend>=2.30.0",
 ]
 
 [tool.setuptools.packages.find]

@@ -1,0 +1,19 @@
+# Pyrefly configuration for gtm-sdk.
+#
+# When running pyrefly directly (e.g. `uv run pyrefly check`), `search-path`
+# and `python-interpreter-path` resolve relative to this file's location.
+#
+# Under Trunk, the pyrefly plugin passes `--search-path ${workspace}` and
+# `--python-interpreter-path ${workspace}/.venv/bin/python` explicitly because
+# Trunk runs linters from a sandboxed tmp dir, so relative paths in this file
+# would otherwise resolve to the sandbox.
+project-includes = [
+  "cli/**/*.py",
+  "data_gen/**/*.py",
+  "libs/**/*.py",
+  "src/**/*.py",
+  "tests/**/*.py",
+]
+project-excludes = ["tmp/**", "node_modules/**", "venv/**"]
+search-path = ["."]
+python-interpreter-path = ".venv/bin/python"
