@@ -344,6 +344,7 @@ def search_people(
     email_domain: str | None = None,
     phone: str | None = None,
     company: str | None = None,
+    sample: bool = False,
     limit: int = 25,
 ) -> ReliabilityEnvelope:
     results = _search_people_raw(
@@ -352,6 +353,7 @@ def search_people(
         email_domain=email_domain,
         phone=phone,
         company=company,
+        sample=sample,
         limit=limit,
     )
     return _result_envelope(

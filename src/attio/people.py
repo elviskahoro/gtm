@@ -79,6 +79,7 @@ def attio_search_people(
                 email_domain=query.email_domain,
                 phone=query.phone,
                 company=query.company,
+                sample=query.sample,
                 limit=query.limit,
             )
         except Exception as exc:
