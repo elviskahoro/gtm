@@ -236,7 +236,7 @@ def _envelope_or_error_response(payload: Any) -> Any:
 @app.function(image=image, secrets=[secrets_attio])
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_person_add_http(query: PersonAddQuery) -> Any:
-    result = attio_add_person.remote(
+    result = attio_add_person.remote(  # pyrefly: ignore[invalid-param-spec]
         payload=query.model_dump(),
     )  # pyright: ignore[reportFunctionMemberAccess]
     return _envelope_or_error_response(_normalize_remote_payload(result))
@@ -245,7 +245,7 @@ def attio_person_add_http(query: PersonAddQuery) -> Any:
 @app.function(image=image, secrets=[secrets_attio])
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_people_search_http(query: PersonSearchQuery) -> Any:
-    result = attio_search_people.remote(
+    result = attio_search_people.remote(  # pyrefly: ignore[invalid-param-spec]
         payload=query.model_dump(),
     )  # pyright: ignore[reportFunctionMemberAccess]
     return _envelope_or_error_response(_normalize_remote_payload(result))
@@ -254,7 +254,7 @@ def attio_people_search_http(query: PersonSearchQuery) -> Any:
 @app.function(image=image, secrets=[secrets_attio])
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_person_update_http(query: PersonUpdateQuery) -> Any:
-    result = attio_update_person.remote(
+    result = attio_update_person.remote(  # pyrefly: ignore[invalid-param-spec]
         payload=query.model_dump(),
     )  # pyright: ignore[reportFunctionMemberAccess]
     return _envelope_or_error_response(_normalize_remote_payload(result))
@@ -265,7 +265,7 @@ if ENABLE_ATTIO_PERSON_UPSERT_HTTP:
     @app.function(image=image, secrets=[secrets_attio])
     @modal.fastapi_endpoint(method="POST", docs=True)
     def attio_person_upsert_http(query: PersonUpsertQuery) -> Any:
-        result = attio_upsert_person.remote(
+        result = attio_upsert_person.remote(  # pyrefly: ignore[invalid-param-spec]
             payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return _envelope_or_error_response(_normalize_remote_payload(result))

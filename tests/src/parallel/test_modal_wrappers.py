@@ -23,9 +23,12 @@ def test_parallel_search_sets_and_clears_env_and_forwards_mode(monkeypatch) -> N
     monkeypatch.setattr("src.parallel.search.search", _search)
 
     fn = cast(modal.Function, parallel_search)
-    result = fn.local(
-        payload={"objective": "find acme", "mode": "agentic", "max_results": 5},
-        api_keys={"parallel_api_key": "pk_test"},
+    result = cast(
+        SearchResponse,
+        fn.local(
+            payload={"objective": "find acme", "mode": "agentic", "max_results": 5},
+            api_keys={"parallel_api_key": "pk_test"},
+        ),
     )
 
     assert captured == {
@@ -63,15 +66,18 @@ def test_parallel_findall_create_sets_and_clears_env_and_forwards_generator(
     monkeypatch.setattr("src.parallel.findall.findall_create", _findall_create)
 
     fn = cast(modal.Function, parallel_findall_create)
-    result = fn.local(
-        payload={
-            "objective": "find sales leaders",
-            "entity_type": "person",
-            "match_conditions": [{"name": "title", "description": "VP Sales"}],
-            "match_limit": 7,
-            "generator": "preview",
-        },
-        api_keys={"parallel_api_key": "pk_test"},
+    result = cast(
+        FindAllRunData,
+        fn.local(
+            payload={
+                "objective": "find sales leaders",
+                "entity_type": "person",
+                "match_conditions": [{"name": "title", "description": "VP Sales"}],
+                "match_limit": 7,
+                "generator": "preview",
+            },
+            api_keys={"parallel_api_key": "pk_test"},
+        ),
     )
 
     assert captured["objective"] == "find sales leaders"

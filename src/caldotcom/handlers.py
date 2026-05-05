@@ -3,6 +3,7 @@
 import json
 import logging
 from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import HTTPException
 
@@ -13,7 +14,7 @@ from src.caldotcom.utils import write_to_gcs, clean_timestamp, clean_string
 logger = logging.getLogger(__name__)
 
 
-def _handle_etl_request(payload: dict) -> dict:
+def _handle_etl_request(payload: dict[str, Any]) -> dict[str, Any]:
     """Handle ETL request logic (testable without Modal decorator)."""
     try:
         # Validate and instantiate Webhook
@@ -61,7 +62,7 @@ def _handle_etl_request(payload: dict) -> dict:
         raise HTTPException(status_code=500, detail=f"Failed to write to GCS: {str(e)}")
 
 
-def _handle_raw_request(payload: dict) -> dict:
+def _handle_raw_request(payload: dict[str, Any]) -> dict[str, Any]:
     """Handle raw request logic (testable without Modal decorator)."""
     try:
         # Generate filename from payload if possible
@@ -96,7 +97,7 @@ def _handle_raw_request(payload: dict) -> dict:
 
 
 @app.function(image=image)
-async def export_to_gcp_etl(payload: dict) -> dict:
+async def export_to_gcp_etl(payload: dict[str, Any]) -> dict[str, Any]:
     """
     Validate, flatten, and archive Cal.com booking webhook to GCS ETL bucket.
 
@@ -113,7 +114,7 @@ async def export_to_gcp_etl(payload: dict) -> dict:
 
 
 @app.function(image=image)
-async def export_to_gcp_raw(payload: dict) -> dict:
+async def export_to_gcp_raw(payload: dict[str, Any]) -> dict[str, Any]:
     """
     Archive raw, unmodified Cal.com booking webhook payload to GCS raw bucket.
 

@@ -128,7 +128,7 @@ class CompanyCreateAttributeQuery(BaseModel):
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_company_add_http(query: CompanyAddQuery) -> Any:
     try:
-        result = attio_add_company.remote(
+        result = attio_add_company.remote(  # pyrefly: ignore[invalid-param-spec]
             payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
@@ -141,7 +141,7 @@ def attio_company_add_http(query: CompanyAddQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_companies_search_http(query: CompanySearchQuery) -> Any:
     try:
-        results = attio_search_companies.remote(
+        results = attio_search_companies.remote(  # pyrefly: ignore[invalid-param-spec]
             payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return [r.model_dump() for r in results]
@@ -154,7 +154,7 @@ def attio_companies_search_http(query: CompanySearchQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_company_update_http(query: CompanyUpdateQuery) -> Any:
     try:
-        result = attio_update_company.remote(
+        result = attio_update_company.remote(  # pyrefly: ignore[invalid-param-spec]
             payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()

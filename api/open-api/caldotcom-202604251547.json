@@ -7055,7 +7055,7 @@
           },
           "clientSecret": {
             "type": "string",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoib2F1dGgtY2xpZW50Iiwi"
+            "example": "<client_secret_token>"
           }
         },
         "required": ["clientId", "clientSecret"]
@@ -7071,7 +7071,7 @@
           "data": {
             "example": {
               "clientId": "clsx38nbl0001vkhlwin9fmt0",
-              "clientSecret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoib2F1dGgtY2xpZW50Iiwi"
+              "clientSecret": "<client_secret_token>"
             },
             "allOf": [
               {

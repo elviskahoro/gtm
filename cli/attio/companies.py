@@ -62,7 +62,7 @@ def add(
     )
     try:
         fn = modal.Function.from_name(MODAL_APP, "attio_add_company")
-        result = fn.remote(payload=payload, api_keys=api_keys or None)
+        result = fn.remote(payload=payload, api_keys=api_keys or None)  # pyright: ignore[reportFunctionMemberAccess]
         out = (
             result.model_dump(mode="json") if hasattr(result, "model_dump") else result
         )
@@ -110,7 +110,7 @@ def search(
     )
     try:
         fn = modal.Function.from_name(MODAL_APP, "attio_search_companies")
-        results = fn.remote(payload=payload, api_keys=api_keys or None)
+        results = fn.remote(payload=payload, api_keys=api_keys or None)  # pyright: ignore[reportFunctionMemberAccess]
         out = [
             r.model_dump(mode="json") if hasattr(r, "model_dump") else r
             for r in results
@@ -175,7 +175,7 @@ def update(
     )
     try:
         fn = modal.Function.from_name(MODAL_APP, "attio_update_company")
-        result = fn.remote(payload=payload, api_keys=api_keys or None)
+        result = fn.remote(payload=payload, api_keys=api_keys or None)  # pyright: ignore[reportFunctionMemberAccess]
         out = (
             result.model_dump(mode="json") if hasattr(result, "model_dump") else result
         )
@@ -239,7 +239,7 @@ def create_attribute_type(
     )
     try:
         fn = modal.Function.from_name(MODAL_APP, "attio_create_companies_attribute")
-        result = fn.remote(payload=payload, api_keys=api_keys or None)
+        result = fn.remote(payload=payload, api_keys=api_keys or None)  # pyright: ignore[reportFunctionMemberAccess]
         out = (
             result.model_dump(mode="json") if hasattr(result, "model_dump") else result
         )

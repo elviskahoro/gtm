@@ -80,7 +80,7 @@ class NoteUpdateQuery(BaseModel):
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_note_add_http(query: NoteAddQuery) -> Any:
     try:
-        result = attio_add_note.remote(
+        result = attio_add_note.remote(  # pyrefly: ignore[invalid-param-spec]
             payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
@@ -92,7 +92,7 @@ def attio_note_add_http(query: NoteAddQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_note_update_http(query: NoteUpdateQuery) -> Any:
     try:
-        result = attio_update_note.remote(
+        result = attio_update_note.remote(  # pyrefly: ignore[invalid-param-spec]
             payload=query.model_dump(),
         )  # pyright: ignore[reportFunctionMemberAccess]
         return result.model_dump()
