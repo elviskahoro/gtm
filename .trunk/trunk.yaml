@@ -168,6 +168,10 @@ lint:
       paths:
         - "*.ipynb"
 
+    - linters: [checkov]
+      paths:
+        - api/open-api/**
+
     - linters: [checkov, semgrep]
       paths:
         - "**/*.py"
