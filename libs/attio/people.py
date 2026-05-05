@@ -189,7 +189,9 @@ def _search_people_raw(
         conditions.append({"phone_numbers": {"$contains": phone}})
 
     if not sample and not conditions and not company:
-        raise AttioValidationError("Provide at least one search criterion or use --sample to browse recent records.")
+        raise AttioValidationError(
+            "Provide at least one search criterion or use --sample to browse recent records."
+        )
 
     with get_client() as client:
         if company:

@@ -202,7 +202,9 @@ def search(
         None, "--company", help="Search by company name or domain"
     ),
     sample: bool = typer.Option(
-        False, "--sample", help="Fetch recent records without filtering (overrides all search criteria)"
+        False,
+        "--sample",
+        help="Fetch recent records without filtering (overrides all search criteria)",
     ),
     limit: int = typer.Option(25, "--limit", help="Max results to return"),
     no_connectivity_probe: bool = typer.Option(
