@@ -10,7 +10,6 @@ from pathlib import Path
 import typer
 
 from libs.attio import people as attio_people
-from libs.attio.models import PersonInput
 from src.enrichment import (
     HarvestProfile,
     build_enrichment_tasks,
@@ -75,22 +74,22 @@ def fetch(
     # Load records
     try:
         with open(records_file) as f:
-            records = json.load(f)
+            records_data = json.load(f)
     except FileNotFoundError:
         typer.echo(f"❌ Records file not found: {records_file}", err=True)
         raise typer.Exit(1)
     except json.JSONDecodeError:
-        typer.echo(f"❌ Invalid JSON in records file", err=True)
+        typer.echo("❌ Invalid JSON in records file", err=True)
         raise typer.Exit(1)
 
-    if not records:
+    if not records_data:
         typer.echo("⚠️  No records to enrich")
         return
 
     # Build tasks
     target_fields = profile.get("harvest_fields", [])
     tasks = build_enrichment_tasks(
-        records,
+        records_data,
         enrichment_type=profile["id"],
         target_fields=target_fields,
     )
@@ -125,7 +124,7 @@ def fetch(
                     "email": task.email,
                     "enrichment_type": task.enrichment_type,
                     "harvested_fields": non_none,
-                }
+                },
             )
             success_count += 1
 
@@ -172,7 +171,7 @@ def upsert(
         typer.echo(f"❌ Enriched file not found: {enriched_file}", err=True)
         raise typer.Exit(1)
     except json.JSONDecodeError:
-        typer.echo(f"❌ Invalid JSON in enriched file", err=True)
+        typer.echo("❌ Invalid JSON in enriched file", err=True)
         raise typer.Exit(1)
 
     if not enriched:
@@ -187,7 +186,7 @@ def upsert(
             typer.echo(f"  [{item['record_id']}] {item['email']}")
             for field, value in item["harvested_fields"].items():
                 typer.echo(f"    • {field}: {json.dumps(value)[:60]}...")
-        typer.echo(f"\n✅ Dry run complete (0 records updated)")
+        typer.echo("\n✅ Dry run complete (0 records updated)")
         return
 
     # Execute upsert
