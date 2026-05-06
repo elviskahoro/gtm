@@ -1,0 +1,21 @@
+# .git-blame-ignore-revs
+# This file contains commit hashes that should be skipped by `git blame`.
+# Typically used for bulk formatting/linting commits that don't change logic.
+#
+# To use this file, run:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# Or to ignore them globally:
+#   git config --global blame.ignoreRevsFile ~/.gitignore_global_blame
+
+# lint: Lint (2026-05-05)
+c54beaa921ab43655c6d9ce9abda778bb65297d6
+
+# lint: Lint (2026-05-05)
+19c063eb8fea5ee9528289c70016f19593beca11
+
+# lint: Lint (2026-05-05)
+47ae2251f4059e059edb4b7764050d904e44eeba
+
+# lint: Lint (2026-05-05)
+7b198901f664bd73e45fa94f4d2a7bf378dad45b
