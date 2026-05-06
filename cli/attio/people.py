@@ -12,6 +12,7 @@ from pydantic import ValidationError
 from cli.attio.preflight import run_people_preflight
 from cli.json_validation import emit_json_payload_validation_telemetry
 from libs.attio.contracts import ReliabilityEnvelope
+from libs.attio.errors import ConnectivityError
 from libs.attio.people import error_envelope
 from src.attio.people import (
     PersonAddQuery,
@@ -22,6 +23,20 @@ from src.attio.people import (
 from src.modal_app import MODAL_APP
 
 app = typer.Typer(help="Manage people records in Attio.")
+
+DEFAULT_REMOTE_TIMEOUT_SECONDS = 120
+
+
+def _remote_timeout_seconds() -> int:
+    try:
+        value = os.environ.get("MODAL_REMOTE_TIMEOUT_SECONDS", "")
+        if value:
+            timeout = int(value)
+            if timeout > 0:
+                return timeout
+    except (ValueError, TypeError):
+        pass
+    return DEFAULT_REMOTE_TIMEOUT_SECONDS
 
 
 def _print_envelope_and_exit(envelope: ReliabilityEnvelope) -> None:
@@ -83,10 +98,19 @@ def _invoke_people_fn(
             MODAL_APP,
             function_name,
         )  # pyrefly: ignore[invalid-param-spec]
-        result = fn.remote(
+        call = fn.spawn(
             payload=payload,
             api_keys=effective_keys or None,
         )  # pyrefly: ignore[invalid-param-spec]  # pyright: ignore[reportFunctionMemberAccess,reportUnknownMemberType]
+        timeout = _remote_timeout_seconds()
+        try:
+            result = call.get(timeout=timeout)
+        except modal.exception.TimeoutError as exc:
+            raise ConnectivityError(
+                f"Modal function '{function_name}' did not return within "
+                f"{timeout}s. The container may be failing to start "
+                f"(check `modal app logs {MODAL_APP}`).",
+            ) from exc
         envelope = _envelope_from_remote_result(result)
         envelope.warnings = [*preflight_warnings, *envelope.warnings]
         if parity_meta:

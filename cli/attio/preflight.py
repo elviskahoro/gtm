@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Iterable
 from typing import Any
 
 import modal
@@ -13,6 +14,24 @@ from libs.attio.errors import (
 )
 from src.attio.deployment_parity import ParityStatus, ensure_modal_parity
 from src.modal_app import MODAL_APP
+
+REQUIRED_PEOPLE_SECRETS: tuple[str, ...] = ("attio",)
+
+
+def _verify_modal_secrets(names: Iterable[str]) -> None:
+    for name in names:
+        try:
+            secret = modal.Secret.from_name(name)
+            secret.hydrate()
+        except modal.exception.NotFoundError as exc:
+            raise ConfigurationError(
+                f"Modal secret '{name}' not found. "
+                f"Create it with: modal secret create {name}",
+            ) from exc
+        except Exception as exc:
+            raise ConnectivityError(
+                f"Failed to verify Modal secret '{name}': {exc}",
+            ) from exc
 
 
 def run_people_preflight(
@@ -71,6 +90,7 @@ def run_people_preflight(
             )
 
     if connectivity_probe:
+        _verify_modal_secrets(REQUIRED_PEOPLE_SECRETS)
         try:
             modal.Function.from_name(modal_app, function_name)
         except Exception as exc:
