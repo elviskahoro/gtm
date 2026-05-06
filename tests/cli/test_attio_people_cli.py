@@ -3,9 +3,33 @@ from __future__ import annotations
 import json
 from typing import Any
 
+import modal
 from typer.testing import CliRunner
 
 from cli.main import app
+
+
+class _FakeFunctionCall:
+    def __init__(self, success_payload: dict[str, Any]) -> None:
+        self.success_payload = success_payload
+        self.timeout: int | None = None
+
+    def get(self, timeout: int | None = None) -> dict[str, Any]:
+        self.timeout = timeout
+        return self.success_payload
+
+
+class _FakeSecret:
+    def hydrate(self) -> None:  # noqa: D401
+        return None
+
+
+def _patch_secret_ok(monkeypatch, people_cli) -> None:
+    monkeypatch.setattr(
+        people_cli.modal.Secret,
+        "from_name",
+        lambda _name: _FakeSecret(),  # pyright: ignore[reportUnknownLambdaType]
+    )
 
 
 class _FakeModalFunction:
@@ -13,8 +37,7 @@ class _FakeModalFunction:
         self.name = name
         self.calls: list[dict[str, Any]] = []
 
-    def remote(self, **kwargs):
-        self.calls.append(kwargs)
+    def _success_payload(self) -> dict[str, Any]:
         return {
             "success": True,
             "partial_success": False,
@@ -29,6 +52,14 @@ class _FakeModalFunction:
             "errors": [],
             "meta": {"output_schema_version": "v1"},
         }
+
+    def spawn(self, **kwargs) -> _FakeFunctionCall:
+        self.calls.append(kwargs)
+        return _FakeFunctionCall(self._success_payload())
+
+    def remote(self, **kwargs):
+        self.calls.append(kwargs)
+        return self._success_payload()
 
 
 class _FakeModalRegistry:
@@ -67,6 +98,7 @@ def test_preflight_modal_token_secret_whitespace_is_stripped(monkeypatch) -> Non
 
     registry = _FakeModalRegistry()
     monkeypatch.setattr(people_cli.modal.Function, "from_name", registry.from_name)
+    _patch_secret_ok(monkeypatch, people_cli)
     monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
     monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
     monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123\n")
@@ -90,6 +122,7 @@ def test_connectivity_probe_failure_returns_error_unless_disabled(monkeypatch) -
         raise RuntimeError("probe failed")
 
     monkeypatch.setattr(people_cli.modal.Function, "from_name", _boom)
+    _patch_secret_ok(monkeypatch, people_cli)
     monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
     monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
     monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123")
@@ -127,6 +160,7 @@ def test_connectivity_probe_checks_target_function(monkeypatch) -> None:
         return registry.from_name(app_name, function_name)
 
     monkeypatch.setattr(people_cli.modal.Function, "from_name", _from_name)
+    _patch_secret_ok(monkeypatch, people_cli)
     monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
     monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
     monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123")
@@ -416,3 +450,207 @@ def test_upsert_modal_sync_deploy_retries_once_then_succeeds(monkeypatch) -> Non
     assert result.exit_code == 0
     assert calls["count"] == 1
     assert payload["meta"]["deployment_parity"]["deploy_attempted"] is True
+
+
+def test_timeout_error_returns_connectivity_envelope(monkeypatch) -> None:
+    import cli.attio.people as people_cli
+
+    class _TimeoutFunctionCall:
+        def __init__(self):
+            self.timeout = None
+
+        def get(self, timeout: int | None = None):
+            self.timeout = timeout
+            raise modal.exception.TimeoutError("timeout")
+
+    class _TimeoutFunction:
+        def __init__(self, name: str):
+            self.name = name
+
+        def spawn(self, **kwargs):
+            return _TimeoutFunctionCall()
+
+    registry = _FakeModalRegistry()
+    original_from_name = registry.from_name
+
+    def _from_name(app_name: str, function_name: str):
+        if function_name == "attio_search_people":
+            return _TimeoutFunction(function_name)
+        return original_from_name(app_name, function_name)
+
+    monkeypatch.setattr(people_cli.modal.Function, "from_name", _from_name)
+    _patch_secret_ok(monkeypatch, people_cli)
+    monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
+    monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
+    monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        ["attio", "people", "search", "--email", "foo@example.com"],
+    )
+    payload = json.loads(result.stdout)
+
+    assert result.exit_code == 1
+    assert payload["errors"][0]["code"] == "connectivity_error"
+    assert "modal app logs" in payload["errors"][0]["message"]
+
+
+def test_output_expired_error_returns_connectivity_envelope(monkeypatch) -> None:
+    import cli.attio.people as people_cli
+
+    class _ExpiredFunctionCall:
+        def __init__(self):
+            self.timeout = None
+
+        def get(self, timeout: int | None = None):
+            self.timeout = timeout
+            # Create a real OutputExpiredError from modal
+            raise modal.exception.OutputExpiredError()
+
+    class _ExpiredFunction:
+        def __init__(self, name: str):
+            self.name = name
+
+        def spawn(self, **kwargs):
+            return _ExpiredFunctionCall()
+
+    registry = _FakeModalRegistry()
+    original_from_name = registry.from_name
+
+    def _from_name(app_name: str, function_name: str):
+        if function_name == "attio_search_people":
+            return _ExpiredFunction(function_name)
+        return original_from_name(app_name, function_name)
+
+    monkeypatch.setattr(people_cli.modal.Function, "from_name", _from_name)
+    _patch_secret_ok(monkeypatch, people_cli)
+    monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
+    monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
+    monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        ["attio", "people", "search", "--email", "foo@example.com"],
+    )
+    payload = json.loads(result.stdout)
+
+    assert result.exit_code == 1
+    assert payload["errors"][0]["code"] == "connectivity_error"
+
+
+def test_env_override_changes_timeout(monkeypatch) -> None:
+    import cli.attio.people as people_cli
+
+    class _TimeoutRecordingFunctionCall:
+        def __init__(self):
+            self.timeout = None
+
+        def get(self, timeout: int | None = None):
+            self.timeout = timeout
+            return {
+                "success": True,
+                "partial_success": False,
+                "action": "searched",
+                "record_id": None,
+                "warnings": [],
+                "skipped_fields": [],
+                "errors": [],
+                "meta": {"output_schema_version": "v1"},
+            }
+
+    class _TimeoutRecordingFunction:
+        def __init__(self, name: str):
+            self.name = name
+            self.call = None
+
+        def spawn(self, **kwargs):
+            self.call = _TimeoutRecordingFunctionCall()
+            return self.call
+
+    registry = _FakeModalRegistry()
+    original_from_name = registry.from_name
+    recorded_function = None
+
+    def _from_name(app_name: str, function_name: str):
+        nonlocal recorded_function
+        if function_name == "attio_search_people":
+            recorded_function = _TimeoutRecordingFunction(function_name)
+            return recorded_function
+        return original_from_name(app_name, function_name)
+
+    monkeypatch.setattr(people_cli.modal.Function, "from_name", _from_name)
+    _patch_secret_ok(monkeypatch, people_cli)
+    monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
+    monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
+    monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123")
+    monkeypatch.setenv("MODAL_REMOTE_TIMEOUT_SECONDS", "37")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        ["attio", "people", "search", "--email", "foo@example.com"],
+    )
+
+    assert result.exit_code == 0
+    assert recorded_function is not None
+    assert recorded_function.call.timeout == 37
+
+
+def test_invalid_env_override_falls_back_to_default(monkeypatch) -> None:
+    import cli.attio.people as people_cli
+
+    class _TimeoutRecordingFunctionCall:
+        def __init__(self):
+            self.timeout = None
+
+        def get(self, timeout: int | None = None):
+            self.timeout = timeout
+            return {
+                "success": True,
+                "partial_success": False,
+                "action": "searched",
+                "record_id": None,
+                "warnings": [],
+                "skipped_fields": [],
+                "errors": [],
+                "meta": {"output_schema_version": "v1"},
+            }
+
+    class _TimeoutRecordingFunction:
+        def __init__(self, name: str):
+            self.name = name
+            self.call = None
+
+        def spawn(self, **kwargs):
+            self.call = _TimeoutRecordingFunctionCall()
+            return self.call
+
+    registry = _FakeModalRegistry()
+    original_from_name = registry.from_name
+    recorded_function = None
+
+    def _from_name(app_name: str, function_name: str):
+        nonlocal recorded_function
+        if function_name == "attio_search_people":
+            recorded_function = _TimeoutRecordingFunction(function_name)
+            return recorded_function
+        return original_from_name(app_name, function_name)
+
+    monkeypatch.setattr(people_cli.modal.Function, "from_name", _from_name)
+    _patch_secret_ok(monkeypatch, people_cli)
+    monkeypatch.setenv("ATTIO_API_KEY", "ak_test")
+    monkeypatch.setenv("MODAL_TOKEN_ID", "id_123")
+    monkeypatch.setenv("MODAL_TOKEN_SECRET", "secret_123")
+    monkeypatch.setenv("MODAL_REMOTE_TIMEOUT_SECONDS", "not-a-number")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        ["attio", "people", "search", "--email", "foo@example.com"],
+    )
+
+    assert result.exit_code == 0
+    assert recorded_function is not None
+    assert recorded_function.call.timeout == 120
