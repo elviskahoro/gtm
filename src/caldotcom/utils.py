@@ -2,7 +2,7 @@
 
 import re
 from datetime import datetime
-from typing import Any
+from typing import Any, BinaryIO, cast
 
 import flatsplode
 import orjson
@@ -67,9 +67,8 @@ def write_to_gcs(bucket: str, key: str, data: str | bytes) -> None:
     else:
         binary_data = data
     with fs.open(gcs_path, "wb") as f:
-        f.write(
-            binary_data,
-        )  # pyrefly: ignore[bad-argument-type]  # binary_data is bytes after narrowing
+        binary_file = cast(BinaryIO, f)
+        binary_file.write(binary_data)
 
 
 def read_from_gcs(bucket: str, key: str) -> str:
