@@ -14,7 +14,7 @@ from src.enrichment import (
     HarvestProfile,
     build_enrichment_tasks,
     harvest_profile_from_task,
-    _profile_to_person_input,
+    profile_to_person_input,
     load_enrichment_config,
 )
 
@@ -22,6 +22,7 @@ app = typer.Typer(help="Enrich records from LinkedIn via Harvest API.")
 logger = logging.getLogger(__name__)
 
 
+# trunk-ignore(pyright/reportUntypedFunctionDecorator)
 @app.command()
 def fetch(
     config_path: Path = typer.Option(
@@ -140,6 +141,7 @@ def fetch(
     typer.echo(f"📝 Output written to: {output_file}")
 
 
+# trunk-ignore(pyright/reportUntypedFunctionDecorator)
 @app.command()
 def upsert(
     enriched_file: Path = typer.Option(
@@ -200,7 +202,7 @@ def upsert(
         for item in progress:
             try:
                 profile = HarvestProfile(**item["harvested_fields"])
-                person_input = _profile_to_person_input(profile, item["email"])
+                person_input = profile_to_person_input(profile, item["email"])
 
                 attio_people.update_person(
                     record_id=item["record_id"],

@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 import sys
 
 import typer
@@ -19,16 +18,20 @@ app = typer.Typer(
 )
 
 
-@app.command()
 def hello(name: str = typer.Argument("world", help="Name to greet")) -> None:
     """Say hello."""
     typer.echo(f"Hello, {name}!")
 
 
-@app.command()
+app.command()(hello)
+
+
 def version() -> None:
     """Show the CLI version."""
     typer.echo("gtm v0.1.0")
+
+
+app.command()(version)
 
 
 app.add_typer(accounts_app, name="accounts")

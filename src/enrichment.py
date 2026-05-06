@@ -36,54 +36,54 @@ class HarvestProfile(BaseModel):
     """
 
     about: str | None = None
-    causes: list | None = None
-    certifications: list | None = None
+    causes: list[Any] | None = None
+    certifications: list[Any] | None = None
     composeOptionType: str | None = None
     connectionsCount: int | None = None
-    courses: list | None = None
-    coverPicture: dict | None = None
-    currentPosition: list | None = None
-    education: list | None = None
-    emails: list | None = None
-    experience: list | None = None
+    courses: list[Any] | None = None
+    coverPicture: dict[str, Any] | None = None
+    currentPosition: list[Any] | None = None
+    education: list[Any] | None = None
+    emails: list[Any] | None = None
+    experience: list[Any] | None = None
     featured: Any | None = None
     firstName: str | None = None
     followerCount: int | None = None
     headline: str | None = None
     hiring: int | None = None
-    honorsAndAwards: list | None = None
+    honorsAndAwards: list[Any] | None = None
     id: str | None = None
     influencer: int | None = None
-    languages: list | None = None
+    languages: list[Any] | None = None
     lastName: str | None = None
     linkedinUrl: str | None = None
-    location: dict | None = None
+    location: dict[str, Any] | None = None
     memorialized: int | None = None
-    moreProfiles: list | None = None
-    multiLocaleHeadline: list | None = None
+    moreProfiles: list[Any] | None = None
+    multiLocaleHeadline: list[Any] | None = None
     objectUrn: str | None = None
     openToWork: int | None = None
-    organizations: list | None = None
-    patents: list | None = None
+    organizations: list[Any] | None = None
+    patents: list[Any] | None = None
     photo: str | None = None
     premium: int | None = None
-    primaryLocale: dict | None = None
-    profileActions: list | None = None
-    profileLocales: list | None = None
-    profilePicture: dict | None = None
-    profileTopEducation: list | None = None
-    projects: list | None = None
+    primaryLocale: dict[str, Any] | None = None
+    profileActions: list[Any] | None = None
+    profileLocales: list[Any] | None = None
+    profilePicture: dict[str, Any] | None = None
+    profileTopEducation: list[Any] | None = None
+    projects: list[Any] | None = None
     publicIdentifier: str | None = None
-    publications: list | None = None
-    receivedRecommendations: list | None = None
+    publications: list[Any] | None = None
+    receivedRecommendations: list[Any] | None = None
     registeredAt: str | None = None
     services: Any | None = None
-    skills: list | None = None
+    skills: list[Any] | None = None
     topSkills: Any | None = None
     verified: int | None = None
-    volunteering: list | None = None
+    volunteering: list[Any] | None = None
 
-    def model_dump_non_none(self) -> dict:
+    def model_dump_non_none(self) -> dict[str, Any]:
         """Return only non-None fields for upsert operations."""
         return {k: v for k, v in self.model_dump().items() if v is not None}
 
@@ -191,8 +191,8 @@ def enrich_record(task: EnrichmentTask) -> EnrichmentResult:
         )
 
     try:
-        person_input = _profile_to_person_input(profile, task.email)
-        result = attio_people.update_person(
+        person_input = profile_to_person_input(profile, task.email)
+        attio_people.update_person(
             record_id=task.record_id,
             email=task.email,
             input=person_input,
@@ -213,7 +213,7 @@ def enrich_record(task: EnrichmentTask) -> EnrichmentResult:
         )
 
 
-def _profile_to_person_input(profile: HarvestProfile, email: str) -> PersonInput:
+def profile_to_person_input(profile: HarvestProfile, email: str) -> PersonInput:
     """Convert selective HarvestProfile to Attio PersonInput.
 
     Only populated fields from the profile are included.
