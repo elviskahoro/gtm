@@ -5,11 +5,63 @@ education, experience, and skills.
 """
 
 import os
+from typing import Any
 
 import httpx
 
 
-def fetch_profile(linkedin_url: str) -> dict | None:
+class HarvestClient:
+    """HTTP client for Harvest API with authentication."""
+
+    def __init__(self, api_key: str) -> None:
+        """Initialize client with API key."""
+        self.api_key = api_key
+        self.base_url = "https://api.harvest-api.com"
+
+    def get(
+        self,
+        endpoint: str,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Make a GET request to the Harvest API."""
+        try:
+            resp = httpx.get(
+                f"{self.base_url}{endpoint}",
+                params=params,
+                headers={"X-API-Key": self.api_key},
+                timeout=10,
+            )
+
+            if resp.status_code not in (200, 404):
+                return {}
+
+            if resp.status_code == 404:
+                return {}
+
+            data = resp.json()
+            return data if data else {}
+
+        except (httpx.RequestError, httpx.HTTPError):
+            return {}
+        except Exception:
+            return {}
+
+
+_client: HarvestClient | None = None
+
+
+def get_client() -> HarvestClient:
+    """Get or create the global Harvest API client."""
+    global _client
+    if _client is None:
+        api_key = os.environ.get("HARVEST_API_KEY")
+        if not api_key:
+            raise ValueError("HARVEST_API_KEY not set in environment")
+        _client = HarvestClient(api_key)
+    return _client
+
+
+def fetch_profile(linkedin_url: str) -> dict[str, Any] | None:
     """Fetch complete LinkedIn profile from Harvest API.
 
     Args:
