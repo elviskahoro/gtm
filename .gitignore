@@ -1,11 +1,18 @@
+# Python
 .venv/
 __pycache__/
+*.pyc
 .pytest_cache/
 .ruff_cache/
-tmp/
+
+# OS
 .DS_Store
-*.pyc
-worktrees/
-.agents
+
+# Agent / editor
 .agents/
 .claude/
+
+# Project scratch
+tmp/
+data/
+worktrees/
