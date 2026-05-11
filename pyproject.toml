@@ -32,6 +32,7 @@ dependencies = [
   "emoji>=2.15.0",
   "phonenumbers>=9.0.29",
   "resend>=2.30.0",
+  "uuid7>=0.1.0",
 ]
 
 [tool.setuptools.packages.find]
