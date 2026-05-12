@@ -4,16 +4,6 @@
 
 ### Added
 
-- **Octolens → Attio `octolens_mentions` custom-object export.** The Octolens
-  webhook now produces a single `UpsertMention` op (`mention_url`-keyed,
-  idempotent assert) when `action in {mention_created, mention_updated}`.
-  Three CRM-owned fields (`triage_status`, `related_person`,
-  `related_company`) are belt-and-suspenders protected from webhook clobber
-  (absent from `MentionInput`; assertion guard in
-  `build_create_mention_values`). Bootstrap the custom object + 25
-  attributes via `scripts/octolens_mentions_bootstrap.py --apply`
-  (idempotent; re-run is a no-op).
-
 - **`webhooks/export_to_attio.py` — standalone Modal webhook** that converts a
   source webhook payload into Attio writes via a source-agnostic dispatcher.
   Shipped across three passes:
