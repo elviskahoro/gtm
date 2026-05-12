@@ -66,7 +66,6 @@ import src.apollo.people as src_apollo_people  # noqa: E402
 import src.attio.companies as src_attio_companies  # noqa: E402
 import src.attio.notes as src_attio_notes  # noqa: E402
 import src.attio.people as src_attio_people  # noqa: E402
-import src.caldotcom.handlers as src_caldotcom_handlers  # noqa: E402
 import src.parallel.extract as src_parallel_extract  # noqa: E402
 import src.parallel.findall as src_parallel_findall  # noqa: E402
 import src.parallel.search as src_parallel_search  # noqa: E402
@@ -77,7 +76,6 @@ _ENDPOINT_MODULES = (
     src_attio_companies,
     src_attio_notes,
     src_attio_people,
-    src_caldotcom_handlers,
     src_gtm_accounts,
     src_gtm_batch,
     src_gtm_people,

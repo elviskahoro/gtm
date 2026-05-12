@@ -7,6 +7,7 @@ from libs.caldotcom.models import (
     EventType,
     RecordingItem,
     Transcript,
+    Webhook,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "EventType",
     "RecordingItem",
     "Transcript",
+    "Webhook",
 ]
