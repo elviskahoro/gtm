@@ -1,3 +1,33 @@
 {
-  "body": "{\"action\": \"mention_created\", \"data\": {\"title\": \"redacted\", \"body\": \"redacted\", \"url\": \"https://example.com/podcast/episode\", \"timestamp\": \"2026-05-10 11:00:00.000\", \"imageUrl\": \"https://example.com/podcast-art.jpg\", \"author\": \"Example Podcast\", \"authorProfileLink\": \"https://example.com/podcast\", \"source\": \"podcasts\", \"sourceId\": \"ep_redacted\", \"relevanceScore\": \"medium\", \"relevanceComment\": \"redacted\", \"keyword\": \"example_keyword\", \"keywords\": [\"example_keyword\"], \"language\": \"english\", \"sentimentLabel\": \"Neutral\", \"tags\": [\"competitor_mention\", \"industry_insights\"], \"viewId\": 16485, \"viewName\": \"Webhook\", \"viewKeywords\": [\"example_keyword_1\", \"example_keyword_2\", \"example_keyword_3\"]}}"
+  "action": "mention_created",
+  "data": {
+    "title": "redacted",
+    "body": "redacted",
+    "url": "https://example.com/podcast/episode",
+    "timestamp": "2026-05-10 11:00:00.000",
+    "imageUrl": "https://example.com/podcast-art.jpg",
+    "author": "Example Podcast",
+    "authorProfileLink": "https://example.com/podcast",
+    "source": "podcasts",
+    "sourceId": "ep_redacted",
+    "relevanceScore": "medium",
+    "relevanceComment": "redacted",
+    "keyword": "example_keyword",
+    "keywords": [
+      "example_keyword"
+    ],
+    "language": "english",
+    "sentimentLabel": "Neutral",
+    "tags": [
+      "competitor_mention",
+      "industry_insights"
+    ],
+    "viewId": 16485,
+    "viewName": "Webhook",
+    "viewKeywords": [
+      "example_keyword_1",
+      "example_keyword_2",
+      "example_keyword_3"
+    ]
+  }
 }

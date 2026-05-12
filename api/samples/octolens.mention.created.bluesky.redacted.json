@@ -1,3 +1,33 @@
 {
-  "body": "{\"action\": \"mention_created\", \"data\": {\"title\": \"\", \"body\": \"redacted\", \"url\": \"https://bsky.app/profile/bluesky-user.bsky.social/post/00000000000\", \"timestamp\": \"2026-05-10 11:31:42.700\", \"imageUrl\": \"\", \"author\": \"bluesky-user.bsky.social\", \"authorProfileLink\": \"https://bsky.app/profile/bluesky-user.bsky.social\", \"source\": \"bluesky\", \"sourceId\": \"did:plc:00000000000000000000000000/app.bsky.feed.post/00000000000\", \"relevanceScore\": \"medium\", \"relevanceComment\": \"redacted\", \"keyword\": \"example_keyword\", \"keywords\": [\"example_keyword\"], \"language\": \"english\", \"sentimentLabel\": \"Neutral\", \"tags\": [\"hiring\", \"competitor_mention\"], \"viewId\": 16485, \"viewName\": \"Webhook\", \"viewKeywords\": [\"example_keyword_1\", \"example_keyword_2\", \"example_keyword_3\"]}}"
+  "action": "mention_created",
+  "data": {
+    "title": "",
+    "body": "redacted",
+    "url": "https://bsky.app/profile/bluesky-user.bsky.social/post/00000000000",
+    "timestamp": "2026-05-10 11:31:42.700",
+    "imageUrl": "",
+    "author": "bluesky-user.bsky.social",
+    "authorProfileLink": "https://bsky.app/profile/bluesky-user.bsky.social",
+    "source": "bluesky",
+    "sourceId": "did:plc:00000000000000000000000000/app.bsky.feed.post/00000000000",
+    "relevanceScore": "medium",
+    "relevanceComment": "redacted",
+    "keyword": "example_keyword",
+    "keywords": [
+      "example_keyword"
+    ],
+    "language": "english",
+    "sentimentLabel": "Neutral",
+    "tags": [
+      "hiring",
+      "competitor_mention"
+    ],
+    "viewId": 16485,
+    "viewName": "Webhook",
+    "viewKeywords": [
+      "example_keyword_1",
+      "example_keyword_2",
+      "example_keyword_3"
+    ]
+  }
 }

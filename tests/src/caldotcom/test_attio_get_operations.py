@@ -9,7 +9,7 @@ from libs.meetings import canonical_meeting_uid
 from src.attio.ops import MeetingExternalRef, UpsertMeeting
 from src.caldotcom.webhook.booking import Webhook
 
-FIXTURE = Path("api/samples/caldotcom/booking/redacted.json")
+FIXTURE = Path("api/samples/caldotcom.booking.created.redacted.json")
 
 
 def _load() -> Webhook:

@@ -1,3 +1,31 @@
 {
-  "body": "{\"action\": \"mention_created\", \"data\": {\"title\": \"\", \"body\": \"redacted\", \"url\": \"https://www.reddit.com/r/example/comments/00000000/redacted_post/00000000/\", \"timestamp\": \"2026-05-10 11:55:53.000\", \"imageUrl\": \"\", \"author\": \"RedditUser\", \"authorProfileLink\": \"https://www.reddit.com/user/RedditUser\", \"source\": \"reddit\", \"sourceId\": \"00000000\", \"relevanceScore\": \"low\", \"relevanceComment\": \"redacted\", \"keyword\": \"example_keyword\", \"keywords\": [\"example_keyword\"], \"language\": \"english\", \"sentimentLabel\": \"Neutral\", \"tags\": [], \"viewId\": 16485, \"viewName\": \"Webhook\", \"viewKeywords\": [\"example_keyword_1\", \"example_keyword_2\", \"example_keyword_3\"], \"subreddit\": \"r/example\"}}"
+  "action": "mention_created",
+  "data": {
+    "title": "",
+    "body": "redacted",
+    "url": "https://www.reddit.com/r/example/comments/00000000/redacted_post/00000000/",
+    "timestamp": "2026-05-10 11:55:53.000",
+    "imageUrl": "",
+    "author": "RedditUser",
+    "authorProfileLink": "https://www.reddit.com/user/RedditUser",
+    "source": "reddit",
+    "sourceId": "00000000",
+    "relevanceScore": "low",
+    "relevanceComment": "redacted",
+    "keyword": "example_keyword",
+    "keywords": [
+      "example_keyword"
+    ],
+    "language": "english",
+    "sentimentLabel": "Neutral",
+    "tags": [],
+    "viewId": 16485,
+    "viewName": "Webhook",
+    "viewKeywords": [
+      "example_keyword_1",
+      "example_keyword_2",
+      "example_keyword_3"
+    ],
+    "subreddit": "r/example"
+  }
 }

@@ -1,3 +1,30 @@
 {
-  "body": "{\"triggerEvent\": \"PING\", \"createdAt\": \"2026-05-11T21:31:14.276Z\", \"payload\": {\"type\": \"Test\", \"title\": \"Test trigger event\", \"startTime\": \"2026-05-11T21:31:14.276Z\", \"endTime\": \"2026-05-11T21:31:14.276Z\", \"attendees\": [{\"email\": \"sam@example.com\", \"name\": \"Sam Attendee\", \"timeZone\": \"Europe/London\", \"language\": {\"locale\": \"en\"}, \"utcOffset\": 60}], \"organizer\": {\"name\": \"Alex Host\", \"email\": \"alex@example.com\", \"timeZone\": \"Europe/London\", \"language\": {\"locale\": \"en\"}, \"utcOffset\": 60}}}"
+  "triggerEvent": "PING",
+  "createdAt": "2026-05-11T21:31:14.276Z",
+  "payload": {
+    "type": "Test",
+    "title": "Test trigger event",
+    "startTime": "2026-05-11T21:31:14.276Z",
+    "endTime": "2026-05-11T21:31:14.276Z",
+    "attendees": [
+      {
+        "email": "sam@example.com",
+        "name": "Sam Attendee",
+        "timeZone": "Europe/London",
+        "language": {
+          "locale": "en"
+        },
+        "utcOffset": 60
+      }
+    ],
+    "organizer": {
+      "name": "Alex Host",
+      "email": "alex@example.com",
+      "timeZone": "Europe/London",
+      "language": {
+        "locale": "en"
+      },
+      "utcOffset": 60
+    }
+  }
 }

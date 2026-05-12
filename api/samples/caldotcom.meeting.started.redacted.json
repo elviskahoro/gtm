@@ -1,3 +1,144 @@
 {
-  "body": "{\"triggerEvent\": \"MEETING_STARTED\", \"id\": 19200781, \"uid\": \"o1U9kpMNYCf54S3zWPvdeu\", \"title\": \"dltHub exploration between Alex Host and Sam Attendee\", \"description\": \"\", \"customInputs\": [], \"responses\": {\"name\": {\"label\": \"name\", \"value\": \"Sam Attendee\"}, \"email\": {\"label\": \"email\", \"value\": \"sam@example.com\"}, \"guests\": {\"label\": \"guests\", \"value\": []}, \"location\": {\"label\": \"location\", \"value\": {\"value\": \"conferencing\", \"optionValue\": \"\"}}}, \"startTime\": \"2026-05-08T07:30:00.000Z\", \"endTime\": \"2026-05-08T08:00:00.000Z\", \"location\": \"integrations:google:meet\", \"status\": \"ACCEPTED\", \"paid\": false, \"createdAt\": \"2026-05-05T16:09:57.081Z\", \"updatedAt\": \"2026-05-05T16:10:02.655Z\", \"userId\": 2182255, \"userPrimaryEmail\": \"alex@example.com\", \"eventTypeId\": 4774128, \"destinationCalendarId\": 1129581, \"cancellationReason\": null, \"rejectionReason\": null, \"reassignReason\": null, \"reassignById\": null, \"dynamicEventSlugRef\": null, \"dynamicGroupSlugRef\": null, \"rescheduled\": null, \"fromReschedule\": null, \"recurringEventId\": null, \"smsReminderNumber\": null, \"scheduledJobs\": [], \"metadata\": {\"videoCallUrl\": \"https://meet.google.com/xxx-xxxx-xxx\"}, \"isRecorded\": false, \"iCalUID\": \"o1U9kpMNYCf54S3zWPvdeu@Cal.com\", \"iCalSequence\": 0, \"rating\": null, \"ratingFeedback\": null, \"noShowHost\": false, \"cancelledBy\": null, \"rescheduledBy\": null, \"creationSource\": \"WEBAPP\", \"idempotencyKey\": \"00000000-0000-0000-0000-000000000000\", \"user\": {\"email\": \"alex@example.com\", \"name\": \"Alex Host\", \"username\": \"alex-host\", \"timeZone\": \"Europe/Berlin\", \"locale\": null, \"uuid\": \"00000000-0000-0000-0000-000000000000\", \"isPlatformManaged\": false}, \"eventType\": {\"bookingFields\": null, \"team\": {\"logoUrl\": \"/api/avatar/00000000-0000-0000-0000-000000000000.png\", \"parent\": null}}, \"attendees\": [{\"id\": 23045095, \"name\": \"Sam Attendee\", \"email\": \"sam@example.com\", \"timeZone\": \"Europe/Madrid\", \"locale\": \"es\", \"phoneNumber\": null, \"bookingId\": 19200781, \"noShow\": false}], \"payment\": [], \"references\": [{\"id\": 29890651, \"type\": \"google_calendar\", \"uid\": \"_dsolaebbe16ksma3coqj8kpjf9bl0tj4clqk0gr1dgn66rrd\", \"meetingId\": \"_dsolaebbe16ksma3coqj8kpjf9bl0tj4clqk0gr1dgn66rrd\", \"meetingUrl\": \"https://meet.google.com/xxx-xxxx-xxx\", \"bookingId\": 19200781}, {\"id\": 29890652, \"type\": \"hubspot_crm\", \"uid\": \"490069188848\", \"meetingId\": \"490069188848\", \"meetingUrl\": null, \"bookingId\": 19200781}, {\"id\": 29890653, \"type\": \"google_meet_video\", \"uid\": \"o1U9kpMNYCf54S3zWPvdeu\", \"meetingId\": null, \"meetingUrl\": \"https://meet.google.com/xxx-xxxx-xxx\", \"bookingId\": 19200781}], \"userFieldsResponses\": {}, \"userUuid\": \"64245a20-fc5a-4b3d-b44b-4f2b6e20c8bd\", \"appsStatus\": [{\"appName\": \"Google Calendar\", \"type\": \"google_calendar\", \"success\": 1, \"failures\": 0, \"errors\": []}, {\"appName\": \"HubSpot CRM\", \"type\": \"hubspot_crm\", \"success\": 1, \"failures\": 0, \"errors\": []}, {\"appName\": \"Google Meet\", \"type\": \"google_meet_video\", \"success\": 1, \"failures\": 0, \"errors\": []}]}"
+  "triggerEvent": "MEETING_STARTED",
+  "id": 19200781,
+  "uid": "o1U9kpMNYCf54S3zWPvdeu",
+  "title": "dltHub exploration between Alex Host and Sam Attendee",
+  "description": "",
+  "customInputs": [],
+  "responses": {
+    "name": {
+      "label": "name",
+      "value": "Sam Attendee"
+    },
+    "email": {
+      "label": "email",
+      "value": "sam@example.com"
+    },
+    "guests": {
+      "label": "guests",
+      "value": []
+    },
+    "location": {
+      "label": "location",
+      "value": {
+        "value": "conferencing",
+        "optionValue": ""
+      }
+    }
+  },
+  "startTime": "2026-05-08T07:30:00.000Z",
+  "endTime": "2026-05-08T08:00:00.000Z",
+  "location": "integrations:google:meet",
+  "status": "ACCEPTED",
+  "paid": false,
+  "createdAt": "2026-05-05T16:09:57.081Z",
+  "updatedAt": "2026-05-05T16:10:02.655Z",
+  "userId": 2182255,
+  "userPrimaryEmail": "alex@example.com",
+  "eventTypeId": 4774128,
+  "destinationCalendarId": 1129581,
+  "cancellationReason": null,
+  "rejectionReason": null,
+  "reassignReason": null,
+  "reassignById": null,
+  "dynamicEventSlugRef": null,
+  "dynamicGroupSlugRef": null,
+  "rescheduled": null,
+  "fromReschedule": null,
+  "recurringEventId": null,
+  "smsReminderNumber": null,
+  "scheduledJobs": [],
+  "metadata": {
+    "videoCallUrl": "https://meet.google.com/xxx-xxxx-xxx"
+  },
+  "isRecorded": false,
+  "iCalUID": "o1U9kpMNYCf54S3zWPvdeu@Cal.com",
+  "iCalSequence": 0,
+  "rating": null,
+  "ratingFeedback": null,
+  "noShowHost": false,
+  "cancelledBy": null,
+  "rescheduledBy": null,
+  "creationSource": "WEBAPP",
+  "idempotencyKey": "00000000-0000-0000-0000-000000000000",
+  "user": {
+    "email": "alex@example.com",
+    "name": "Alex Host",
+    "username": "alex-host",
+    "timeZone": "Europe/Berlin",
+    "locale": null,
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "isPlatformManaged": false
+  },
+  "eventType": {
+    "bookingFields": null,
+    "team": {
+      "logoUrl": "/api/avatar/00000000-0000-0000-0000-000000000000.png",
+      "parent": null
+    }
+  },
+  "attendees": [
+    {
+      "id": 23045095,
+      "name": "Sam Attendee",
+      "email": "sam@example.com",
+      "timeZone": "Europe/Madrid",
+      "locale": "es",
+      "phoneNumber": null,
+      "bookingId": 19200781,
+      "noShow": false
+    }
+  ],
+  "payment": [],
+  "references": [
+    {
+      "id": 29890651,
+      "type": "google_calendar",
+      "uid": "_dsolaebbe16ksma3coqj8kpjf9bl0tj4clqk0gr1dgn66rrd",
+      "meetingId": "_dsolaebbe16ksma3coqj8kpjf9bl0tj4clqk0gr1dgn66rrd",
+      "meetingUrl": "https://meet.google.com/xxx-xxxx-xxx",
+      "bookingId": 19200781
+    },
+    {
+      "id": 29890652,
+      "type": "hubspot_crm",
+      "uid": "490069188848",
+      "meetingId": "490069188848",
+      "meetingUrl": null,
+      "bookingId": 19200781
+    },
+    {
+      "id": 29890653,
+      "type": "google_meet_video",
+      "uid": "o1U9kpMNYCf54S3zWPvdeu",
+      "meetingId": null,
+      "meetingUrl": "https://meet.google.com/xxx-xxxx-xxx",
+      "bookingId": 19200781
+    }
+  ],
+  "userFieldsResponses": {},
+  "userUuid": "64245a20-fc5a-4b3d-b44b-4f2b6e20c8bd",
+  "appsStatus": [
+    {
+      "appName": "Google Calendar",
+      "type": "google_calendar",
+      "success": 1,
+      "failures": 0,
+      "errors": []
+    },
+    {
+      "appName": "HubSpot CRM",
+      "type": "hubspot_crm",
+      "success": 1,
+      "failures": 0,
+      "errors": []
+    },
+    {
+      "appName": "Google Meet",
+      "type": "google_meet_video",
+      "success": 1,
+      "failures": 0,
+      "errors": []
+    }
+  ]
 }

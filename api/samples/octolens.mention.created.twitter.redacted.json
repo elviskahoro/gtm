@@ -1,3 +1,33 @@
 {
-  "body": "{\"action\": \"mention_created\", \"data\": {\"title\": \"\", \"body\": \"redacted\", \"url\": \"https://twitter.com/TwitterUser/status/0000000000000000000\", \"timestamp\": \"2026-05-10 11:00:00.000\", \"imageUrl\": \"https://pbs.twimg.com/media/REDACTED.jpg\", \"author\": \"TwitterUser\", \"authorProfileLink\": \"https://twitter.com/TwitterUser\", \"source\": \"twitter\", \"sourceId\": \"0000000000000000000\", \"relevanceScore\": \"medium\", \"relevanceComment\": \"redacted\", \"keyword\": \"example_keyword\", \"keywords\": [\"example_keyword\"], \"language\": \"english\", \"sentimentLabel\": \"Neutral\", \"tags\": [\"competitor_mention\", \"industry_insights\"], \"viewId\": 16485, \"viewName\": \"Webhook\", \"viewKeywords\": [\"example_keyword_1\", \"example_keyword_2\", \"example_keyword_3\"]}}"
+  "action": "mention_created",
+  "data": {
+    "title": "",
+    "body": "redacted",
+    "url": "https://twitter.com/TwitterUser/status/0000000000000000000",
+    "timestamp": "2026-05-10 11:00:00.000",
+    "imageUrl": "https://pbs.twimg.com/media/REDACTED.jpg",
+    "author": "TwitterUser",
+    "authorProfileLink": "https://twitter.com/TwitterUser",
+    "source": "twitter",
+    "sourceId": "0000000000000000000",
+    "relevanceScore": "medium",
+    "relevanceComment": "redacted",
+    "keyword": "example_keyword",
+    "keywords": [
+      "example_keyword"
+    ],
+    "language": "english",
+    "sentimentLabel": "Neutral",
+    "tags": [
+      "competitor_mention",
+      "industry_insights"
+    ],
+    "viewId": 16485,
+    "viewName": "Webhook",
+    "viewKeywords": [
+      "example_keyword_1",
+      "example_keyword_2",
+      "example_keyword_3"
+    ]
+  }
 }

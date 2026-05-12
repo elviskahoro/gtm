@@ -1,3 +1,33 @@
 {
-  "body": "{\"action\": \"mention_created\", \"data\": {\"title\": \"\", \"body\": \"redacted\", \"url\": \"https://news.ycombinator.com/item?id=00000000\", \"timestamp\": \"2026-05-10 11:13:52.000\", \"imageUrl\": \"\", \"author\": \"hn_user\", \"authorProfileLink\": \"https://news.ycombinator.com/user?id=hn_user\", \"source\": \"hackernews\", \"sourceId\": \"00000000\", \"relevanceScore\": \"medium\", \"relevanceComment\": \"redacted\", \"keyword\": \"example_keyword\", \"keywords\": [\"example_keyword\"], \"language\": \"english\", \"sentimentLabel\": \"Neutral\", \"tags\": [\"hiring\", \"competitor_mention\"], \"viewId\": 16485, \"viewName\": \"Webhook\", \"viewKeywords\": [\"example_keyword_1\", \"example_keyword_2\", \"example_keyword_3\"]}}"
+  "action": "mention_created",
+  "data": {
+    "title": "",
+    "body": "redacted",
+    "url": "https://news.ycombinator.com/item?id=00000000",
+    "timestamp": "2026-05-10 11:13:52.000",
+    "imageUrl": "",
+    "author": "hn_user",
+    "authorProfileLink": "https://news.ycombinator.com/user?id=hn_user",
+    "source": "hackernews",
+    "sourceId": "00000000",
+    "relevanceScore": "medium",
+    "relevanceComment": "redacted",
+    "keyword": "example_keyword",
+    "keywords": [
+      "example_keyword"
+    ],
+    "language": "english",
+    "sentimentLabel": "Neutral",
+    "tags": [
+      "hiring",
+      "competitor_mention"
+    ],
+    "viewId": 16485,
+    "viewName": "Webhook",
+    "viewKeywords": [
+      "example_keyword_1",
+      "example_keyword_2",
+      "example_keyword_3"
+    ]
+  }
 }

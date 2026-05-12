@@ -1,3 +1,44 @@
 {
-  "body": "{\"triggerEvent\": \"BOOKING_CREATED\", \"createdAt\": \"2026-05-11T14:35:32.526Z\", \"payload\": {\"bookerUrl\": \"https://cal.com\", \"title\": \"consulting-partner between Alex Host and Sam Attendee\", \"startTime\": \"2026-05-13T12:00:00.000Z\", \"endTime\": \"2026-05-13T12:30:00.000Z\", \"additionalNotes\": \"\", \"type\": \"consulting-partner\", \"description\": \"\", \"eventTypeId\": 5296949, \"hideCalendarNotes\": false, \"hideCalendarEventDetails\": false, \"hideOrganizerEmail\": false, \"schedulingType\": \"ROUND_ROBIN\", \"seatsPerTimeSlot\": null, \"seatsShowAttendees\": true, \"seatsShowAvailabilityCount\": true, \"customReplyToEmail\": null, \"disableRescheduling\": false, \"disableReschedulingScope\": \"HOST_AND_ATTENDEE\", \"disableCancelling\": false, \"disableCancellingScope\": \"HOST_AND_ATTENDEE\", \"organizer\": {\"id\": 2158525, \"name\": \"Alex Host\", \"email\": \"alex@example.com\", \"username\": \"alex-host\", \"timeZone\": \"Europe/Berlin\", \"language\": {\"locale\": \"en\"}, \"timeFormat\": \"h:mma\", \"utcOffset\": 120}, \"attendees\": [{\"name\": \"Sam Attendee\", \"email\": \"sam@example.com\", \"timeZone\": \"Europe/Berlin\", \"language\": {\"locale\": \"en\"}, \"phoneNumber\": null, \"bookingSeat\": null, \"utcOffset\": 120, \"firstName\": \"Sam\", \"lastName\": \"Attendee\"}], \"customInputs\": {}, \"responses\": {\"name\": {\"label\": \"your_name\", \"value\": \"Sam Attendee\"}, \"email\": {\"label\": \"email_address\", \"value\": \"sam@example.com\"}, \"guests\": {\"label\": \"guests\", \"value\": []}, \"location\": {\"label\": \"location\", \"value\": {\"value\": \"conferencing\", \"optionValue\": \"\"}}}, \"userFieldsResponses\": {}, \"location\": \"integrations:google:meet\", \"iCalUID\": \"1Dz9kiTdgYG4z65Jemdg2N@Cal.com\", \"iCalSequence\": 0, \"requiresConfirmation\": false, \"oneTimePassword\": null, \"platformClientId\": \"\", \"platformRescheduleUrl\": \"\", \"platformCancelUrl\": \"\", \"platformBookingUrl\": \"\", \"uid\": \"1Dz9kiTdgYG4z65Jemdg2N\", \"organizationId\": null, \"hashedLink\": null, \"cancellationReason\": null, \"rejectionReason\": null, \"hideBranding\": true, \"videoCallData\": {\"type\": \"google_meet_video\", \"id\": \"\", \"password\": \"\", \"url\": \"https://meet.google.com/xxx-xxxx-xxx\"}, \"appsStatus\": [{\"appName\": \"Google Calendar\", \"type\": \"google_calendar\", \"success\": 1, \"failures\": 0, \"errors\": []}, {\"appName\": \"Google Meet\", \"type\": \"google_meet_video\", \"success\": 1, \"failures\": 0, \"errors\": []}], \"team\": {\"id\": 170425, \"name\": \"dltHub\", \"members\": []}, \"destinationCalendar\": [{\"id\": 1171498, \"integration\": \"google_calendar\", \"externalId\": \"alex@example.com\", \"primaryEmail\": \"alex@example.com\", \"userId\": 2158525, \"credentialId\": 1869251}, {\"id\": 1171498, \"integration\": \"google_calendar\", \"externalId\": \"alex@example.com\", \"primaryEmail\": \"alex@example.com\", \"userId\": 2158525, \"credentialId\": 1869251}], \"bookingId\": 19438294, \"status\": \"ACCEPTED\", \"eventTitle\": \"consulting-partner\", \"eventDescription\": \"\", \"price\": 0, \"currency\": \"usd\", \"length\": 30, \"assignmentReason\": [], \"metadata\": {\"videoCallUrl\": \"https://meet.google.com/xxx-xxxx-xxx\"}}}"
+  "triggerEvent": "BOOKING_CREATED",
+  "createdAt": "2026-05-12T14:00:00.000Z",
+  "payload": {
+    "id": 99999,
+    "uid": "calcom-booking-abc123",
+    "title": "Discovery call",
+    "description": "Intro call about dlthub",
+    "additionalNotes": "Customer would like to discuss pricing.",
+    "status": "accepted",
+    "start": "2026-05-20T15:00:00.000Z",
+    "end": "2026-05-20T15:30:00.000Z",
+    "duration": 30,
+    "eventType": {
+      "id": 1234,
+      "slug": "30min"
+    },
+    "location": "https://meet.google.com/abc-defg-hij",
+    "absentHost": false,
+    "createdAt": "2026-05-12T14:00:00.000Z",
+    "updatedAt": "2026-05-12T14:00:00.000Z",
+    "hosts": [
+      {
+        "id": 1,
+        "name": "Host Person",
+        "email": "host@dlthub.com",
+        "displayEmail": "host@dlthub.com",
+        "username": "host",
+        "timeZone": "UTC"
+      }
+    ],
+    "attendees": [
+      {
+        "name": "External Person",
+        "email": "external@example.com",
+        "displayEmail": "external@example.com",
+        "timeZone": "America/Los_Angeles",
+        "absent": false
+      }
+    ],
+    "bookingFieldsResponses": {},
+    "icsUid": "ical-evt-abc123@cal.com"
+  }
 }

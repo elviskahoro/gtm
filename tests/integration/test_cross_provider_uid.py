@@ -8,8 +8,8 @@ from src.attio.ops import UpsertMeeting
 from src.caldotcom.webhook.booking import Webhook as CalcomBookingWebhook
 from src.fathom.webhook.call import Webhook as FathomCallWebhook
 
-CALCOM_FIXTURE = Path("api/samples/caldotcom/booking/redacted.json")
-FATHOM_FIXTURE = Path("api/samples/fathom/call/redacted.json")
+CALCOM_FIXTURE = Path("api/samples/caldotcom.booking.created.redacted.json")
+FATHOM_FIXTURE = Path("api/samples/fathom.recording.redacted.json")
 
 HOST_EMAIL = "host@dlthub.com"
 SHARED_START = "2026-06-01T15:00:00.000Z"

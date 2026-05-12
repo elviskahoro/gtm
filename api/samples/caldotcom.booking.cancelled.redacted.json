@@ -1,3 +1,147 @@
 {
-  "body": "{\"triggerEvent\": \"BOOKING_CANCELLED\", \"createdAt\": \"2026-05-05T10:11:56.683Z\", \"payload\": {\"bookerUrl\": \"https://cal.com\", \"title\": \"dltHub exploration between Alex Host and Alex Host\", \"startTime\": \"2026-05-06T10:30:00.000Z\", \"endTime\": \"2026-05-06T11:00:00.000Z\", \"additionalNotes\": \"\", \"type\": \"dlthub-exploration\", \"description\": \"\", \"eventTypeId\": 4774128, \"hideCalendarNotes\": false, \"hideCalendarEventDetails\": false, \"hideOrganizerEmail\": false, \"schedulingType\": \"ROUND_ROBIN\", \"seatsPerTimeSlot\": null, \"seatsShowAttendees\": true, \"seatsShowAvailabilityCount\": true, \"customReplyToEmail\": null, \"disableRescheduling\": false, \"disableReschedulingScope\": \"HOST_AND_ATTENDEE\", \"disableCancelling\": false, \"disableCancellingScope\": \"HOST_AND_ATTENDEE\", \"organizer\": {\"id\": 2182255, \"name\": \"Alex Host\", \"email\": \"alex@example.com\", \"username\": \"alex-host\", \"timeZone\": \"Europe/Berlin\", \"language\": {\"locale\": \"en\"}, \"timeFormat\": \"h:mma\", \"utcOffset\": 120}, \"attendees\": [{\"name\": \"Alex Host\", \"email\": \"sam@example.com\", \"timeZone\": \"Europe/Berlin\", \"language\": {\"locale\": \"en\"}, \"phoneNumber\": null, \"bookingSeat\": null, \"utcOffset\": 120, \"firstName\": \"Alex\", \"lastName\": \"Host\"}], \"customInputs\": {}, \"responses\": {\"name\": {\"label\": \"your_name\", \"value\": \"Alex Host\"}, \"email\": {\"label\": \"email_address\", \"value\": \"sam@example.com\"}}, \"userFieldsResponses\": {}, \"location\": \"integrations:google:meet\", \"iCalUID\": \"7NTwtb1h8SnDMGJbGWNVXg@Cal.com\", \"iCalSequence\": 1, \"requiresConfirmation\": true, \"oneTimePassword\": null, \"platformClientId\": \"\", \"platformRescheduleUrl\": \"\", \"platformCancelUrl\": \"\", \"platformBookingUrl\": \"\", \"uid\": \"7NTwtb1h8SnDMGJbGWNVXg\", \"organizationId\": null, \"hashedLink\": null, \"cancellationReason\": \"redacted\", \"rejectionReason\": null, \"hideBranding\": true, \"videoCallData\": {\"type\": \"google_meet_video\", \"id\": \"\", \"password\": \"\", \"url\": \"https://meet.google.com/xxx-xxxx-xxx\"}, \"appsStatus\": [{\"appName\": \"Google Calendar\", \"type\": \"google_calendar\", \"success\": 1, \"failures\": 0, \"errors\": []}, {\"appName\": \"HubSpot CRM\", \"type\": \"hubspot_crm\", \"success\": 1, \"failures\": 0, \"errors\": []}, {\"appName\": \"Google Meet\", \"type\": \"google_meet_video\", \"success\": 1, \"failures\": 0, \"errors\": []}], \"team\": {\"id\": 170425, \"name\": \"dltHub\", \"members\": []}, \"destinationCalendar\": [{\"id\": 1129581, \"integration\": \"google_calendar\", \"externalId\": \"alex@example.com\", \"primaryEmail\": \"alex@example.com\", \"userId\": 2182255, \"credentialId\": 1795515}, {\"id\": 1129581, \"integration\": \"google_calendar\", \"externalId\": \"alex@example.com\", \"primaryEmail\": \"alex@example.com\", \"userId\": 2182255, \"credentialId\": 1795515}], \"bookingId\": 19182078, \"status\": \"CANCELLED\", \"eventTitle\": \"dltHub exploration\", \"eventDescription\": \"\", \"price\": 0, \"currency\": \"usd\", \"length\": 30, \"assignmentReason\": [], \"cancelledBy\": \"alex@example.com\", \"requestReschedule\": false, \"metadata\": {\"source\": \"website\", \"company\": \"Example Co\", \"videoCallUrl\": \"https://meet.google.com/xxx-xxxx-xxx\"}}}"
+  "triggerEvent": "BOOKING_CANCELLED",
+  "createdAt": "2026-05-05T10:11:56.683Z",
+  "payload": {
+    "bookerUrl": "https://cal.com",
+    "title": "dltHub exploration between Alex Host and Alex Host",
+    "startTime": "2026-05-06T10:30:00.000Z",
+    "endTime": "2026-05-06T11:00:00.000Z",
+    "additionalNotes": "",
+    "type": "dlthub-exploration",
+    "description": "",
+    "eventTypeId": 4774128,
+    "hideCalendarNotes": false,
+    "hideCalendarEventDetails": false,
+    "hideOrganizerEmail": false,
+    "schedulingType": "ROUND_ROBIN",
+    "seatsPerTimeSlot": null,
+    "seatsShowAttendees": true,
+    "seatsShowAvailabilityCount": true,
+    "customReplyToEmail": null,
+    "disableRescheduling": false,
+    "disableReschedulingScope": "HOST_AND_ATTENDEE",
+    "disableCancelling": false,
+    "disableCancellingScope": "HOST_AND_ATTENDEE",
+    "organizer": {
+      "id": 2182255,
+      "name": "Alex Host",
+      "email": "alex@example.com",
+      "username": "alex-host",
+      "timeZone": "Europe/Berlin",
+      "language": {
+        "locale": "en"
+      },
+      "timeFormat": "h:mma",
+      "utcOffset": 120
+    },
+    "attendees": [
+      {
+        "name": "Alex Host",
+        "email": "sam@example.com",
+        "timeZone": "Europe/Berlin",
+        "language": {
+          "locale": "en"
+        },
+        "phoneNumber": null,
+        "bookingSeat": null,
+        "utcOffset": 120,
+        "firstName": "Alex",
+        "lastName": "Host"
+      }
+    ],
+    "customInputs": {},
+    "responses": {
+      "name": {
+        "label": "your_name",
+        "value": "Alex Host"
+      },
+      "email": {
+        "label": "email_address",
+        "value": "sam@example.com"
+      }
+    },
+    "userFieldsResponses": {},
+    "location": "integrations:google:meet",
+    "iCalUID": "7NTwtb1h8SnDMGJbGWNVXg@Cal.com",
+    "iCalSequence": 1,
+    "requiresConfirmation": true,
+    "oneTimePassword": null,
+    "platformClientId": "",
+    "platformRescheduleUrl": "",
+    "platformCancelUrl": "",
+    "platformBookingUrl": "",
+    "uid": "7NTwtb1h8SnDMGJbGWNVXg",
+    "organizationId": null,
+    "hashedLink": null,
+    "cancellationReason": "redacted",
+    "rejectionReason": null,
+    "hideBranding": true,
+    "videoCallData": {
+      "type": "google_meet_video",
+      "id": "",
+      "password": "",
+      "url": "https://meet.google.com/xxx-xxxx-xxx"
+    },
+    "appsStatus": [
+      {
+        "appName": "Google Calendar",
+        "type": "google_calendar",
+        "success": 1,
+        "failures": 0,
+        "errors": []
+      },
+      {
+        "appName": "HubSpot CRM",
+        "type": "hubspot_crm",
+        "success": 1,
+        "failures": 0,
+        "errors": []
+      },
+      {
+        "appName": "Google Meet",
+        "type": "google_meet_video",
+        "success": 1,
+        "failures": 0,
+        "errors": []
+      }
+    ],
+    "team": {
+      "id": 170425,
+      "name": "dltHub",
+      "members": []
+    },
+    "destinationCalendar": [
+      {
+        "id": 1129581,
+        "integration": "google_calendar",
+        "externalId": "alex@example.com",
+        "primaryEmail": "alex@example.com",
+        "userId": 2182255,
+        "credentialId": 1795515
+      },
+      {
+        "id": 1129581,
+        "integration": "google_calendar",
+        "externalId": "alex@example.com",
+        "primaryEmail": "alex@example.com",
+        "userId": 2182255,
+        "credentialId": 1795515
+      }
+    ],
+    "bookingId": 19182078,
+    "status": "CANCELLED",
+    "eventTitle": "dltHub exploration",
+    "eventDescription": "",
+    "price": 0,
+    "currency": "usd",
+    "length": 30,
+    "assignmentReason": [],
+    "cancelledBy": "alex@example.com",
+    "requestReschedule": false,
+    "metadata": {
+      "source": "website",
+      "company": "Example Co",
+      "videoCallUrl": "https://meet.google.com/xxx-xxxx-xxx"
+    }
+  }
 }

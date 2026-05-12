@@ -1,3 +1,15 @@
 {
-  "body": "{\"triggerEvent\": \"BOOKING_NO_SHOW_UPDATED\", \"createdAt\": \"2026-05-11T07:43:44.114Z\", \"payload\": {\"bookingUid\": \"wjvt1yoCAGK6KmaLnmszng\", \"bookingId\": 19237249, \"attendees\": [{\"email\": \"sam@example.com\", \"noShow\": true}], \"message\": \"sam@example.com marked as no-show\"}}"
+  "triggerEvent": "BOOKING_NO_SHOW_UPDATED",
+  "createdAt": "2026-05-11T07:43:44.114Z",
+  "payload": {
+    "bookingUid": "wjvt1yoCAGK6KmaLnmszng",
+    "bookingId": 19237249,
+    "attendees": [
+      {
+        "email": "sam@example.com",
+        "noShow": true
+      }
+    ],
+    "message": "sam@example.com marked as no-show"
+  }
 }

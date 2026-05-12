@@ -9,7 +9,7 @@ from libs.meetings import canonical_meeting_uid
 from src.attio.ops import MeetingExternalRef, UpsertMeeting
 from src.fathom.webhook.call import Webhook
 
-FIXTURE = Path("api/samples/fathom/call/redacted.json")
+FIXTURE = Path("api/samples/fathom.recording.redacted.json")
 
 
 def _load() -> Webhook:
