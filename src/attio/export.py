@@ -13,7 +13,7 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Any
 
-from libs.attio.contracts import ReliabilityEnvelope
+from libs.attio.contracts import ErrorEntry, ReliabilityEnvelope
 from libs.attio.meetings import find_or_create_meeting
 from libs.attio.models import (
     MeetingExternalRef as LibMeetingExternalRef,
@@ -21,8 +21,10 @@ from libs.attio.models import (
 from libs.attio.models import (
     MeetingInput,
     MeetingParticipantInput,
+    NoteInput,
     PersonInput,
 )
+from libs.attio.notes import add_note as libs_add_note
 from libs.attio.people import upsert_person as libs_upsert_person
 from src.attio.ops import (
     AddNote,
@@ -187,12 +189,58 @@ def _handle_upsert_meeting(
     )
 
 
+_REF_KIND_TO_PARENT_OBJECT: dict[str, str] = {
+    "person": "people",
+    "company": "companies",
+    "meeting": "meetings",
+}
+
+
 def _handle_add_note(
     op: AddNote,
     table: LookupTable,
 ) -> ReliabilityEnvelope:
-    raise NotImplementedError(
-        "Pass 3 task: wire libs/attio/notes.add_note with ref resolution.",
+    parent_record_id = table.resolve(op.parent)
+    if parent_record_id is None:
+        return ReliabilityEnvelope(
+            success=False,
+            partial_success=False,
+            action="failed",
+            record_id=None,
+            errors=[
+                ErrorEntry(
+                    code="unresolved_ref",
+                    message=(
+                        f"could not resolve {op.parent.ref_kind}:"
+                        f"{op.parent.model_dump()}"
+                    ),
+                    error_type="UnresolvedRefError",
+                    fatal=True,
+                ),
+            ],
+            warnings=[],
+            skipped_fields=[],
+            meta={"output_schema_version": "v1"},
+        )
+
+    parent_object = _REF_KIND_TO_PARENT_OBJECT[op.parent.ref_kind]
+    result = libs_add_note(
+        NoteInput(
+            title=op.title,
+            content=op.content,
+            parent_object=parent_object,
+            parent_record_id=parent_record_id,
+        ),
+    )
+    return ReliabilityEnvelope(
+        success=True,
+        partial_success=False,
+        action="created",
+        record_id=result.note_id,
+        errors=[],
+        warnings=[],
+        skipped_fields=[],
+        meta={"output_schema_version": "v1"},
     )
 
 

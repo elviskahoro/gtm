@@ -61,3 +61,27 @@ class Webhook(OctolensWebhook):
     def etl_get_base_models(self, storage: Any) -> list[Any]:
         del storage
         raise NotImplementedError("LanceDB integration is Phase 2+")
+
+    # --- Attio export contract ---
+
+    @staticmethod
+    def attio_get_secret_collection_names() -> list[str]:
+        return ["attio"]
+
+    def attio_is_valid_webhook(self) -> bool:
+        # Octolens mentions ship a platform-specific `author` username (Reddit,
+        # Twitter, etc.) and an `author_profile_link`, but no email or company
+        # domain — we cannot resolve a parent person/company without one of
+        # those. Return False here so the webhook gracefully no-ops in Attio
+        # while the rest of the export protocol stays uniform. A future change
+        # could add LinkedIn-URL → Person resolution and flip this on.
+        return False
+
+    def attio_get_invalid_webhook_error_msg(self) -> str:
+        return (
+            "Octolens mentions do not currently map to Attio: no resolvable "
+            "parent (no email or company domain on mention)."
+        )
+
+    def attio_get_operations(self) -> list[Any]:
+        return []

@@ -173,6 +173,108 @@ def test_execution_result_body_success(monkeypatch) -> None:
     assert "fail_index" not in body
 
 
+def test_handle_add_note_happy_path(monkeypatch) -> None:
+    from src.attio.export import OP_HANDLERS
+
+    _handle_add_note = OP_HANDLERS[AddNote]
+
+    person_op = UpsertPerson(email="a@example.com")
+    table = LookupTable()
+    table.record(person_op, "person-rec-1")
+
+    fake_result = MagicMock()
+    fake_result.note_id = "note-1"
+    add_note_mock = MagicMock(return_value=fake_result)
+    monkeypatch.setattr("src.attio.export.libs_add_note", add_note_mock)
+
+    envelope = _handle_add_note(
+        AddNote(
+            parent=PersonRef(email="a@example.com"),
+            title="hi",
+            content="body",
+        ),
+        table,
+    )
+
+    assert envelope.success is True
+    assert envelope.record_id == "note-1"
+    assert envelope.action == "created"
+    call_input = add_note_mock.call_args.args[0]
+    assert call_input.parent_object == "people"
+    assert call_input.parent_record_id == "person-rec-1"
+    assert call_input.title == "hi"
+    assert call_input.content == "body"
+
+
+def test_handle_add_note_maps_ref_kind_to_parent_object(monkeypatch) -> None:
+    from src.attio.export import OP_HANDLERS
+
+    _handle_add_note = OP_HANDLERS[AddNote]
+
+    company_op = UpsertCompany(domain="example.com")
+    meeting_op = _meeting("fathom-call-7")
+    table = LookupTable()
+    table.record(company_op, "company-rec-1")
+    table.record(meeting_op, "meet-rec-7")
+
+    fake_result = MagicMock()
+    fake_result.note_id = "note-x"
+    add_note_mock = MagicMock(return_value=fake_result)
+    monkeypatch.setattr("src.attio.export.libs_add_note", add_note_mock)
+
+    _handle_add_note(
+        AddNote(
+            parent=MeetingRef(ical_uid="fathom-call-7"),
+            title="m",
+            content="c",
+        ),
+        table,
+    )
+    assert add_note_mock.call_args.args[0].parent_object == "meetings"
+    assert add_note_mock.call_args.args[0].parent_record_id == "meet-rec-7"
+
+    from src.attio.ops import CompanyRef
+
+    _handle_add_note(
+        AddNote(
+            parent=CompanyRef(domain="example.com"),
+            title="m",
+            content="c",
+        ),
+        table,
+    )
+    assert add_note_mock.call_args.args[0].parent_object == "companies"
+    assert add_note_mock.call_args.args[0].parent_record_id == "company-rec-1"
+
+
+def test_handle_add_note_unresolved_ref_returns_failed_envelope(monkeypatch) -> None:
+    from src.attio.export import OP_HANDLERS
+
+    _handle_add_note = OP_HANDLERS[AddNote]
+
+    add_note_mock = MagicMock()
+    monkeypatch.setattr("src.attio.export.libs_add_note", add_note_mock)
+
+    envelope = _handle_add_note(
+        AddNote(
+            parent=PersonRef(email="missing@example.com"),
+            title="hi",
+            content="body",
+        ),
+        LookupTable(),
+    )
+
+    assert envelope.success is False
+    assert envelope.action == "failed"
+    assert envelope.record_id is None
+    assert len(envelope.errors) == 1
+    err = envelope.errors[0]
+    assert err.code == "unresolved_ref"
+    assert err.error_type == "UnresolvedRefError"
+    assert err.fatal is True
+    add_note_mock.assert_not_called()
+
+
 def test_execution_result_body_failure(monkeypatch) -> None:
     import orjson
 
