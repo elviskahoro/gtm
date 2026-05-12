@@ -2,18 +2,6 @@
 
 ## Unreleased
 
-### Changed
-
-- **Cal.com + Fathom now share a synthetic `ical_uid`.** Both webhooks compute
-  `dlt-mtg-<sha1>` from `host_email + UTC start minute` via the new
-  `libs/meetings.canonical_meeting_uid` helper, so a meeting booked in Cal.com
-  and recorded by Fathom collapses to one Attio meeting record (Attio dedupes
-  on `external_ref.ical_uid`). Cal.com's `icsUid` is no longer used as the
-  identity key (Fathom can't see it, so it would re-introduce duplicates).
-  Fathom-only ad-hoc calls still land cleanly. Known v1 limits: reschedules
-  produce a new hash (Cal.com fires `BOOKING_RESCHEDULED` — handled by a
-  follow-up), and a Cal.com host vs. Fathom recorder mismatch diverges.
-
 ### Added
 
 - **`webhooks/export_to_attio.py` — standalone Modal webhook** that converts a
