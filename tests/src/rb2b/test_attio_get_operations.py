@@ -7,7 +7,7 @@ import orjson
 from src.attio.ops import UpsertCompany, UpsertPerson
 from src.rb2b.webhook.visit import Webhook, extract_domain
 
-FIXTURE = Path("api/samples/rb2b/visit/redacted.json")
+FIXTURE = Path("api/samples/hookdeck.event.redacted.json")
 
 
 def _load() -> Webhook:
