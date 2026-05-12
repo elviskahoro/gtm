@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field

@@ -17,7 +17,7 @@ def test_company_add_http_returns_structured_409_on_conflict(monkeypatch) -> Non
 
     monkeypatch.setattr(modal_companies.attio_add_company, "remote", _raise_conflict)
 
-    fn = cast(modal.Function, modal_companies.attio_company_add_http)
+    fn = cast(modal.Function, modal_companies.attio_company_add_http)  # type: ignore
     response = fn.local(
         modal_companies.CompanyAddQuery(
             name="Acme",
@@ -41,7 +41,7 @@ def test_note_update_http_infers_401_from_error_message(monkeypatch) -> None:
 
     monkeypatch.setattr(modal_notes.attio_update_note, "remote", _raise_auth)
 
-    fn = cast(modal.Function, modal_notes.attio_note_update_http)
+    fn = cast(modal.Function, modal_notes.attio_note_update_http)  # type: ignore
     response = fn.local(
         modal_notes.NoteUpdateQuery(
             note_id="note_123",
@@ -81,7 +81,7 @@ def test_person_add_http_returns_non_2xx_when_envelope_failed(monkeypatch) -> No
 
     monkeypatch.setattr(modal_people.attio_add_person, "remote", _failed_envelope)
 
-    fn = cast(modal.Function, modal_people.attio_person_add_http)
+    fn = cast(modal.Function, modal_people.attio_person_add_http)  # type: ignore
     response = fn.local(
         modal_people.PersonAddQuery(
             email="a@example.com",

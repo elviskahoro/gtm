@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 from typing import Any
 
 import modal
@@ -80,7 +79,6 @@ class NoteUpdateQuery(BaseModel):
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_note_add_http(query: NoteAddQuery) -> Any:
     try:
-        # trunk-ignore(pyright/reportFunctionMemberAccess)
         result = attio_add_note.remote(
             payload=query.model_dump(),
         )
@@ -94,7 +92,6 @@ def attio_note_add_http(query: NoteAddQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_note_update_http(query: NoteUpdateQuery) -> Any:
     try:
-        # trunk-ignore(pyright/reportFunctionMemberAccess)
         result = attio_update_note.remote(
             payload=query.model_dump(),
         )

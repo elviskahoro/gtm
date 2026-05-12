@@ -22,7 +22,6 @@ app = typer.Typer(help="Enrich records from LinkedIn via Harvest API.")
 logger = logging.getLogger(__name__)
 
 
-# trunk-ignore(pyright/reportUntypedFunctionDecorator)
 @app.command()
 def fetch(
     config_path: Path = typer.Option(
@@ -141,7 +140,6 @@ def fetch(
     typer.echo(f"📝 Output written to: {output_file}")
 
 
-# trunk-ignore(pyright/reportUntypedFunctionDecorator)
 @app.command()
 def upsert(
     enriched_file: Path = typer.Option(

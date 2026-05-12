@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 from typing import Any
 
 import modal
@@ -128,7 +127,6 @@ class CompanyCreateAttributeQuery(BaseModel):
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_company_add_http(query: CompanyAddQuery) -> Any:
     try:
-        # trunk-ignore(pyright/reportFunctionMemberAccess)
         result = attio_add_company.remote(
             payload=query.model_dump(),
         )
@@ -143,7 +141,6 @@ def attio_company_add_http(query: CompanyAddQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_companies_search_http(query: CompanySearchQuery) -> Any:
     try:
-        # trunk-ignore(pyright/reportFunctionMemberAccess)
         results = attio_search_companies.remote(
             payload=query.model_dump(),
         )
@@ -158,7 +155,6 @@ def attio_companies_search_http(query: CompanySearchQuery) -> Any:
 @modal.fastapi_endpoint(method="POST", docs=True)
 def attio_company_update_http(query: CompanyUpdateQuery) -> Any:
     try:
-        # trunk-ignore(pyright/reportFunctionMemberAccess)
         result = attio_update_company.remote(
             payload=query.model_dump(),
         )

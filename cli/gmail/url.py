@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 """Decode Gmail web URLs to API-usable message/thread IDs."""
 
 import json

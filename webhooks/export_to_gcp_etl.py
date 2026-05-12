@@ -100,8 +100,9 @@ def _get_storage_source_file_data(
             base_model_type=base_model_type,
         )
 
+    remote_result = _get_data_from_storage_remote.remote()  # trunk-ignore(pyright/reportFunctionMemberAccess,pyrefly/invalid-param-spec,pyrefly/bad-assignment)
     return SourceFileData.from_json_data(
-        json_data=_get_data_from_storage_remote.remote(),  # trunk-ignore(pyright/reportFunctionMemberAccess,pyrefly/invalid-param-spec)
+        json_data=remote_result,  # trunk-ignore(pyrefly/bad-argument-type,pyrefly/invalid-param-spec)
         base_model_type=base_model_type,
     )
 

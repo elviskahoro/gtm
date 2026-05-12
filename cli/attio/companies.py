@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 import json
 import sys
 

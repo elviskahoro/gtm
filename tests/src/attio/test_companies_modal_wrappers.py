@@ -30,7 +30,7 @@ def test_attio_create_companies_attribute_sets_and_clears_env_preview(
 
     monkeypatch.setattr("src.attio.companies.create_companies_attribute", _create)
 
-    fn = cast(modal.Function, attio_create_companies_attribute)
+    fn = cast(modal.Function, attio_create_companies_attribute)  # type: ignore
     result = fn.local(
         payload={
             "title": "GTM Tool Type",
@@ -71,7 +71,7 @@ def test_attio_create_companies_attribute_sets_and_clears_env_apply(
 
     monkeypatch.setattr("src.attio.companies.create_companies_attribute", _create)
 
-    fn = cast(modal.Function, attio_create_companies_attribute)
+    fn = cast(modal.Function, attio_create_companies_attribute)  # type: ignore
     result = fn.local(
         payload={
             "title": "GTM Tool Type",

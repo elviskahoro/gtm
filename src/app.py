@@ -1,4 +1,3 @@
-# trunk-ignore-all(pyright/reportUntypedFunctionDecorator)
 import subprocess
 import time
 from datetime import UTC, datetime

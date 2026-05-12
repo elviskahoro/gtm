@@ -19,7 +19,7 @@ def test_gtm_research_sets_and_clears_env(monkeypatch) -> None:
 
     monkeypatch.setattr("src.accounts.tasks.research", _research)
 
-    fn = cast(modal.Function, gtm_research)
+    fn = cast(modal.Function, gtm_research)  # type: ignore
     result: dict[str, Any] = fn.local(
         payload={"objective": "find acme"},
         api_keys={"parallel_api_key": "pk_test"},
@@ -39,7 +39,7 @@ def test_gtm_enrich_sets_and_clears_env(monkeypatch) -> None:
 
     monkeypatch.setattr("src.accounts.tasks.enrich", _enrich)
 
-    fn = cast(modal.Function, gtm_enrich)
+    fn = cast(modal.Function, gtm_enrich)  # type: ignore
     result: dict[str, Any] = fn.local(
         payload={"url": "https://acme.com", "objective": "funding"},
         api_keys={"parallel_api_key": "pk_test"},
@@ -58,7 +58,7 @@ def test_gtm_find_people_sets_and_clears_env(monkeypatch) -> None:
 
     monkeypatch.setattr("src.accounts.tasks.find_people", _find_people)
 
-    fn = cast(modal.Function, gtm_find_people)
+    fn = cast(modal.Function, gtm_find_people)  # type: ignore
     result: dict[str, Any] = fn.local(
         payload={"query": "vp sales"},
         api_keys={"parallel_api_key": "pk_test"},
@@ -77,7 +77,7 @@ def test_gtm_map_account_hierarchy_sets_and_clears_env(monkeypatch) -> None:
 
     monkeypatch.setattr("src.accounts.tasks.map_account_hierarchy", _map_account)
 
-    fn = cast(modal.Function, gtm_map_account_hierarchy)
+    fn = cast(modal.Function, gtm_map_account_hierarchy)  # type: ignore
     result: dict[str, Any] = fn.local(
         payload={"account": "acme"},
         api_keys={"parallel_api_key": "pk_test"},
@@ -104,7 +104,7 @@ def test_gtm_batch_add_people_sets_and_clears_env(monkeypatch) -> None:
 
     monkeypatch.setattr("src.accounts.tasks.batch_add_people", _batch)
 
-    fn = cast(modal.Function, gtm_batch_add_people)
+    fn = cast(modal.Function, gtm_batch_add_people)  # type: ignore
     result: dict[str, Any] = fn.local(
         payload={"records": [{"email": "ada@example.com"}], "apply": True},
         api_keys={"attio_api_key": "ak_test"},
@@ -129,7 +129,7 @@ def test_gtm_batch_add_companies_sets_and_clears_env(monkeypatch) -> None:
 
     monkeypatch.setattr("src.accounts.tasks.batch_add_companies", _batch)
 
-    fn = cast(modal.Function, gtm_batch_add_companies)
+    fn = cast(modal.Function, gtm_batch_add_companies)  # type: ignore
     result: dict[str, Any] = fn.local(
         payload={
             "records": [{"name": "Acme", "domain": "acme.com"}],

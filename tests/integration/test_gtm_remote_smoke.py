@@ -33,7 +33,7 @@ def _skip_if_missing_env() -> None:
 def test_gtm_remote_metadata_attio_people_runtime() -> None:
     _skip_if_missing_env()
     fn = modal.Function.from_name(MODAL_APP, "attio_people_runtime_metadata")
-    payload = fn.remote()
+    payload = fn.remote()  # pyrefly: ignore[invalid-param-spec]
     assert isinstance(payload, dict)
     assert payload.get("app") == MODAL_APP
     assert "build_git_sha" in payload
