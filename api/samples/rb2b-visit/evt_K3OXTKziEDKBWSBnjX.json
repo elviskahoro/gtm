@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_K3OXTKziEDKBWSBnjX",
+  "timestamp": "2026-05-12T06:05:14.000+00:00",
+  "connection": "rb2b-visits-mock",
+  "payload": {
+    "LinkedIn URL": "https://www.linkedin.com/company/10872641/",
+    "First Name": null,
+    "Last Name": null,
+    "Title": null,
+    "Company Name": "Paydoo",
+    "Business Email": null,
+    "Website": "https://paydoo.com",
+    "Industry": "Financial Services",
+    "Employee Count": "Small",
+    "Estimate Revenue": "$1M - $5M",
+    "City": "Riga",
+    "State": "RIX",
+    "Zipcode": "LV-1063",
+    "Seen At": "2026-05-12T06:05:14.000+00:00",
+    "Referrer": null,
+    "Tags": "",
+    "Captured URL": "https://dlthub.com/products/dlthub",
+    "is_repeat_visit": false
+  }
+}

@@ -28,6 +28,9 @@ from src.fathom.etl.call import (
 from src.octolens.etl import (
     Webhook as OctolensWebhook,
 )
+from src.rb2b.etl.visit import (
+    Webhook as Rb2bVisitWebhook,
+)
 # fmt: on
 # trunk-ignore-end(ruff/F401,ruff/I001,pyright/reportUnusedImport)
 
