@@ -18,7 +18,7 @@ def _load_webhook() -> Webhook:
 
 
 def test_etl_get_bucket_name() -> None:
-    assert Webhook.etl_get_bucket_name() == "devx-octolens-mentions-etl"
+    assert Webhook.etl_get_bucket_name() == "dlthub-devx-octolens-mentions-raw"
 
 
 def test_modal_secret_collection_names() -> None:
