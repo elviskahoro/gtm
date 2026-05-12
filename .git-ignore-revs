@@ -1,5 +1,0 @@
-# This file lists commit hashes that should be ignored by git blame
-# Configure with: git config blame.ignoreRevsFile .git-ignore-revs
-
-# style: renaming to webhook
-7329f9d91b9dd113e2cf042ce4b4b8dead0a6ac4
