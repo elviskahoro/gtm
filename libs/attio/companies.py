@@ -1,10 +1,16 @@
 from typing import Any
 
 from libs.attio.client import get_client
+from libs.attio.contracts import (
+    ErrorEntry,
+    ReliabilityEnvelope,
+    WarningEntry,
+)
 from libs.attio.errors import (
     AttioConflictError,
     AttioNotFoundError,
     AttioValidationError,
+    classify_error,
 )
 from libs.attio.models import CompanyInput, CompanyResult, CompanySearchResult
 from libs.attio.sdk_boundary import (
@@ -141,6 +147,92 @@ def add_company(input: CompanyInput) -> CompanyResult:
             raise
 
         return _extract_result(response.data, created=True)
+
+
+def _result_envelope(
+    *,
+    action: str,
+    result: CompanyResult,
+    warnings: list[WarningEntry] | None = None,
+    partial_success: bool = False,
+) -> ReliabilityEnvelope:
+    return ReliabilityEnvelope(
+        success=True,
+        partial_success=partial_success,
+        action=action,  # type: ignore[arg-type]
+        record_id=result.record_id,
+        warnings=warnings or [],
+        skipped_fields=[],
+        errors=[],
+        meta={"output_schema_version": "v1", "company": result.model_dump()},
+    )
+
+
+def upsert_company(input: CompanyInput) -> ReliabilityEnvelope:
+    """Search by domain, then add or update — mirrors libs.attio.people.upsert_person.
+
+    When ``input.domain`` is None the function falls back to creating a new
+    company, since we have no key to deduplicate on. Multi-match picks the
+    lexicographically smallest ``record_id`` and flags the envelope as
+    ``partial_success`` with a ``upsert_multi_match_selected_record`` warning.
+    """
+    matches: list[CompanySearchResult] = []
+    if input.domain:
+        matches = search_companies(domain=input.domain, limit=50)
+
+    if len(matches) == 0:
+        result = add_company(input)
+        return _result_envelope(action="created", result=result)
+
+    if len(matches) == 1:
+        result = update_company(
+            record_id=matches[0].record_id,
+            domain=None,
+            input=input,
+        )
+        return _result_envelope(action="updated", result=result)
+
+    selected = sorted(m.record_id for m in matches)[0]
+    result = update_company(record_id=selected, domain=None, input=input)
+    warnings = [
+        WarningEntry(
+            code="upsert_multi_match_selected_record",
+            message=(
+                "Multiple companies matched; selected lexicographically "
+                "smallest record_id."
+            ),
+            field="record_id",
+            retryable=False,
+        ),
+    ]
+    return _result_envelope(
+        action="updated",
+        result=result,
+        warnings=warnings,
+        partial_success=True,
+    )
+
+
+def error_envelope(error: Exception, *, strict: bool = False) -> ReliabilityEnvelope:
+    classified = classify_error(error, strict=strict)
+    return ReliabilityEnvelope(
+        success=False,
+        partial_success=False,
+        action="failed",
+        record_id=None,
+        warnings=[],
+        skipped_fields=[],
+        errors=[
+            ErrorEntry(
+                code=classified.code,
+                message=classified.message,
+                error_type=classified.error_type,
+                fatal=classified.fatal,
+                field=classified.field,
+            ),
+        ],
+        meta={"output_schema_version": "v1"},
+    )
 
 
 def update_company(

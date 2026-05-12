@@ -57,6 +57,31 @@ def build_post_note_request(
     )
 
 
+def build_post_meeting_request(
+    *,
+    external_ref: dict[str, Any],
+    title: str,
+    description: str,
+    start: dict[str, Any],
+    end: dict[str, Any],
+    is_all_day: bool,
+    participants: list[dict[str, Any]],
+    linked_records: list[dict[str, Any]],
+) -> object:
+    models = _import_attio_models_module()
+    constructor = getattr(models, "PostV2MeetingsData")
+    return constructor(
+        external_ref=external_ref,
+        title=title,
+        description=description,
+        start=start,
+        end=end,
+        is_all_day=is_all_day,
+        participants=participants,
+        linked_records=linked_records,
+    )
+
+
 def extract_exception_body_text(exc: BaseException) -> str:
     body = getattr(exc, "body", None)
     if body is None:

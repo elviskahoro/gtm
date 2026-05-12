@@ -1,0 +1,44 @@
+{
+  "triggerEvent": "BOOKING_CREATED",
+  "createdAt": "2026-05-12T14:00:00.000Z",
+  "payload": {
+    "id": 99999,
+    "uid": "calcom-booking-abc123",
+    "title": "Discovery call",
+    "description": "Intro call about dlthub",
+    "additionalNotes": "Customer would like to discuss pricing.",
+    "status": "accepted",
+    "start": "2026-05-20T15:00:00.000Z",
+    "end": "2026-05-20T15:30:00.000Z",
+    "duration": 30,
+    "eventType": {
+      "id": 1234,
+      "slug": "30min"
+    },
+    "location": "https://meet.google.com/abc-defg-hij",
+    "absentHost": false,
+    "createdAt": "2026-05-12T14:00:00.000Z",
+    "updatedAt": "2026-05-12T14:00:00.000Z",
+    "hosts": [
+      {
+        "id": 1,
+        "name": "Host Person",
+        "email": "host@dlthub.com",
+        "displayEmail": "host@dlthub.com",
+        "username": "host",
+        "timeZone": "UTC"
+      }
+    ],
+    "attendees": [
+      {
+        "name": "External Person",
+        "email": "external@example.com",
+        "displayEmail": "external@example.com",
+        "timeZone": "America/Los_Angeles",
+        "absent": false
+      }
+    ],
+    "bookingFieldsResponses": {},
+    "icsUid": "ical-evt-abc123@cal.com"
+  }
+}

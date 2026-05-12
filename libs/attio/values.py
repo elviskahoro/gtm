@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any, Literal
 
-from libs.attio.models import PersonInput
+from libs.attio.models import MeetingInput, PersonInput
 
 
 def normalize_email_address_list(candidates: Iterable[str | None]) -> list[str]:
@@ -192,3 +192,40 @@ def build_optional_person_values(
         values["notes"] = notes_value
 
     return values
+
+
+def build_meeting_payload(input: MeetingInput) -> dict[str, Any]:
+    """Build the JSON body for POST /v2/meetings.
+
+    `external_ref` is a structured object per Attio's SDK: `{ical_uid, provider,
+    is_recurring, original_start_time}`. Idempotency is keyed off `ical_uid`.
+    Datetimes serialize as `{"datetime": <iso8601>}`; the iso8601 offset carries
+    timezone info so no separate `timezone` key is emitted.
+    """
+    ref = input.external_ref
+    data: dict[str, Any] = {
+        "external_ref": {
+            "ical_uid": ref.ical_uid,
+            "provider": ref.provider,
+            "is_recurring": ref.is_recurring,
+            "original_start_time": ref.original_start_time,
+        },
+        "title": input.title,
+        "description": input.description,
+        "is_all_day": input.is_all_day,
+        "start": {"datetime": input.start.isoformat()},
+        "end": {"datetime": input.end.isoformat()},
+        "participants": [
+            {
+                "email_address": p.email_address,
+                "is_organizer": p.is_organizer,
+                "status": p.status,
+            }
+            for p in input.participants
+        ],
+        "linked_records": [
+            {"object": lr.object, "record_id": lr.record_id}
+            for lr in input.linked_records
+        ],
+    }
+    return {"data": data}

@@ -20,3 +20,8 @@ worktrees/
 # Real webhook payloads — keep raw evt_*.json samples out of version control.
 # Use redacted/synthetic fixtures (sample-*.json) for documentation instead.
 api/samples/**/evt_*.json
+
+# Local secret env files (e.g. Infisical token shims) — never commit.
+.env
+.env.*
+!.env.example

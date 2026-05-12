@@ -54,3 +54,25 @@ class Webhook(FathomWebhook):
 
     def etl_get_base_models(self, storage: Any) -> list[Any]:
         raise NotImplementedError("Fathom message ETL is not implemented")
+
+    # --- Attio export contract ---
+
+    @staticmethod
+    def attio_get_secret_collection_names() -> list[str]:
+        return ["attio"]
+
+    def attio_is_valid_webhook(self) -> bool:
+        # Fathom "messages" are action-items / one-line follow-ups that don't
+        # cleanly map to Attio yet. Returning False keeps the contract uniform
+        # so the dispatcher can be pointed at this webhook without crashing,
+        # but no Attio writes happen.
+        return False
+
+    def attio_get_invalid_webhook_error_msg(self) -> str:
+        return (
+            "Fathom messages are not currently exported to Attio "
+            "(AddNote mapping deferred)"
+        )
+
+    def attio_get_operations(self) -> list[Any]:
+        return []

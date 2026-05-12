@@ -5,6 +5,7 @@ from typing import Any
 from pydantic import BaseModel
 
 from libs.fathom import Webhook as FathomWebhook
+from libs.meetings import canonical_meeting_uid
 from src.fathom.utils import (
     generate_gcs_filename,
     recording_to_jsonl,
@@ -56,3 +57,66 @@ class Webhook(FathomWebhook):
 
     def etl_get_base_models(self, storage: Any) -> list[Any]:
         raise NotImplementedError("LanceDB integration is Phase 2+")
+
+    # --- Attio export contract ---
+
+    @staticmethod
+    def attio_get_secret_collection_names() -> list[str]:
+        return ["attio"]
+
+    def attio_is_valid_webhook(self) -> bool:
+        # Ad-hoc Fathom recordings have no calendar invitees but still carry a
+        # recorder we can attribute the meeting to. Only reject payloads we
+        # truly can't anchor (missing recording_id or recorder email).
+        return bool(self.recording_id) and bool(self.recorded_by.email)
+
+    def attio_get_invalid_webhook_error_msg(self) -> str:
+        return (
+            "Fathom call payload is not exportable to Attio "
+            "(missing recording_id or recorder email)"
+        )
+
+    def attio_get_operations(self) -> list[Any]:
+        from src.attio.ops import (
+            MeetingExternalRef,
+            MeetingParticipant,
+            UpsertMeeting,
+        )
+
+        description: str = (
+            self.default_summary.markdown_formatted
+            if self.default_summary
+            else (self.meeting_title or self.title)
+        )
+        # Fall back to the recorder as the sole participant for ad-hoc Fathom
+        # recordings that aren't tied to a calendar invite.
+        participants = [
+            MeetingParticipant(
+                email_address=inv.email,
+                is_organizer=(inv.email == self.recorded_by.email),
+            )
+            for inv in self.calendar_invitees
+        ] or [
+            MeetingParticipant(
+                email_address=self.recorded_by.email,
+                is_organizer=True,
+            ),
+        ]
+        return [
+            UpsertMeeting(
+                external_ref=MeetingExternalRef(
+                    ical_uid=canonical_meeting_uid(
+                        host_email=self.recorded_by.email,
+                        start=self.scheduled_start_time,
+                    ),
+                    provider="google",
+                    is_recurring=False,
+                ),
+                title=self.meeting_title or self.title,
+                description=description,
+                start=self.scheduled_start_time,
+                end=self.scheduled_end_time,
+                is_all_day=False,
+                participants=participants,
+            ),
+        ]
