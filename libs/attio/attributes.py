@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from attio.errors import SDKError
+
 from libs.attio.client import get_client
 from libs.attio.models import AttributeCreateResult
 
@@ -17,13 +19,22 @@ def create_attribute(
     apply: bool,
 ) -> AttributeCreateResult:
     with get_client() as client:
-        attributes_response = client.attributes.get_v2_target_identifier_attributes(
-            target="objects",
-            identifier=target_object,
-        )
-        existing_attribute_slugs = {
-            getattr(attr, "api_slug", "") for attr in attributes_response.data
-        }
+        try:
+            attributes_response = client.attributes.get_v2_target_identifier_attributes(
+                target="objects",
+                identifier=target_object,
+            )
+            existing_attribute_slugs = {
+                getattr(attr, "api_slug", "") for attr in attributes_response.data
+            }
+        except SDKError as exc:
+            # Parent object does not exist yet (e.g. preview run before bootstrap).
+            # Treat as "no attributes exist" so the script can report would-create
+            # instead of crashing.
+            status = getattr(getattr(exc, "raw_response", None), "status_code", None)
+            if status != 404:
+                raise
+            existing_attribute_slugs = set()
         attribute_exists = api_slug in existing_attribute_slugs
         attribute_created = False
 
