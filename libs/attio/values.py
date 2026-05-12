@@ -248,6 +248,11 @@ def _scalar_value(v: Any) -> list[dict[str, Any]]:
     return [{"value": v}]
 
 
+def _select_value(option: str) -> list[dict[str, str]]:
+    """Single-select attribute shape: ``[{"option": "<title>"}]``."""
+    return [{"option": option}]
+
+
 def _multiselect_values(options: list[str]) -> list[dict[str, str]]:
     return [{"option": opt} for opt in options]
 
@@ -256,8 +261,8 @@ def build_create_mention_values(input: MentionInput) -> dict[str, Any]:
     values: dict[str, Any] = {}
 
     values["mention_url"] = _scalar_value(input.mention_url)
-    values["last_action"] = _scalar_value(input.last_action)
-    values["source_platform"] = _scalar_value(input.source_platform)
+    values["last_action"] = _select_value(input.last_action)
+    values["source_platform"] = _select_value(input.source_platform)
     values["source_id"] = _scalar_value(input.source_id)
     values["mention_body"] = _scalar_value(input.mention_body)
     values["mention_timestamp"] = _scalar_value(input.mention_timestamp.isoformat())
@@ -272,11 +277,11 @@ def build_create_mention_values(input: MentionInput) -> dict[str, Any]:
     if input.author_avatar_url is not None:
         values["author_avatar_url"] = _scalar_value(input.author_avatar_url)
     if input.relevance_score is not None:
-        values["relevance_score"] = _scalar_value(input.relevance_score)
+        values["relevance_score"] = _select_value(input.relevance_score)
     if input.relevance_comment is not None:
         values["relevance_comment"] = _scalar_value(input.relevance_comment)
     if input.sentiment is not None:
-        values["sentiment"] = _scalar_value(input.sentiment)
+        values["sentiment"] = _select_value(input.sentiment)
     if input.language is not None:
         values["language"] = _scalar_value(input.language)
     if input.subreddit is not None:

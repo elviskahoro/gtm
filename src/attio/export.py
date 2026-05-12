@@ -120,6 +120,11 @@ class ExecutionResult:
                     "op_type": o.op_type,
                     "success": o.success,
                     "record_id": o.record_id,
+                    **(
+                        {"errors": [e.model_dump() for e in o.envelope.errors]}
+                        if not o.success
+                        else {}
+                    ),
                 }
                 for o in self.outcomes
             ],

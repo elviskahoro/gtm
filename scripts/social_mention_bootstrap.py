@@ -24,7 +24,7 @@ REPO_ROOT = SCRIPT_DIR.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from libs.attio.attributes import create_attribute  # noqa: E402
+from libs.attio.attributes import create_attribute, ensure_select_options  # noqa: E402
 from libs.attio.objects import create_object  # noqa: E402
 
 OBJECT_API_SLUG = "social_mention"
@@ -35,7 +35,6 @@ OBJECT_PLURAL = "Social mentions"
 AttrType = Literal[
     "text",
     "select",
-    "multiselect",
     "checkbox",
     "number",
     "timestamp",
@@ -52,6 +51,11 @@ class AttrSpec:
     is_multiselect: bool = False
     is_unique: bool = False
     description: str = ""
+    allowed_objects: tuple[str, ...] = ()
+    # Closed-vocabulary select options to seed at bootstrap. Open-vocab selects
+    # (keywords, octolens_tags) leave this empty and rely on runtime ensure in
+    # libs/attio/mentions.py.
+    seed_options: tuple[str, ...] = ()
 
 
 ATTRIBUTES: tuple[AttrSpec, ...] = (
@@ -64,22 +68,47 @@ ATTRIBUTES: tuple[AttrSpec, ...] = (
     AttrSpec("Author handle", "author_handle", "text"),
     AttrSpec("Author profile URL", "author_profile_url", "text"),
     AttrSpec("Author avatar URL", "author_avatar_url", "text"),
-    AttrSpec("Relevance score", "relevance_score", "select"),
+    AttrSpec(
+        "Relevance score",
+        "relevance_score",
+        "select",
+        seed_options=("high", "medium", "low"),
+    ),
     AttrSpec("Relevance comment", "relevance_comment", "text"),
     AttrSpec("Primary keyword", "primary_keyword", "text"),
-    AttrSpec("Keywords", "keywords", "multiselect", is_multiselect=True),
-    AttrSpec("Octolens tags", "octolens_tags", "multiselect", is_multiselect=True),
-    AttrSpec("Sentiment", "sentiment", "select"),
+    AttrSpec("Keywords", "keywords", "select", is_multiselect=True),
+    AttrSpec("Octolens tags", "octolens_tags", "select", is_multiselect=True),
+    AttrSpec(
+        "Sentiment",
+        "sentiment",
+        "select",
+        seed_options=("Positive", "Neutral", "Negative"),
+    ),
     AttrSpec("Language", "language", "text"),
     AttrSpec("Subreddit", "subreddit", "text"),
     AttrSpec("View ID", "view_id", "number"),
     AttrSpec("View name", "view_name", "text"),
     AttrSpec("Bookmarked", "bookmarked", "checkbox"),
     AttrSpec("Image URL", "image_url", "text"),
-    AttrSpec("Last action", "last_action", "select"),
+    AttrSpec(
+        "Last action",
+        "last_action",
+        "select",
+        seed_options=("mention_created", "mention_updated"),
+    ),
     AttrSpec("Triage status", "triage_status", "status"),
-    AttrSpec("Related person", "related_person", "record-reference"),
-    AttrSpec("Related company", "related_company", "record-reference"),
+    AttrSpec(
+        "Related person",
+        "related_person",
+        "record-reference",
+        allowed_objects=("people",),
+    ),
+    AttrSpec(
+        "Related company",
+        "related_company",
+        "record-reference",
+        allowed_objects=("companies",),
+    ),
 )
 
 
@@ -124,6 +153,7 @@ def main() -> int:
             description=spec.description,
             is_multiselect=spec.is_multiselect,
             is_unique=spec.is_unique,
+            allowed_objects=list(spec.allowed_objects) or None,
             apply=apply,
         )
         if attr_result.attribute_created:
@@ -136,6 +166,19 @@ def main() -> int:
         print(
             f"[attribute]   {spec.api_slug:25s}  {spec.attribute_type:14s}  {status}",
         )
+
+        if spec.seed_options and apply and (attr_result.attribute_exists or attr_result.attribute_created):
+            created_options = ensure_select_options(
+                target_object=OBJECT_API_SLUG,
+                attribute_slug=spec.api_slug,
+                options=list(spec.seed_options),
+            )
+            for opt in spec.seed_options:
+                opt_status = "created" if opt in created_options else "exists (skip)"
+                print(f"  [option]    {spec.api_slug:25s}  {opt:20s}  {opt_status}")
+        elif spec.seed_options and not apply:
+            for opt in spec.seed_options:
+                print(f"  [option]    {spec.api_slug:25s}  {opt:20s}  would-ensure")
 
     if not apply:
         print(f"{pending} creates pending. Run with --apply to execute.")

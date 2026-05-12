@@ -29,7 +29,7 @@ from src.caldotcom.webhook.booking import (
 from src.attio.export import execute
 
 
-class WebhookModel(FathomCallWebhook):  # type: ignore # trunk-ignore(ruff/F821)
+class WebhookModel(OctolensWebhook):  # type: ignore # trunk-ignore(ruff/F821)
     pass
 
 
@@ -39,6 +39,7 @@ WebhookModel.model_rebuild()
 image: Image = modal.Image.debian_slim().uv_pip_install(
     "attio>=0.21.2",
     "fastapi[standard]",
+    "flatsplode",
     "orjson",
     "uuid7",
 )

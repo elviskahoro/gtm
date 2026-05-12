@@ -16,6 +16,7 @@ def create_attribute(
     is_multiselect: bool = True,
     is_required: bool = False,
     is_unique: bool = False,
+    allowed_objects: list[str] | None = None,
     apply: bool,
 ) -> AttributeCreateResult:
     with get_client() as client:
@@ -39,6 +40,14 @@ def create_attribute(
         attribute_created = False
 
         if not attribute_exists and apply:
+            config: dict[str, object] = {}
+            if attribute_type == "record-reference":
+                # Attio requires record-reference attributes to declare which
+                # object slugs they may point at. Default to ["people"] only if
+                # the caller did not specify, to avoid silently mis-targeting.
+                config["record_reference"] = {
+                    "allowed_objects": allowed_objects or ["people"],
+                }
             payload = {
                 "title": title,
                 "description": description or "",
@@ -47,7 +56,7 @@ def create_attribute(
                 "is_required": is_required,
                 "is_unique": is_unique,
                 "is_multiselect": is_multiselect,
-                "config": {},
+                "config": config,
             }
             client.attributes.post_v2_target_identifier_attributes(
                 target="objects",
@@ -64,6 +73,43 @@ def create_attribute(
         attribute_exists=attribute_exists,
         attribute_created=attribute_created,
     )
+
+
+def ensure_select_options(
+    *,
+    target_object: str,
+    attribute_slug: str,
+    options: list[str],
+) -> list[str]:
+    """Idempotently ensure each option title exists on a select attribute.
+
+    Returns the list of titles that were newly created. No-op for options that
+    already exist. Used both at bootstrap time (closed vocabularies) and at
+    write time (open vocabularies like keywords/tags).
+    """
+    if not options:
+        return []
+    created: list[str] = []
+    with get_client() as client:
+        existing_resp = (
+            client.attributes.get_v2_target_identifier_attributes_attribute_options(
+                target="objects",
+                identifier=target_object,
+                attribute=attribute_slug,
+            )
+        )
+        existing_titles = {getattr(o, "title", "") for o in existing_resp.data}
+        for title in options:
+            if title in existing_titles:
+                continue
+            client.attributes.post_v2_target_identifier_attributes_attribute_options(
+                target="objects",
+                identifier=target_object,
+                attribute=attribute_slug,
+                data={"title": title},
+            )
+            created.append(title)
+    return created
 
 
 def create_companies_attribute(
