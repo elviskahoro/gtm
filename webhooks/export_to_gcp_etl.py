@@ -28,11 +28,14 @@ from src.fathom.etl.call import (
 from src.octolens.etl import (
     Webhook as OctolensWebhook,
 )
+from src.caldotcom.etl.booking import (
+    Webhook as CaldotcomBookingWebhook,
+)
 # fmt: on
 # trunk-ignore-end(ruff/F401,ruff/I001,pyright/reportUnusedImport)
 
 
-class WebhookModel(OctolensWebhook):  # type: ignore # trunk-ignore(ruff/F821)
+class WebhookModel(CaldotcomBookingWebhook):  # type: ignore # trunk-ignore(ruff/F821)
     pass
 
 
