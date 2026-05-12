@@ -134,3 +134,10 @@ class AttributeCreateResult(BaseModel):
     attribute_type: str
     attribute_exists: bool
     attribute_created: bool
+
+
+class ObjectCreateResult(BaseModel):
+    mode: Literal["preview", "apply"]
+    api_slug: str
+    object_exists: bool
+    object_created: bool
