@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any, Literal
 
-from libs.attio.models import MeetingInput, PersonInput
+from libs.attio.models import MeetingInput, MentionInput, PersonInput
 
 
 def normalize_email_address_list(candidates: Iterable[str | None]) -> list[str]:
@@ -229,3 +229,85 @@ def build_meeting_payload(input: MeetingInput) -> dict[str, Any]:
         ],
     }
     return {"data": data}
+
+
+# ---------- Octolens mentions ----------
+
+# Fields the webhook MUST NEVER write. Enforced both here (builder-level) and
+# at the type level by MentionInput not declaring them. Belt-and-suspenders.
+_HUMAN_OWNED_MENTION_FIELDS: frozenset[str] = frozenset(
+    {"triage_status", "related_person", "related_company"},
+)
+
+# Fields set at record creation that must never be overwritten by an update.
+_IMMUTABLE_AFTER_CREATE: frozenset[str] = frozenset({"source_platform", "source_id"})
+
+
+def _scalar_value(v: Any) -> list[dict[str, Any]]:
+    """Wrap a scalar into Attio's standard ``[{"value": ...}]`` list shape."""
+    return [{"value": v}]
+
+
+def _select_value(option: str) -> list[dict[str, str]]:
+    """Single-select attribute shape: ``[{"option": "<title>"}]``."""
+    return [{"option": option}]
+
+
+def _multiselect_values(options: list[str]) -> list[dict[str, str]]:
+    return [{"option": opt} for opt in options]
+
+
+def build_create_mention_values(input: MentionInput) -> dict[str, Any]:
+    values: dict[str, Any] = {}
+
+    values["mention_url"] = _scalar_value(input.mention_url)
+    values["last_action"] = _select_value(input.last_action)
+    values["source_platform"] = _select_value(input.source_platform)
+    values["source_id"] = _scalar_value(input.source_id)
+    values["mention_body"] = _scalar_value(input.mention_body)
+    values["mention_timestamp"] = _scalar_value(input.mention_timestamp.isoformat())
+    values["author_handle"] = _scalar_value(input.author_handle)
+    values["primary_keyword"] = _scalar_value(input.primary_keyword)
+    values["bookmarked"] = _scalar_value(input.bookmarked)
+
+    if input.mention_title is not None:
+        values["mention_title"] = _scalar_value(input.mention_title)
+    if input.author_profile_url is not None:
+        values["author_profile_url"] = _scalar_value(input.author_profile_url)
+    if input.author_avatar_url is not None:
+        values["author_avatar_url"] = _scalar_value(input.author_avatar_url)
+    if input.relevance_score is not None:
+        values["relevance_score"] = _select_value(input.relevance_score)
+    if input.relevance_comment is not None:
+        values["relevance_comment"] = _scalar_value(input.relevance_comment)
+    if input.sentiment is not None:
+        values["sentiment"] = _select_value(input.sentiment)
+    if input.language is not None:
+        values["language"] = _scalar_value(input.language)
+    if input.subreddit is not None:
+        values["subreddit"] = _scalar_value(input.subreddit)
+    if input.view_id is not None:
+        values["view_id"] = _scalar_value(input.view_id)
+    if input.view_name is not None:
+        values["view_name"] = _scalar_value(input.view_name)
+    if input.image_url is not None:
+        values["image_url"] = _scalar_value(input.image_url)
+
+    if input.keywords:
+        values["keywords"] = _multiselect_values(input.keywords)
+    if input.octolens_tags:
+        values["octolens_tags"] = _multiselect_values(input.octolens_tags)
+
+    # Guard the invariant. Should be unreachable since MentionInput doesn't
+    # declare these fields, but kept here in case the model grows.
+    for forbidden in _HUMAN_OWNED_MENTION_FIELDS:
+        assert forbidden not in values, f"Webhook tried to write {forbidden!r}"
+
+    return values
+
+
+def build_update_mention_values(input: MentionInput) -> dict[str, Any]:
+    values = build_create_mention_values(input)
+    for immutable in _IMMUTABLE_AFTER_CREATE:
+        values.pop(immutable, None)
+    return values

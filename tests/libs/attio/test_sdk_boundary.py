@@ -22,6 +22,11 @@ class _FakePatchRecordRequest:
         self.values = values
 
 
+class _FakeAssertRecordRequest:
+    def __init__(self, *, values) -> None:
+        self.values = values
+
+
 class _FakePostNoteRequest:
     def __init__(
         self,
@@ -89,6 +94,26 @@ def test_request_builders_use_runtime_model_lookup(
     assert patch.values == {"y": 2}
     assert isinstance(note, _FakePostNoteRequest)
     assert note.parent_record_id == "rec_1"
+
+
+def test_build_assert_record_request_passes_values(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fake_models = SimpleNamespace(
+        PutV2ObjectsObjectRecordsDataRequest=_FakeAssertRecordRequest,
+    )
+    monkeypatch.setattr(
+        sdk_boundary,
+        "_import_attio_models_module",
+        lambda: fake_models,
+    )
+
+    req = sdk_boundary.build_assert_record_request(
+        {"mention_url": [{"value": "https://x"}]},
+    )
+
+    assert isinstance(req, _FakeAssertRecordRequest)
+    assert req.values == {"mention_url": [{"value": "https://x"}]}
 
 
 def test_extract_exception_body_text_handles_text_bytes_and_object() -> None:

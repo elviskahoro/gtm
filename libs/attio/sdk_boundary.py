@@ -38,6 +38,20 @@ def build_patch_record_request(values: dict[str, Any]) -> object:
     return constructor(values=values)
 
 
+def build_assert_record_request(values: dict[str, Any]) -> object:
+    """Build the assert (PUT) request body for an idempotent upsert.
+
+    Attio's assert endpoint creates-or-updates a record keyed by a unique
+    matching attribute (set via ``matching_attribute`` query parameter on
+    the call site, not in the body).
+    """
+    models = _import_attio_models_module()
+    # Verified via `dir(attio.models)` probe: assert/PUT request type is
+    # PutV2ObjectsObjectRecordsDataRequest, accepting a `values` kwarg.
+    constructor = getattr(models, "PutV2ObjectsObjectRecordsDataRequest")
+    return constructor(values=values)
+
+
 def build_post_note_request(
     *,
     parent_object: str,

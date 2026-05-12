@@ -1,6 +1,6 @@
 """Webhook ETL contract for Octolens mention ingestion."""
 
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal, cast
 
 from pydantic import BaseModel
 
@@ -69,19 +69,53 @@ class Webhook(OctolensWebhook):
         return ["attio"]
 
     def attio_is_valid_webhook(self) -> bool:
-        # Octolens mentions ship a platform-specific `author` username (Reddit,
-        # Twitter, etc.) and an `author_profile_link`, but no email or company
-        # domain — we cannot resolve a parent person/company without one of
-        # those. Return False here so the webhook gracefully no-ops in Attio
-        # while the rest of the export protocol stays uniform. A future change
-        # could add LinkedIn-URL → Person resolution and flip this on.
-        return False
+        return self.action in self.VALID_ACTIONS
 
     def attio_get_invalid_webhook_error_msg(self) -> str:
-        return (
-            "Octolens mentions do not currently map to Attio: no resolvable "
-            "parent (no email or company domain on mention)."
-        )
+        return f"Octolens action not eligible for Attio export: {self.action}"
 
     def attio_get_operations(self) -> list[Any]:
-        return []
+        if not self.attio_is_valid_webhook():
+            return []
+        # Local import to keep `libs/octolens/*` free of `src/attio/*` cycles
+        # and to honor the no-cross-lib-import rule between adapters.
+        from src.attio.ops import UpsertMention
+
+        m = self.data
+        return [
+            UpsertMention(
+                mention_url=m.url,
+                last_action=self.action,  # type: ignore[arg-type]
+                source_platform=m.source,
+                source_id=m.source_id,
+                mention_title=m.title,
+                mention_body=m.body,
+                mention_timestamp=m.timestamp,
+                author_handle=m.author,
+                author_profile_url=m.author_profile_link,
+                author_avatar_url=m.author_avatar_url,
+                relevance_score=m.relevance_score,
+                relevance_comment=m.relevance_comment,
+                primary_keyword=m.keyword,
+                keywords=list(m.keywords),
+                octolens_tags=[str(t) for t in m.tags],
+                sentiment=_sentiment_or_none(m.sentiment_label),
+                language=m.language,
+                subreddit=m.subreddit,
+                view_id=m.view_id,
+                view_name=m.view_name,
+                bookmarked=m.bookmarked,
+                image_url=m.image_url,
+            ),
+        ]
+
+
+_SENTIMENT_VALUES: frozenset[str] = frozenset({"Positive", "Neutral", "Negative"})
+
+
+def _sentiment_or_none(
+    value: str | None,
+) -> Literal["Positive", "Neutral", "Negative"] | None:
+    if value in _SENTIMENT_VALUES:
+        return cast(Literal["Positive", "Neutral", "Negative"], value)
+    return None

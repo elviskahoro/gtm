@@ -115,7 +115,35 @@ class AddNote(BaseModel):
     content: str
 
 
+class UpsertMention(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    op_type: Literal["upsert_mention"] = "upsert_mention"
+    mention_url: str
+    last_action: Literal["mention_created", "mention_updated"]
+    source_platform: str
+    source_id: str
+    mention_title: str | None = None
+    mention_body: str
+    mention_timestamp: datetime
+    author_handle: str
+    author_profile_url: str | None = None
+    author_avatar_url: str | None = None
+    relevance_score: str | None = None
+    relevance_comment: str | None = None
+    primary_keyword: str
+    keywords: list[str] = Field(default_factory=list)
+    octolens_tags: list[str] = Field(default_factory=list)
+    sentiment: Literal["Positive", "Neutral", "Negative"] | None = None
+    language: str | None = None
+    subreddit: str | None = None
+    view_id: int | None = None
+    view_name: str | None = None
+    bookmarked: bool = False
+    image_url: str | None = None
+
+
 AttioOp = Annotated[
-    Union[UpsertPerson, UpsertCompany, UpsertMeeting, AddNote],
+    Union[UpsertPerson, UpsertCompany, UpsertMeeting, AddNote, UpsertMention],
     Field(discriminator="op_type"),
 ]

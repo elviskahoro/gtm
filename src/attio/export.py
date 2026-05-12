@@ -16,6 +16,7 @@ from typing import Any
 from libs.attio.companies import upsert_company as libs_upsert_company
 from libs.attio.contracts import ErrorEntry, ReliabilityEnvelope
 from libs.attio.meetings import find_or_create_meeting
+from libs.attio.mentions import upsert_mention as libs_upsert_mention
 from libs.attio.models import (
     CompanyInput,
 )
@@ -25,6 +26,7 @@ from libs.attio.models import (
 from libs.attio.models import (
     MeetingInput,
     MeetingParticipantInput,
+    MentionInput,
     NoteInput,
     PersonInput,
 )
@@ -38,6 +40,7 @@ from src.attio.ops import (
     PersonRef,
     UpsertCompany,
     UpsertMeeting,
+    UpsertMention,
     UpsertPerson,
 )
 
@@ -117,6 +120,11 @@ class ExecutionResult:
                     "op_type": o.op_type,
                     "success": o.success,
                     "record_id": o.record_id,
+                    **(
+                        {"errors": [e.model_dump() for e in o.envelope.errors]}
+                        if not o.success
+                        else {}
+                    ),
                 }
                 for o in self.outcomes
             ],
@@ -248,11 +256,44 @@ def _handle_add_note(
     )
 
 
+def _handle_upsert_mention(
+    op: UpsertMention,
+    table: LookupTable,  # noqa: ARG001 — mentions don't consult the lookup table
+) -> ReliabilityEnvelope:
+    return libs_upsert_mention(
+        MentionInput(
+            mention_url=op.mention_url,
+            last_action=op.last_action,
+            source_platform=op.source_platform,
+            source_id=op.source_id,
+            mention_title=op.mention_title,
+            mention_body=op.mention_body,
+            mention_timestamp=op.mention_timestamp,
+            author_handle=op.author_handle,
+            author_profile_url=op.author_profile_url,
+            author_avatar_url=op.author_avatar_url,
+            relevance_score=op.relevance_score,
+            relevance_comment=op.relevance_comment,
+            primary_keyword=op.primary_keyword,
+            keywords=op.keywords,
+            octolens_tags=op.octolens_tags,
+            sentiment=op.sentiment,
+            language=op.language,
+            subreddit=op.subreddit,
+            view_id=op.view_id,
+            view_name=op.view_name,
+            bookmarked=op.bookmarked,
+            image_url=op.image_url,
+        ),
+    )
+
+
 OP_HANDLERS: dict[type, Callable[[Any, LookupTable], ReliabilityEnvelope]] = {
     UpsertPerson: _handle_upsert_person,
     UpsertCompany: _handle_upsert_company,
     UpsertMeeting: _handle_upsert_meeting,
     AddNote: _handle_add_note,
+    UpsertMention: _handle_upsert_mention,
 }
 
 
