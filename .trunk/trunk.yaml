@@ -170,7 +170,7 @@ lint:
 
     - linters: [checkov]
       paths:
-        - api/open-api/**
+        - api/specs/caldotcom-*.json
 
     - linters: [checkov, semgrep]
       paths:
