@@ -145,6 +145,27 @@ def test_execute_unresolved_ref(monkeypatch) -> None:
     assert "unresolved_ref" in result.outcomes[0].envelope.errors[0].message
 
 
+def test_execute_handler_exception_becomes_failed_outcome(monkeypatch) -> None:
+    """Library exceptions must turn into a failed ExecutionResult, not propagate."""
+
+    def boom(_op, _table):
+        raise RuntimeError("attio api blew up")
+
+    monkeypatch.setattr("src.attio.export.OP_HANDLERS", {UpsertPerson: boom})
+
+    result = execute([UpsertPerson(email="a@example.com")])
+
+    assert result.success is False
+    assert result.fail_index == 0
+    assert result.fail_reason == "op_failed"
+    assert len(result.outcomes) == 1
+    envelope = result.outcomes[0].envelope
+    assert envelope.success is False
+    assert envelope.errors[0].code == "handler_exception"
+    assert envelope.errors[0].error_type == "RuntimeError"
+    assert "attio api blew up" in envelope.errors[0].message
+
+
 def test_execute_unknown_op(monkeypatch) -> None:
     monkeypatch.setattr("src.attio.export.OP_HANDLERS", {})
     result = execute([UpsertPerson(email="a@example.com")])
