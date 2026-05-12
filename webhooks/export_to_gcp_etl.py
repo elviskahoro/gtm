@@ -51,6 +51,7 @@ image: Image = modal.Image.debian_slim().uv_pip_install(
 image = image.add_local_python_source(
     *[
         "libs",
+        "src",
     ],
 )
 app = modal.App(
