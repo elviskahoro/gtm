@@ -51,15 +51,17 @@ def test_attio_get_operations_returns_person_and_company_when_both_present() -> 
 
     plan = webhook.attio_get_operations()
 
+    # Company op runs before person op so the person's company_domain
+    # reference resolves to an already-upserted record.
     assert len(plan) == 2
-    assert isinstance(plan[0], UpsertPerson)
-    assert plan[0].email == "buyer@example.com"
-    assert plan[0].first_name == "Pat"
-    assert plan[0].last_name == "Buyer"
-    assert plan[0].company_domain == "example.com"
-    assert plan[0].linkedin == "https://www.linkedin.com/company/example"
-    assert isinstance(plan[1], UpsertCompany)
-    assert plan[1].domain == "example.com"
+    assert isinstance(plan[0], UpsertCompany)
+    assert plan[0].domain == "example.com"
+    assert isinstance(plan[1], UpsertPerson)
+    assert plan[1].email == "buyer@example.com"
+    assert plan[1].first_name == "Pat"
+    assert plan[1].last_name == "Buyer"
+    assert plan[1].company_domain == "example.com"
+    assert plan[1].linkedin == "https://www.linkedin.com/company/example"
 
 
 def test_attio_is_valid_webhook_false_when_no_email_and_no_domain() -> None:

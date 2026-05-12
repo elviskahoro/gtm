@@ -84,7 +84,7 @@ class MeetingExternalRef(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     ical_uid: str
-    provider: Literal["google", "microsoft"] = "google"
+    provider: Literal["google", "outlook"] = "google"
     is_recurring: bool = False
     original_start_time: str | None = None
 

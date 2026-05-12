@@ -25,11 +25,22 @@ def test_attio_is_valid_webhook_true_for_normal_payload() -> None:
     assert _load().attio_is_valid_webhook() is True
 
 
-def test_attio_is_valid_webhook_false_with_no_attendees() -> None:
+def test_attio_is_valid_webhook_true_with_no_attendees() -> None:
+    """Ad-hoc Fathom recordings (no calendar invitees) are still exportable."""
     w = _load()
     w.calendar_invitees = []
-    assert w.attio_is_valid_webhook() is False
-    assert "no attendees" in w.attio_get_invalid_webhook_error_msg()
+    assert w.attio_is_valid_webhook() is True
+
+
+def test_attio_get_operations_falls_back_to_recorder_with_no_attendees() -> None:
+    w = _load()
+    w.calendar_invitees = []
+    plan = w.attio_get_operations()
+    op = plan[0]
+    assert isinstance(op, UpsertMeeting)
+    assert len(op.participants) == 1
+    assert op.participants[0].email_address == "host@dlthub.com"
+    assert op.participants[0].is_organizer is True
 
 
 def test_attio_is_valid_webhook_false_with_no_recording_id() -> None:

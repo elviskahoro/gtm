@@ -107,6 +107,16 @@ class Webhook(Rb2bWebhook):
         ops: list[Any] = []
         domain = self._attio_domain()
 
+        # Attio record references are not auto-created, so the company must be
+        # upserted before any person op that points at it via company_domain.
+        if domain:
+            ops.append(
+                UpsertCompany(
+                    domain=domain,
+                    name=self.payload.company_name,
+                ),
+            )
+
         if self.payload.business_email:
             ops.append(
                 UpsertPerson(
@@ -115,14 +125,6 @@ class Webhook(Rb2bWebhook):
                     last_name=self.payload.last_name,
                     linkedin=self.payload.linkedin_url,
                     company_domain=domain,
-                ),
-            )
-
-        if domain:
-            ops.append(
-                UpsertCompany(
-                    domain=domain,
-                    name=self.payload.company_name,
                 ),
             )
 

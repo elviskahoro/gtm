@@ -65,12 +65,15 @@ class Webhook(FathomWebhook):
         return ["attio"]
 
     def attio_is_valid_webhook(self) -> bool:
-        return bool(self.recording_id) and bool(self.calendar_invitees)
+        # Ad-hoc Fathom recordings have no calendar invitees but still carry a
+        # recorder we can attribute the meeting to. Only reject payloads we
+        # truly can't anchor (missing recording_id or recorder email).
+        return bool(self.recording_id) and bool(self.recorded_by.email)
 
     def attio_get_invalid_webhook_error_msg(self) -> str:
         return (
             "Fathom call payload is not exportable to Attio "
-            "(no attendees or recording_id)"
+            "(missing recording_id or recorder email)"
         )
 
     def attio_get_operations(self) -> list[Any]:
@@ -85,6 +88,20 @@ class Webhook(FathomWebhook):
             if self.default_summary
             else (self.meeting_title or self.title)
         )
+        # Fall back to the recorder as the sole participant for ad-hoc Fathom
+        # recordings that aren't tied to a calendar invite.
+        participants = [
+            MeetingParticipant(
+                email_address=inv.email,
+                is_organizer=(inv.email == self.recorded_by.email),
+            )
+            for inv in self.calendar_invitees
+        ] or [
+            MeetingParticipant(
+                email_address=self.recorded_by.email,
+                is_organizer=True,
+            ),
+        ]
         return [
             UpsertMeeting(
                 external_ref=MeetingExternalRef(
@@ -100,12 +117,6 @@ class Webhook(FathomWebhook):
                 start=self.scheduled_start_time,
                 end=self.scheduled_end_time,
                 is_all_day=False,
-                participants=[
-                    MeetingParticipant(
-                        email_address=inv.email,
-                        is_organizer=(inv.email == self.recorded_by.email),
-                    )
-                    for inv in self.calendar_invitees
-                ],
+                participants=participants,
             ),
         ]

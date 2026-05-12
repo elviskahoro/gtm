@@ -259,6 +259,31 @@ OP_HANDLERS: dict[type, Callable[[Any, LookupTable], ReliabilityEnvelope]] = {
 # ---------- Dispatcher ----------
 
 
+def _exception_envelope(error: Exception) -> ReliabilityEnvelope:
+    """Wrap an uncaught handler exception as a failed envelope.
+
+    Matches the shape Attio Modal wrappers produce via ``error_envelope`` so
+    webhook callers always see a dispatcher result body, not a 500.
+    """
+    return ReliabilityEnvelope(
+        success=False,
+        partial_success=False,
+        action="failed",
+        record_id=None,
+        errors=[
+            ErrorEntry(
+                code="handler_exception",
+                message=f"{type(error).__name__}: {error}",
+                error_type=type(error).__name__,
+                fatal=True,
+            ),
+        ],
+        warnings=[],
+        skipped_fields=[],
+        meta={"output_schema_version": "v1"},
+    )
+
+
 def execute(plan: Iterable[AttioOp]) -> ExecutionResult:
     """Execute a plan op-by-op. Fail-fast on the first failing envelope."""
     table = LookupTable()
@@ -272,7 +297,15 @@ def execute(plan: Iterable[AttioOp]) -> ExecutionResult:
                 fail_index=i,
                 fail_reason=f"unknown_op: {type(op).__name__}",
             )
-        envelope = handler(op, table)
+        try:
+            envelope = handler(op, table)
+        except Exception as exc:  # noqa: BLE001 — turn any handler crash into a failed outcome
+            logger.exception(
+                "attio handler raised for op_index=%d op_type=%s",
+                i,
+                type(op).__name__,
+            )
+            envelope = _exception_envelope(exc)
         outcomes.append(
             OpOutcome(
                 op_index=i,
