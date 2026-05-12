@@ -1,0 +1,27 @@
+{
+  "action": "mention_created",
+  "data": {
+    "url": "https://www.reddit.com/r/generationology/comments/example/",
+    "title": "Example Reddit post about snowflake",
+    "body": "Sanitized example body discussing snowflake.",
+    "timestamp": "2026-05-10 11:55:53.000",
+    "imageUrl": null,
+    "source": "reddit",
+    "sourceId": "t3_example1",
+    "author": "Sensitive_Pianist777",
+    "authorAvatarUrl": "https://example.com/avatar.png",
+    "authorProfileLink": "https://www.reddit.com/user/Sensitive_Pianist777",
+    "relevanceScore": "medium",
+    "relevanceComment": "Sanitized fixture",
+    "language": "english",
+    "keyword": "snowflake",
+    "keywords": ["snowflake"],
+    "sentimentLabel": "neutral",
+    "tags": [],
+    "viewId": 1,
+    "viewName": "default",
+    "viewKeywords": ["snowflake"],
+    "subreddit": "r/generationology",
+    "bookmarked": false
+  }
+}

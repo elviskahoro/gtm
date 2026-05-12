@@ -1,6 +1,6 @@
 """Webhook ETL contract for Octolens mention ingestion."""
 
-from typing import Any
+from typing import Any, ClassVar
 
 from libs.octolens import Webhook as OctolensWebhook
 from src.octolens.utils import generate_gcs_filename
@@ -33,8 +33,12 @@ class Webhook(OctolensWebhook):
     def lance_get_base_model_type() -> str:
         raise NotImplementedError("LanceDB integration is Phase 2+")
 
+    VALID_ACTIONS: ClassVar[frozenset[str]] = frozenset(
+        {"mention_created", "mention_updated"},
+    )
+
     def etl_is_valid_webhook(self) -> bool:
-        return self.action == "mention_created"
+        return self.action in self.VALID_ACTIONS
 
     def etl_get_invalid_webhook_error_msg(self) -> str:
         return f"Invalid webhook: {self.action}"
@@ -49,6 +53,7 @@ class Webhook(OctolensWebhook):
             keyword=self.data.keyword,
             timestamp=self.data.timestamp,
             author=self.data.author,
+            source_id=self.data.source_id,
         )
 
     def etl_get_base_models(self, storage: Any) -> list[Any]:

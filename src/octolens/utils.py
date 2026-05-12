@@ -22,9 +22,17 @@ def generate_gcs_filename(
     keyword: str,
     timestamp: datetime,
     author: str,
+    source_id: str,
 ) -> str:
-    """Generate GCS filename: {source}-{keyword}-{timestamp}-{author}.jsonl"""
+    """Generate GCS filename: {source}-{keyword}-{timestamp}-{author}-{source_id}.jsonl
+
+    ``source_id`` is the Octolens-supplied stable mention identifier and is
+    included to prevent collisions when two mentions share the same
+    source/keyword/author/second-truncated timestamp (the GCS writer opens
+    objects with ``mode="w"``, so collisions would overwrite earlier deliveries).
+    """
     return (
         f"{clean_string(source)}-{clean_string(keyword)}-"
-        f"{clean_timestamp(timestamp)}-{clean_string(author)}.jsonl"
+        f"{clean_timestamp(timestamp)}-{clean_string(author)}-"
+        f"{clean_string(source_id)}.jsonl"
     )

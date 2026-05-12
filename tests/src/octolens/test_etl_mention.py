@@ -9,9 +9,8 @@ import pytest
 
 from src.octolens.etl import Webhook
 
-EVENTS_PATH = Path(
-    "/Users/elvis/Documents/ai/data/webhooks/octolens-mention/events.json",
-)
+REPO_ROOT = Path(__file__).resolve().parents[3]
+EVENTS_PATH = REPO_ROOT / "tests" / "libs" / "octolens" / "fixtures" / "events.json"
 
 
 def _load_webhook() -> Webhook:
@@ -64,7 +63,18 @@ def test_etl_get_file_name_format() -> None:
     filename = webhook.etl_get_file_name()
     # Live payload timestamp: 2026-05-10 11:55:53.000 → 20260510115553
     # clean_string strips underscores (matches src/fathom/utils.py:16 behavior)
-    assert filename == "reddit-snowflake-20260510115553-sensitivepianist777.jsonl"
+    # sourceId is appended to disambiguate same-second deliveries.
+    assert (
+        filename
+        == "reddit-snowflake-20260510115553-sensitivepianist777-t3example1.jsonl"
+    )
+
+
+def test_etl_is_valid_webhook_true_for_mention_updated() -> None:
+    payload = json.loads(EVENTS_PATH.read_text())
+    payload["action"] = "mention_updated"
+    webhook = Webhook.model_validate(payload)
+    assert webhook.etl_is_valid_webhook() is True
 
 
 def test_lance_methods_raise_not_implemented() -> None:

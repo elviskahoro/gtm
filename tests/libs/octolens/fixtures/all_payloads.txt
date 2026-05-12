@@ -1,0 +1,8 @@
+=== Event: evt_example_1 ===
+{"body": "{\"action\": \"mention_created\", \"data\": {\"url\": \"https://www.reddit.com/r/example/comments/a/\", \"body\": \"Sanitized fixture body 1.\", \"timestamp\": \"2026-05-10 11:55:53.000\", \"source\": \"reddit\", \"sourceId\": \"t3_a\", \"author\": \"user_a\", \"relevanceScore\": \"medium\", \"relevanceComment\": \"fixture\", \"language\": \"english\", \"keyword\": \"snowflake\"}}"}
+
+=== Event: evt_example_2 ===
+{"body": "{\"action\": \"mention_created\", \"data\": {\"url\": \"https://twitter.com/example/status/2\", \"body\": \"Sanitized fixture body 2.\", \"timestamp\": \"Mon Jan 15 2024 10:30:00 GMT+0000\", \"source\": \"twitter\", \"sourceId\": \"tweet_b\", \"author\": \"user_b\", \"relevanceScore\": \"high\", \"relevanceComment\": \"fixture\", \"language\": \"en\", \"keyword\": \"snowflake\"}}"}
+
+=== Event: evt_example_3 ===
+{"body": "{\"action\": \"mention_updated\", \"data\": {\"url\": \"https://news.ycombinator.com/item?id=3\", \"body\": \"Sanitized fixture body 3.\", \"timestamp\": \"2024-01-15T10:30:00+00:00\", \"source\": \"hackernews\", \"sourceId\": \"hn_c\", \"author\": \"user_c\", \"relevanceScore\": \"low\", \"relevanceComment\": \"fixture\", \"keyword\": \"snowflake\"}}"}

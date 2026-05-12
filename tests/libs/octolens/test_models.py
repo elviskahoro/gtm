@@ -11,12 +11,9 @@ from pydantic import ValidationError
 
 from libs.octolens import Mention, Webhook
 
-EVENTS_PATH = Path(
-    "/Users/elvis/Documents/ai/data/webhooks/octolens-mention/events.json",
-)
-ALL_PAYLOADS_PATH = Path(
-    "/Users/elvis/Documents/ai/data/webhooks/octolens-mention/all_payloads.txt",
-)
+FIXTURES_DIR = Path(__file__).parent / "fixtures"
+EVENTS_PATH = FIXTURES_DIR / "events.json"
+ALL_PAYLOADS_PATH = FIXTURES_DIR / "all_payloads.txt"
 
 
 def _parse_all_payloads(path: Path) -> list[dict[str, object]]:
@@ -60,7 +57,7 @@ def test_webhook_wrapped_hookdeck_form_validates() -> None:
     for i, env in enumerate(envelopes):
         try:
             webhook = Webhook.model_validate(env)
-            assert webhook.action == "mention_created"
+            assert webhook.action in {"mention_created", "mention_updated"}
             assert isinstance(webhook.data, Mention)
             success += 1
         except ValidationError as exc:

@@ -71,7 +71,10 @@ class Mention(BaseModel):
             "relevanceComment",
         ),
     )
-    language: str = Field(validation_alias=AliasChoices("language", "Language"))
+    language: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("language", "Language"),
+    )
     keyword: str = Field(validation_alias=AliasChoices("keyword", "Keyword"))
     keywords: list[str] = Field(default_factory=list)
     sentiment_label: str | None = Field(
