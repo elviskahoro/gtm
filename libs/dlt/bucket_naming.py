@@ -20,20 +20,20 @@ Field meanings:
                    like "visit" are wrong and will silently miss the
                    real bucket.
     stage          Ingestion stage. Raw landings (pre-transformation)
-                   use "raw" via :func:`raw_bucket_name`.
+                   use "raw" via :func:`raw_bucket_name`; post-transform
+                   ETL outputs use "etl" via :func:`etl_bucket_name`.
 
-Why this exists: every ``etl_get_bucket_name()`` implementation on a
-webhook subclass MUST call :func:`raw_bucket_name`. Hard-coded strings
-drift from the actual GCS buckets and cause 500s on upload. Centralizing
-the format here means future contributors only choose ``source`` and
-``entity_plural`` — they cannot get the prefix, separators, or stage
-suffix wrong.
+Why this exists: hard-coded strings drift from the actual GCS buckets
+and cause 500s on upload. Centralizing the format here means future
+contributors only choose ``source`` and ``entity_plural`` — they cannot
+get the prefix, separators, or stage suffix wrong.
 """
 
 from __future__ import annotations
 
 WORKSPACE: str = "devx"
 RAW_STAGE: str = "raw"
+ETL_STAGE: str = "etl"
 
 
 def raw_bucket_name(
@@ -48,3 +48,12 @@ def raw_bucket_name(
     to swap.
     """
     return f"dlthub-{WORKSPACE}-{source}-{entity_plural}-{RAW_STAGE}"
+
+
+def etl_bucket_name(
+    *,
+    source: str,
+    entity_plural: str,
+) -> str:
+    """Build the GCS bucket name for post-transform ETL output."""
+    return f"dlthub-{WORKSPACE}-{source}-{entity_plural}-{ETL_STAGE}"

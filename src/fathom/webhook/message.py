@@ -10,7 +10,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from libs.dlt.bucket_naming import raw_bucket_name
+from libs.dlt.bucket_naming import etl_bucket_name
 from libs.fathom import Webhook as FathomWebhook
 
 
@@ -19,11 +19,11 @@ class Webhook(FathomWebhook):
 
     @staticmethod
     def modal_get_secret_collection_names() -> list[str]:
-        return ["devx-growth-gcp"]
+        return ["devx-gcp-202605111323"]
 
     @staticmethod
     def etl_get_bucket_name() -> str:
-        return raw_bucket_name(source="fathom", entity_plural="messages")
+        return etl_bucket_name(source="fathom", entity_plural="messages")
 
     @staticmethod
     def storage_get_app_name() -> str:

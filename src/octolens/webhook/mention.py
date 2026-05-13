@@ -5,7 +5,7 @@ from typing import Any, ClassVar, Literal, cast
 
 from pydantic import BaseModel
 
-from libs.dlt.bucket_naming import raw_bucket_name
+from libs.dlt.bucket_naming import etl_bucket_name
 from libs.octolens import Webhook as OctolensWebhook
 from src.octolens.utils import generate_gcs_filename
 
@@ -51,11 +51,11 @@ class Webhook(OctolensWebhook):
 
     @staticmethod
     def modal_get_secret_collection_names() -> list[str]:
-        return ["devx-growth-gcp"]
+        return ["devx-gcp-202605111323"]
 
     @staticmethod
     def etl_get_bucket_name() -> str:
-        return raw_bucket_name(source="octolens", entity_plural="mentions")
+        return etl_bucket_name(source="octolens", entity_plural="mentions")
 
     @staticmethod
     def storage_get_app_name() -> str:

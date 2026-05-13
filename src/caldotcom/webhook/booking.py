@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from uuid_extensions import uuid7
 
 from libs.caldotcom import Webhook as CalcomWebhook
-from libs.dlt.bucket_naming import raw_bucket_name
+from libs.dlt.bucket_naming import etl_bucket_name
 from libs.meetings import canonical_meeting_uid
 from src.caldotcom.utils import (
     generate_gcs_filename,
@@ -61,11 +61,11 @@ class Webhook(CalcomWebhook):
 
     @staticmethod
     def modal_get_secret_collection_names() -> list[str]:
-        return ["devx-growth-gcp"]
+        return ["devx-gcp-202605111323"]
 
     @staticmethod
     def etl_get_bucket_name() -> str:
-        return raw_bucket_name(source="calcom", entity_plural="bookings")
+        return etl_bucket_name(source="calcom", entity_plural="bookings")
 
     @staticmethod
     def storage_get_app_name() -> str:

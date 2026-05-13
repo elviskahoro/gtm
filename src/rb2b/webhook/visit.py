@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel
 
-from libs.dlt.bucket_naming import raw_bucket_name
+from libs.dlt.bucket_naming import etl_bucket_name
 from libs.rb2b import Webhook as Rb2bWebhook
 from src.rb2b.utils import (
     event_to_jsonl,
@@ -42,7 +42,7 @@ class Webhook(Rb2bWebhook):
 
     @staticmethod
     def etl_get_bucket_name() -> str:
-        return raw_bucket_name(source="rb2b", entity_plural="visits")
+        return etl_bucket_name(source="rb2b", entity_plural="visits")
 
     @staticmethod
     def storage_get_app_name() -> str:
