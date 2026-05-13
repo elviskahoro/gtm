@@ -167,7 +167,11 @@ def main() -> int:
             f"[attribute]   {spec.api_slug:25s}  {spec.attribute_type:14s}  {status}",
         )
 
-        if spec.seed_options and apply and (attr_result.attribute_exists or attr_result.attribute_created):
+        if (
+            spec.seed_options
+            and apply
+            and (attr_result.attribute_exists or attr_result.attribute_created)
+        ):
             created_options = ensure_select_options(
                 target_object=OBJECT_API_SLUG,
                 attribute_slug=spec.api_slug,

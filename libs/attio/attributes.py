@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from attio.errors import SDKError
+from attio.errors.sdkerror import SDKError
 
 from libs.attio.client import get_client
 from libs.attio.models import AttributeCreateResult
