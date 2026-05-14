@@ -29,6 +29,7 @@ from libs.attio.models import (
     MentionInput,
     NoteInput,
     PersonInput,
+    TrackingEventInput,
 )
 from libs.attio.notes import (
     add_note as libs_add_note,
@@ -37,6 +38,7 @@ from libs.attio.notes import (
     list_notes_for_parent as libs_list_notes_for_parent,
 )
 from libs.attio.people import upsert_person as libs_upsert_person
+from libs.attio.tracking_events import find_or_create_tracking_event
 from src.attio.ops import (
     AttioOp,
     CompanyRef,
@@ -47,6 +49,7 @@ from src.attio.ops import (
     UpsertMention,
     UpsertNote,
     UpsertPerson,
+    UpsertTrackingEvent,
 )
 
 logger = logging.getLogger(__name__)
@@ -161,6 +164,10 @@ def _handle_upsert_person(
             github_url=op.github_url,
             phone=op.phone,
             company_domain=op.company_domain,
+            title=op.title,
+            city=op.city,
+            state=op.state,
+            zipcode=op.zipcode,
             additional_emails=[],
             replace_emails=False,
         ),
@@ -176,6 +183,9 @@ def _handle_upsert_company(
         CompanyInput(
             name=op.name or op.domain,
             domain=op.domain,
+            industry=op.industry,
+            employee_count=op.employee_count,
+            estimate_revenue=op.estimate_revenue,
         ),
     )
 
@@ -349,12 +359,86 @@ def _handle_upsert_mention(
     )
 
 
+def _handle_upsert_tracking_event(
+    op: UpsertTrackingEvent,
+    table: LookupTable,
+) -> ReliabilityEnvelope:
+    person_id: str | None = None
+    company_id: str | None = None
+    if op.subject_person is not None:
+        person_id = table.resolve(op.subject_person)
+        if person_id is None:
+            return ReliabilityEnvelope(
+                success=False,
+                partial_success=False,
+                action="failed",
+                record_id=None,
+                errors=[
+                    ErrorEntry(
+                        code="unresolved_ref",
+                        message=(
+                            f"could not resolve {op.subject_person.ref_kind}:"
+                            f"{op.subject_person.model_dump()}"
+                        ),
+                        error_type="UnresolvedRefError",
+                        fatal=True,
+                    ),
+                ],
+                warnings=[],
+                skipped_fields=[],
+                meta={"output_schema_version": "v1"},
+            )
+    if op.subject_company is not None:
+        company_id = table.resolve(op.subject_company)
+        if company_id is None:
+            return ReliabilityEnvelope(
+                success=False,
+                partial_success=False,
+                action="failed",
+                record_id=None,
+                errors=[
+                    ErrorEntry(
+                        code="unresolved_ref",
+                        message=(
+                            f"could not resolve {op.subject_company.ref_kind}:"
+                            f"{op.subject_company.model_dump()}"
+                        ),
+                        error_type="UnresolvedRefError",
+                        fatal=True,
+                    ),
+                ],
+                warnings=[],
+                skipped_fields=[],
+                meta={"output_schema_version": "v1"},
+            )
+
+    return find_or_create_tracking_event(
+        TrackingEventInput(
+            external_id=op.external_id,
+            name=op.name,
+            event_type=op.event_type,
+            event_timestamp=op.event_timestamp,
+            body_json=op.body_json,
+            captured_url=op.captured_url,
+            referrer=op.referrer,
+            is_repeat_visit=op.is_repeat_visit,
+            tags=op.tags,
+            city=op.city,
+            state=op.state,
+            zipcode=op.zipcode,
+            related_person_record_id=person_id,
+            related_company_record_id=company_id,
+        ),
+    )
+
+
 OP_HANDLERS: dict[type, Callable[[Any, LookupTable], ReliabilityEnvelope]] = {
     UpsertPerson: _handle_upsert_person,
     UpsertCompany: _handle_upsert_company,
     UpsertMeeting: _handle_upsert_meeting,
     UpsertNote: _handle_upsert_note,
     UpsertMention: _handle_upsert_mention,
+    UpsertTrackingEvent: _handle_upsert_tracking_event,
 }
 
 

@@ -10,6 +10,9 @@ class CompanyInput(BaseModel):
     name: str
     domain: str | None = None
     description: str | None = None
+    industry: str | None = None
+    employee_count: str | None = None
+    estimate_revenue: str | None = None
 
 
 class CompanyResult(BaseModel):
@@ -62,6 +65,10 @@ class PersonInput(BaseModel):
     location_mode: Literal["raw", "city"] = "city"
     additional_emails: list[str] = Field(default_factory=list)
     replace_emails: bool = False
+    title: str | None = None
+    city: str | None = None
+    state: str | None = None
+    zipcode: str | None = None
 
     @model_validator(mode="after")
     def _require_identity(self) -> PersonInput:
