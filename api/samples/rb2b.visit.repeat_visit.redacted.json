@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_repeat_visit_001",
+  "timestamp": "2026-05-14T14:00:00+00:00",
+  "connection": "rb2b-direct",
+  "payload": {
+    "LinkedIn URL": "https://www.linkedin.com/in/charlie",
+    "First Name": "Charlie",
+    "Last Name": "Brown",
+    "Title": "VP Sales",
+    "Company Name": "TechStart Inc",
+    "Business Email": "charlie@techstart.test",
+    "Website": "https://techstart.test",
+    "Industry": "SaaS",
+    "Employee Count": "51-200",
+    "Estimate Revenue": "$1M - $10M",
+    "City": "Boston",
+    "State": "MA",
+    "Zipcode": "02101",
+    "Seen At": "2026-05-14T14:00:00.000+00:00",
+    "Referrer": "https://example.test/blog",
+    "Tags": "sales,decision-maker",
+    "Captured URL": "https://techstart.test/pricing",
+    "is_repeat_visit": true
+  }
+}

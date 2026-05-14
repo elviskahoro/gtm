@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_company_only_001",
+  "timestamp": "2026-05-14T12:00:00+00:00",
+  "connection": "rb2b-direct",
+  "payload": {
+    "LinkedIn URL": "https://www.linkedin.com/company/acme-corp",
+    "First Name": null,
+    "Last Name": null,
+    "Title": null,
+    "Company Name": "Acme Corporation",
+    "Business Email": null,
+    "Website": "https://acme.test",
+    "Industry": "Manufacturing",
+    "Employee Count": "5001-10000",
+    "Estimate Revenue": "$50M - $100M",
+    "City": "Austin",
+    "State": "TX",
+    "Zipcode": "78701",
+    "Seen At": "2026-05-14T12:00:00.000+00:00",
+    "Referrer": "https://linkedin.test/",
+    "Tags": "b2b,enterprise",
+    "Captured URL": "https://acme.test/solutions",
+    "is_repeat_visit": false
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_person_only_001",
+  "timestamp": "2026-05-14T13:00:00+00:00",
+  "connection": "rb2b-direct",
+  "payload": {
+    "LinkedIn URL": "https://www.linkedin.com/in/bob-jones",
+    "First Name": "Bob",
+    "Last Name": "Jones",
+    "Title": "Product Manager",
+    "Company Name": null,
+    "Business Email": "bob@example.test",
+    "Website": null,
+    "Industry": null,
+    "Employee Count": null,
+    "Estimate Revenue": null,
+    "City": "Seattle",
+    "State": "WA",
+    "Zipcode": "98101",
+    "Seen At": "2026-05-14T13:00:00.000+00:00",
+    "Referrer": "https://twitter.test/",
+    "Tags": "product",
+    "Captured URL": "https://example.test/features",
+    "is_repeat_visit": false
+  }
+}

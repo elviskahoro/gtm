@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_person_company_001",
+  "timestamp": "2026-05-14T10:00:00+00:00",
+  "connection": "rb2b-direct",
+  "payload": {
+    "LinkedIn URL": "https://www.linkedin.com/in/alice",
+    "First Name": "Alice",
+    "Last Name": "Smith",
+    "Title": "Senior Engineer",
+    "Company Name": "Example Corp",
+    "Business Email": "alice@example.test",
+    "Website": "https://example.test",
+    "Industry": "Software",
+    "Employee Count": "1001-5000",
+    "Estimate Revenue": "$10M - $50M",
+    "City": "Brooklyn",
+    "State": "NY",
+    "Zipcode": "11201",
+    "Seen At": "2026-05-14T09:45:00.000+00:00",
+    "Referrer": "https://google.test/",
+    "Tags": "pricing,enterprise",
+    "Captured URL": "https://example.test/pricing",
+    "is_repeat_visit": false
+  }
+}

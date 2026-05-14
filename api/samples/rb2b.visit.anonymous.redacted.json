@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_anonymous_001",
+  "timestamp": "2026-05-14T11:00:00+00:00",
+  "connection": "rb2b-direct",
+  "payload": {
+    "LinkedIn URL": null,
+    "First Name": null,
+    "Last Name": null,
+    "Title": null,
+    "Company Name": null,
+    "Business Email": null,
+    "Website": null,
+    "Industry": null,
+    "Employee Count": null,
+    "Estimate Revenue": null,
+    "City": "San Francisco",
+    "State": "CA",
+    "Zipcode": "94102",
+    "Seen At": "2026-05-14T11:00:00.000+00:00",
+    "Referrer": "https://google.test/",
+    "Tags": "",
+    "Captured URL": "https://example.test/homepage",
+    "is_repeat_visit": false
+  }
+}
