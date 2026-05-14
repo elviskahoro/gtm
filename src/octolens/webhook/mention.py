@@ -135,12 +135,13 @@ class Webhook(OctolensMentionWebhook):
                 first_name, last_name = split_author_name(m.author)
                 ops.append(
                     UpsertPerson(
+                        matching_attribute="linkedin",
                         linkedin=linkedin_url,
                         first_name=first_name,
                         last_name=last_name,
                     ),
                 )
-                related_person_ref = PersonRef(linkedin=linkedin_url)
+                related_person_ref = PersonRef(attribute="linkedin", value=linkedin_url)
 
         ops.append(
             UpsertMention(

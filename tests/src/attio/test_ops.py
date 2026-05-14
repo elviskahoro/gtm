@@ -21,7 +21,7 @@ from src.attio.ops import (
 
 
 def test_upsert_person_discriminator() -> None:
-    op = UpsertPerson(email="a@example.com")
+    op = UpsertPerson(matching_attribute="email", email="a@example.com")
     assert op.op_type == "upsert_person"
 
 
@@ -45,7 +45,9 @@ def test_ref_discriminator() -> None:
 
 def test_ref_discriminator_person_and_company() -> None:
     adapter: TypeAdapter[Ref] = TypeAdapter(Ref)
-    person = adapter.validate_python({"ref_kind": "person", "email": "a@b.com"})
+    person = adapter.validate_python(
+        {"ref_kind": "person", "attribute": "email", "value": "a@b.com"},
+    )
     company = adapter.validate_python({"ref_kind": "company", "domain": "b.com"})
     assert isinstance(person, PersonRef)
     assert isinstance(company, CompanyRef)
@@ -83,9 +85,41 @@ def test_upsert_meeting_external_ref_structured_defaults() -> None:
 
 def test_add_note_carries_ref() -> None:
     op = AddNote(
-        parent=PersonRef(email="a@b.com"),
+        parent=PersonRef(attribute="email", value="a@b.com"),
         title="x",
         content="y",
     )
     assert isinstance(op.parent, PersonRef)
     assert op.op_type == "add_note"
+
+
+def test_person_ref_generalized_shape_email() -> None:
+    ref = PersonRef(attribute="email", value="a@example.com")
+    assert ref.attribute == "email"
+    assert ref.value == "a@example.com"
+
+
+def test_person_ref_generalized_shape_github_handle() -> None:
+    ref = PersonRef(attribute="github_handle", value="elviskahoro")
+    assert ref.attribute == "github_handle"
+    assert ref.value == "elviskahoro"
+
+
+def test_upsert_person_requires_matching_attribute_field_to_be_set() -> None:
+    with pytest.raises(ValidationError):
+        # matching_attribute="email" but email is None
+        UpsertPerson(
+            matching_attribute="email",
+            linkedin="https://www.linkedin.com/in/foo",
+        )
+
+
+def test_upsert_person_github_handle_construction() -> None:
+    op = UpsertPerson(
+        matching_attribute="github_handle",
+        github_handle="elviskahoro",
+        github_url="https://github.com/elviskahoro",
+    )
+    assert op.matching_attribute == "github_handle"
+    assert op.github_handle == "elviskahoro"
+    assert op.github_url == "https://github.com/elviskahoro"

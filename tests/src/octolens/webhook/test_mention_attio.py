@@ -76,8 +76,9 @@ def test_linkedin_sample_produces_upsert_person_and_mention() -> None:
     assert mention_op.source_platform == "linkedin"
     assert mention_op.author_handle == "Linkedin User"
     assert mention_op.related_person is not None
+    assert mention_op.related_person.attribute == "linkedin"
     assert (
-        mention_op.related_person.linkedin
+        mention_op.related_person.value
         == "https://www.linkedin.com/in/linkedin-user"
     )
 
