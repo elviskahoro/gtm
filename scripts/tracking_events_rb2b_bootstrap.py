@@ -33,7 +33,12 @@ def main(apply: bool) -> int:
         attribute_slug="event_type",
         options=["rb2b_visit"] if apply else [],
     )
-    results.append(("event_type:rb2b_visit option", "applied" if added else "would-apply" if not apply else "exists"))
+    results.append(
+        (
+            "event_type:rb2b_visit option",
+            "applied" if added else "would-apply" if not apply else "exists",
+        ),
+    )
 
     attrs = [
         ("company", "Company", "record-reference", {"allowed_objects": ["companies"]}),
@@ -58,7 +63,14 @@ def main(apply: bool) -> int:
             apply=apply,
         )
         results.append(
-            (slug, "created" if r.attribute_created else "exists" if r.attribute_exists else "would-create")
+            (
+                slug,
+                "created"
+                if r.attribute_created
+                else "exists"
+                if r.attribute_exists
+                else "would-create",
+            ),
         )
 
     for slug, status in results:

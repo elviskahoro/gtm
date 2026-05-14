@@ -3,9 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
-from src.attio.ops import UpsertCompany, UpsertPerson, UpsertTrackingEvent
 from src.rb2b.webhook.visit import Webhook, extract_domain
 
 SAMPLES = Path(__file__).resolve().parents[3] / "api" / "samples"
@@ -13,6 +10,7 @@ SAMPLES = Path(__file__).resolve().parents[3] / "api" / "samples"
 
 def _load(name: str) -> Webhook:
     import orjson
+
     return Webhook.model_validate(orjson.loads((SAMPLES / name).read_text()))
 
 
@@ -56,9 +54,15 @@ def test_attio_get_operations_person_and_company_emits_three_ops_in_order() -> N
     w = _load("rb2b.visit.person_and_company.redacted.json")
     ops = w.attio_get_operations()
     assert [type(o).__name__ for o in ops] == [
-        "UpsertCompany", "UpsertPerson", "UpsertTrackingEvent",
+        "UpsertCompany",
+        "UpsertPerson",
+        "UpsertTrackingEvent",
     ]
-    assert ops[0].merge_only_if_empty == ["industry", "employee_count", "estimate_revenue"]
+    assert ops[0].merge_only_if_empty == [
+        "industry",
+        "employee_count",
+        "estimate_revenue",
+    ]
     assert ops[1].merge_only_if_empty == ["title", "city", "state", "zipcode"]
     te = ops[2]
     assert te.external_id.startswith("rb2b:")
@@ -83,7 +87,9 @@ def test_attio_get_operations_tracking_event_carries_full_mapping() -> None:
 
 def test_attio_get_operations_repeat_visit_sets_flag() -> None:
     w = _load("rb2b.visit.repeat_visit.redacted.json")
-    te = [o for o in w.attio_get_operations() if type(o).__name__ == "UpsertTrackingEvent"][0]
+    te = [
+        o for o in w.attio_get_operations() if type(o).__name__ == "UpsertTrackingEvent"
+    ][0]
     assert te.is_repeat_visit is True
 
 

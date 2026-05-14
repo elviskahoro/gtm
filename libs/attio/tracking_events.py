@@ -5,6 +5,10 @@ from libs.attio.client import get_client
 from libs.attio.contracts import ErrorEntry, ReliabilityEnvelope
 from libs.attio.errors import classify_error
 from libs.attio.models import TrackingEventInput
+from libs.attio.sdk_boundary import (
+    build_patch_record_request,
+    build_post_record_request,
+)
 from libs.attio.values import build_tracking_event_values
 
 _OBJECT = "tracking_events"
@@ -22,23 +26,23 @@ def find_or_create_tracking_event(input: TrackingEventInput) -> ReliabilityEnvel
         with get_client() as client:
             query_response = client.records.post_v2_objects_object_records_query(
                 object=_OBJECT,
-                data={"filter": {"external_id": input.external_id}},
+                filter_={"external_id": input.external_id},
             )
             existing = list(query_response.data or [])
             values = build_tracking_event_values(input)
 
             if existing:
                 record_id = existing[0].id.record_id
-                client.records.patch_v2_objects_object_records_record_id(
+                client.records.patch_v2_objects_object_records_record_id_(
                     object=_OBJECT,
                     record_id=record_id,
-                    data={"data": {"values": values}},
+                    data=build_patch_record_request(values),
                 )
                 action = "updated"
             else:
                 create_response = client.records.post_v2_objects_object_records(
                     object=_OBJECT,
-                    data={"data": {"values": values}},
+                    data=build_post_record_request(values),
                 )
                 record_id = create_response.data.id.record_id
                 action = "created"
@@ -53,7 +57,10 @@ def find_or_create_tracking_event(input: TrackingEventInput) -> ReliabilityEnvel
         warnings=[],
         skipped_fields=[],
         errors=[],
-        meta={"output_schema_version": "v1", "tracking_event": input.model_dump(mode="json")},
+        meta={
+            "output_schema_version": "v1",
+            "tracking_event": input.model_dump(mode="json"),
+        },
     )
 
 

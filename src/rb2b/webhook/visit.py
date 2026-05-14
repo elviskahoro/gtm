@@ -131,8 +131,12 @@ class Webhook(Rb2bWebhook):
                     industry=self.payload.industry,
                     employee_count=self.payload.employee_count,
                     estimate_revenue=self.payload.estimate_revenue,
-                    merge_only_if_empty=["industry", "employee_count", "estimate_revenue"],
-                )
+                    merge_only_if_empty=[
+                        "industry",
+                        "employee_count",
+                        "estimate_revenue",
+                    ],
+                ),
             )
 
         if email:
@@ -149,21 +153,15 @@ class Webhook(Rb2bWebhook):
                     state=self.payload.state,
                     zipcode=self.payload.zipcode,
                     merge_only_if_empty=["title", "city", "state", "zipcode"],
-                )
+                ),
             )
 
         # tracking_events always emitted if validity gate passed (anonymous already rejected).
-        subject_person = (
-            PersonRef(attribute="email", value=email)
-            if email
-            else None
-        )
+        subject_person = PersonRef(attribute="email", value=email) if email else None
         subject_company = CompanyRef(domain=domain) if domain else None
 
         tags_list = [
-            t.strip()
-            for t in (self.payload.tags or "").split(",")
-            if t.strip()
+            t.strip() for t in (self.payload.tags or "").split(",") if t.strip()
         ]
         seen_at = self.payload.seen_at or self.timestamp or datetime.now(timezone.utc)
 
@@ -183,7 +181,7 @@ class Webhook(Rb2bWebhook):
                 zipcode=self.payload.zipcode,
                 subject_person=subject_person,
                 subject_company=subject_company,
-            )
+            ),
         )
 
         return ops

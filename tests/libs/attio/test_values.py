@@ -201,8 +201,8 @@ def test_build_tracking_event_values_full() -> None:
     assert vs["state"] == [{"value": "NY"}]
     assert vs["zipcode"] == [{"value": "11201"}]
     assert vs["people"] == [
-        {"target_object": "people", "target_record_id": "pe_1"}
+        {"target_object": "people", "target_record_id": "pe_1"},
     ]
     assert vs["company"] == [
-        {"target_object": "companies", "target_record_id": "co_1"}
+        {"target_object": "companies", "target_record_id": "co_1"},
     ]

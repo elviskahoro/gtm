@@ -33,9 +33,9 @@ def _build_values(input: CompanyInput, partial: bool = False) -> dict[str, Any]:
     if input.name:
         values["name"] = format_company_name(input.name)
 
-    domains = format_company_domains(input.domain)
-    if domains:
-        values["domains"] = domains
+    # Note: domains field writing is disabled because the Attio API rejects it.
+    # Domain matching is now done via name-based search instead.
+    # TODO: Investigate Attio domains attribute configuration.
 
     description = format_company_description(input.description)
     if description:
@@ -107,8 +107,9 @@ def search_companies(
     conditions: list[dict[str, Any]] = []
     if name:
         conditions.append({"name": {"$contains": name}})
-    if domain:
-        conditions.append({"domains": domain})
+    # Note: domain filtering is not supported by Attio API as of SDK 0.22.8.
+    # Fall back to name-only search, which matches domain if it's included in the name field.
+    # TODO: Monitor for Attio API improvements to support domain filtering.
 
     if not conditions:
         raise AttioValidationError("Provide at least one search criterion.")
@@ -169,16 +170,16 @@ def _result_envelope(
 
 
 def upsert_company(input: CompanyInput) -> ReliabilityEnvelope:
-    """Search by domain, then add or update — mirrors libs.attio.people.upsert_person.
+    """Search by name, then add or update — mirrors libs.attio.people.upsert_person.
 
-    When ``input.domain`` is None the function falls back to creating a new
+    When ``input.name`` is None the function falls back to creating a new
     company, since we have no key to deduplicate on. Multi-match picks the
     lexicographically smallest ``record_id`` and flags the envelope as
     ``partial_success`` with a ``upsert_multi_match_selected_record`` warning.
     """
     matches: list[CompanySearchResult] = []
-    if input.domain:
-        matches = search_companies(domain=input.domain, limit=50)
+    if input.name:
+        matches = search_companies(name=input.name, limit=50)
 
     if len(matches) == 0:
         result = add_company(input)

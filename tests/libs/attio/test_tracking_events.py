@@ -85,7 +85,7 @@ def test_find_or_create_tracking_event_hit_then_patch(mock_get_client) -> None:
     # Patch returns the same record id
     patch_resp = MagicMock()
     patch_resp.data.id.record_id = "te_existing"
-    client.records.patch_v2_objects_object_records_record_id.return_value = patch_resp
+    client.records.patch_v2_objects_object_records_record_id_.return_value = patch_resp
     mock_get_client.return_value.__enter__.return_value = client
 
     from libs.attio.models import TrackingEventInput
@@ -97,11 +97,13 @@ def test_find_or_create_tracking_event_hit_then_patch(mock_get_client) -> None:
     assert env.action == "updated"
     assert env.record_id == "te_existing"
     client.records.post_v2_objects_object_records.assert_not_called()
-    client.records.patch_v2_objects_object_records_record_id.assert_called_once()
+    client.records.patch_v2_objects_object_records_record_id_.assert_called_once()
 
 
 @patch("libs.attio.tracking_events.get_client")
-def test_find_or_create_tracking_event_sdk_error_returns_envelope(mock_get_client) -> None:
+def test_find_or_create_tracking_event_sdk_error_returns_envelope(
+    mock_get_client,
+) -> None:
     from libs.attio.tracking_events import find_or_create_tracking_event
 
     client = MagicMock()

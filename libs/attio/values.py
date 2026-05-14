@@ -3,7 +3,12 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any, Literal
 
-from libs.attio.models import MeetingInput, MentionInput, PersonInput, TrackingEventInput
+from libs.attio.models import (
+    MeetingInput,
+    MentionInput,
+    PersonInput,
+    TrackingEventInput,
+)
 
 
 def normalize_email_address_list(candidates: Iterable[str | None]) -> list[str]:
@@ -339,7 +344,7 @@ def build_tracking_event_values(input: TrackingEventInput) -> dict[str, list[dic
     """
     values: dict[str, list[dict]] = {
         "name": _scalar_value(input.name),
-        "event_type": _scalar_value(input.event_type),
+        "event_type": _select_value(input.event_type),
         "external_id": _scalar_value(input.external_id),
         "captured_url": _scalar_value(input.captured_url),
         "body": _scalar_value(input.body_json),

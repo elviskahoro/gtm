@@ -41,7 +41,7 @@ def test_upsert_company_creates_when_no_match() -> None:
     ):
         envelope = upsert_company(CompanyInput(name="Example", domain="example.com"))
 
-    search.assert_called_once_with(domain="example.com", limit=50)
+    search.assert_called_once_with(name="Example", limit=50)
     add.assert_called_once()
     assert envelope.success is True
     assert envelope.action == "created"
@@ -68,16 +68,16 @@ def test_upsert_company_updates_when_single_match() -> None:
     assert envelope.record_id == "co-7"
 
 
-def test_upsert_company_no_domain_falls_back_to_add() -> None:
+def test_upsert_company_no_match_falls_back_to_add() -> None:
     add_mock = MagicMock(return_value=_company_result("co-2"))
     with (
-        patch("libs.attio.companies.search_companies") as search,
+        patch("libs.attio.companies.search_companies", return_value=[]) as search,
         patch("libs.attio.companies.add_company", add_mock),
     ):
-        envelope = upsert_company(CompanyInput(name="Example", domain=None))
+        envelope = upsert_company(CompanyInput(name="NewCorp", domain=None))
 
-    # Without a domain we cannot search — go straight to add.
-    search.assert_not_called()
+    # Search returns no matches — go straight to add.
+    search.assert_called_once_with(name="NewCorp", limit=50)
     add_mock.assert_called_once()
     assert envelope.success is True
     assert envelope.action == "created"
