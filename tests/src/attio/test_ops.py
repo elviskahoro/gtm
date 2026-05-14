@@ -175,3 +175,24 @@ def test_attio_op_union_discriminates_tracking_event() -> None:
     raw["event_timestamp"] = raw["event_timestamp"].isoformat()
     op = adapter.validate_python(raw)
     assert isinstance(op, UpsertTrackingEvent)
+
+
+def test_upsert_person_accepts_enrichment_fields() -> None:
+    op = UpsertPerson(
+        matching_attribute="email",
+        email="alice@example.test",
+        title="Head of Eng",
+        city="Brooklyn",
+        state="NY",
+        zipcode="11201",
+        merge_only_if_empty=["title", "city", "state", "zipcode"],
+    )
+    assert op.title == "Head of Eng"
+    assert op.merge_only_if_empty == ["title", "city", "state", "zipcode"]
+
+
+def test_upsert_person_defaults_preserve_existing_call_sites() -> None:
+    op = UpsertPerson(matching_attribute="email", email="alice@example.test")
+    assert op.title is None
+    assert op.city is None
+    assert op.merge_only_if_empty == []

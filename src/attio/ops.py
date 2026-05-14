@@ -92,6 +92,11 @@ class UpsertPerson(BaseModel):
     github_url: str | None = None
     phone: str | None = None
     company_domain: str | None = None
+    title: str | None = None
+    city: str | None = None
+    state: str | None = None
+    zipcode: str | None = None
+    merge_only_if_empty: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _require_match_value(self) -> UpsertPerson:
