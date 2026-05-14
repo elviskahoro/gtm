@@ -173,6 +173,11 @@ def build_core_person_values(
     if linkedin:
         values["linkedin"] = linkedin
 
+    if input.github_handle:
+        values["github_handle"] = input.github_handle
+    if input.github_url:
+        values["github_url"] = input.github_url
+
     return values
 
 

@@ -127,3 +127,20 @@ def test_create_builder_handles_null_optionals() -> None:
     sample.subreddit = None
     values = build_create_mention_values(sample)
     assert "mention_body" in values
+
+
+def test_build_core_person_values_emits_github_handle_and_url() -> None:
+    pi = PersonInput(
+        github_handle="elviskahoro",
+        github_url="https://github.com/elviskahoro",
+    )
+    values = build_core_person_values(pi)
+    assert values["github_handle"] == "elviskahoro"
+    assert values["github_url"] == "https://github.com/elviskahoro"
+
+
+def test_build_core_person_values_skips_github_when_absent() -> None:
+    pi = PersonInput(email="a@example.com")
+    values = build_core_person_values(pi)
+    assert "github_handle" not in values
+    assert "github_url" not in values
