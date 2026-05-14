@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class CompanyInput(BaseModel):
@@ -53,6 +53,8 @@ class PersonInput(BaseModel):
     last_name: str | None = None
     phone: str | None = None
     linkedin: str | None = None
+    github_handle: str | None = None
+    github_url: str | None = None
     location: str | None = None
     company_domain: str | None = None
     notes: str | None = None
@@ -61,12 +63,16 @@ class PersonInput(BaseModel):
     additional_emails: list[str] = Field(default_factory=list)
     replace_emails: bool = False
 
-    @classmethod
-    def model_validate(cls, obj: Any, *args: Any, **kwargs: Any) -> PersonInput:
-        instance = super().model_validate(obj, *args, **kwargs)
-        if not instance.email and not instance.linkedin:
-            raise ValueError("At least one of 'email' or 'linkedin' must be set")
-        return instance
+    @model_validator(mode="after")
+    def _require_identity(self) -> PersonInput:
+        has_email = self.email and self.email.strip()
+        has_linkedin = self.linkedin and self.linkedin.strip()
+        has_github = self.github_handle and self.github_handle.strip()
+        if not (has_email or has_linkedin or has_github):
+            raise ValueError(
+                "At least one of 'email', 'linkedin', or 'github_handle' must be set",
+            )
+        return self
 
 
 class PersonResult(BaseModel):
