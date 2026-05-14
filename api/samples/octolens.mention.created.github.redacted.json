@@ -1,0 +1,33 @@
+{
+  "action": "mention_created",
+  "data": {
+    "title": "GitHub Discussion Title",
+    "body": "redacted",
+    "url": "https://github.com/user/repo/issues/123",
+    "timestamp": "2026-05-09 00:31:58.000",
+    "imageUrl": "",
+    "author": "AxelEspinosa94",
+    "authorProfileLink": "https://github.com/AxelEspinosa94",
+    "source": "github",
+    "sourceId": "4410287653",
+    "relevanceScore": "medium",
+    "relevanceComment": "redacted",
+    "keyword": "example_keyword",
+    "keywords": [
+      "example_keyword"
+    ],
+    "language": "english",
+    "sentimentLabel": "Neutral",
+    "tags": [
+      "competitor_mention",
+      "industry_insights"
+    ],
+    "viewId": 16485,
+    "viewName": "Webhook",
+    "viewKeywords": [
+      "example_keyword_1",
+      "example_keyword_2",
+      "example_keyword_3"
+    ]
+  }
+}

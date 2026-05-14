@@ -28,6 +28,8 @@ NON_LINKEDIN_SAMPLE_FILES = SAMPLE_FILES
 
 LINKEDIN_SAMPLE_FILE = "octolens.mention.created.linkedin.redacted.json"
 
+GITHUB_SAMPLE_FILE = "octolens.mention.created.github.redacted.json"
+
 
 @pytest.mark.parametrize("filename", SAMPLE_FILES)
 def test_sample_produces_single_upsert_mention_op(filename: str) -> None:
@@ -428,3 +430,29 @@ def test_github_url_with_invalid_repo_path() -> None:
     op = ops[0]
     assert isinstance(op, UpsertMention)
     assert op.related_person is None
+
+
+def test_github_real_fixture_produces_upsert_person_and_mention() -> None:
+    """Test that real GitHub webhook fixture produces UpsertPerson and UpsertMention."""
+    payload = json.loads((SAMPLES_DIR / GITHUB_SAMPLE_FILE).read_text())
+    webhook = Webhook.model_validate(payload)
+
+    assert webhook.attio_is_valid_webhook() is True
+    ops = webhook.attio_get_operations()
+    assert len(ops) == 2
+
+    # First op: UpsertPerson with github_handle
+    person_op = ops[0]
+    assert isinstance(person_op, UpsertPerson)
+    assert person_op.github_handle == "AxelEspinosa94"
+    assert person_op.github_url == "https://github.com/AxelEspinosa94"
+    assert person_op.matching_attribute == "github_handle"
+
+    # Second op: UpsertMention with related_person
+    mention_op = ops[1]
+    assert isinstance(mention_op, UpsertMention)
+    assert mention_op.source_platform == "github"
+    assert mention_op.author_handle == "AxelEspinosa94"
+    assert mention_op.related_person is not None
+    assert mention_op.related_person.attribute == "github_handle"
+    assert mention_op.related_person.value == "AxelEspinosa94"
