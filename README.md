@@ -14,7 +14,7 @@ gtm-sdk/
 ├── cli/         # Thin command surface (Typer). Parses flags, preflight, calls src/.
 ├── src/         # Workflow orchestration. Chains libs/ adapters. Modal endpoints register here.
 ├── libs/        # Single-SDK adapters. One folder per external service. NO cross-lib imports.
-├── data_gen/    # Reusable data generation/enrichment pipelines (independent, composable).
+├── data-gen/    # Reusable data generation/enrichment pipelines (independent, composable).
 ├── webhooks/    # Standalone Modal webhook handlers (e.g. GCP raw/ETL exporters).
 ├── api/
 │   ├── specs/   # External API OpenAPI specs (e.g. caldotcom)
@@ -32,7 +32,7 @@ gtm-sdk/
 - `libs/<x>/` wraps **one** external SDK or API. Idiomatic Python types/functions. **No `libs/<x>` may import from `libs/<y>`.**
 - `src/` chains adapters into workflows. Modal `@app.function` / `@modal.fastapi_endpoint` decorators live here.
 - `cli/` is Typer-only: parse args → preflight → call into `src/` → render. No business logic.
-- `data_gen/` products are independent; do not depend on each other.
+- `data-gen/` products are independent; do not depend on each other.
 
 Anti-patterns: orchestration inside `libs/`; business logic inside `cli/`; cross-lib imports.
 
@@ -200,7 +200,7 @@ When adding functionality:
 1. **External SDK call?** → New file in `libs/<service>/`. Wrap one SDK only. No cross-lib imports.
 2. **Multi-step flow / Modal endpoint?** → `src/<service>/`. Register module import in `src/app.py` if it defines endpoints.
 3. **User-facing command?** → `cli/<group>/`. Typer subapp. Call into `src/`. Wire into `cli/main.py` via `app.add_typer(...)`.
-4. **Standalone data product?** → `data_gen/<product>/`. Self-contained.
+4. **Standalone data product?** → `data-gen/<product>/`. Self-contained.
 5. **Webhook handler?** → `webhooks/<name>.py`. Independent Modal app.
 
 See `AGENTS.md` (symlinked from `CLAUDE.md`) for the authoritative version of these rules.

@@ -9,7 +9,7 @@
 # would otherwise resolve to the sandbox.
 project-includes = [
   "cli/**/*.py",
-  "data_gen/**/*.py",
+  "data-gen/**/*.py",
   "libs/**/*.py",
   "src/**/*.py",
   "tests/**/*.py",
