@@ -178,6 +178,18 @@ class Webhook(OctolensMentionWebhook):
                     ),
                 )
                 related_person_ref = PersonRef(attribute="linkedin", value=linkedin_url)
+        elif m.source == "github":
+            # Emit UpsertPerson for GitHub mentions.
+            github_handle = _extract_github_handle(m.author, m.author_profile_link)
+            if github_handle:
+                ops.append(
+                    UpsertPerson(
+                        matching_attribute="github_handle",
+                        github_handle=github_handle,
+                        github_url=f"https://github.com/{github_handle}",
+                    ),
+                )
+                related_person_ref = PersonRef(attribute="github_handle", value=github_handle)
 
         ops.append(
             UpsertMention(
