@@ -144,3 +144,65 @@ def test_build_core_person_values_skips_github_when_absent() -> None:
     values = build_core_person_values(pi)
     assert "github_handle" not in values
     assert "github_url" not in values
+
+
+def test_build_tracking_event_values_minimum() -> None:
+    from libs.attio.models import TrackingEventInput
+    from libs.attio.values import build_tracking_event_values
+
+    i = TrackingEventInput(
+        external_id="rb2b:abc",
+        name="https://example.test/p",
+        event_type="rb2b_visit",
+        event_timestamp=datetime(2026, 5, 14, 9, 0),
+        body_json='{"x":1}',
+        captured_url="https://example.test/p",
+    )
+    vs = build_tracking_event_values(i)
+    # Required slugs always present
+    assert vs["name"] == [{"value": "https://example.test/p"}]
+    assert vs["event_type"] == [{"value": "rb2b_visit"}]
+    assert vs["external_id"] == [{"value": "rb2b:abc"}]
+    assert vs["captured_url"] == [{"value": "https://example.test/p"}]
+    assert vs["body"] == [{"value": '{"x":1}'}]
+    # Optional slugs omitted when None
+    assert "referrer" not in vs
+    assert "city" not in vs
+    assert "tags" not in vs  # empty list omitted
+    assert "people" not in vs
+    assert "company" not in vs
+
+
+def test_build_tracking_event_values_full() -> None:
+    from libs.attio.models import TrackingEventInput
+    from libs.attio.values import build_tracking_event_values
+
+    i = TrackingEventInput(
+        external_id="rb2b:abc",
+        name="https://example.test/p",
+        event_type="rb2b_visit",
+        event_timestamp=datetime(2026, 5, 14, 9, 0),
+        body_json='{"x":1}',
+        captured_url="https://example.test/p",
+        referrer="https://google.test/",
+        is_repeat_visit=True,
+        tags=["pricing", "enterprise"],
+        city="Brooklyn",
+        state="NY",
+        zipcode="11201",
+        related_person_record_id="pe_1",
+        related_company_record_id="co_1",
+    )
+    vs = build_tracking_event_values(i)
+    assert vs["referrer"] == [{"value": "https://google.test/"}]
+    assert vs["is_repeat_visit"] == [{"value": True}]
+    assert vs["tags"] == [{"option": "pricing"}, {"option": "enterprise"}]
+    assert vs["city"] == [{"value": "Brooklyn"}]
+    assert vs["state"] == [{"value": "NY"}]
+    assert vs["zipcode"] == [{"value": "11201"}]
+    assert vs["people"] == [
+        {"target_object": "people", "target_record_id": "pe_1"}
+    ]
+    assert vs["company"] == [
+        {"target_object": "companies", "target_record_id": "co_1"}
+    ]
