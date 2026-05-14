@@ -26,6 +26,7 @@ def _action_item(
         user_generated=False,
     )
 
+
 FIXTURE = Path("api/samples/fathom.recording.redacted.json")
 
 
@@ -109,6 +110,7 @@ def test_attio_get_operations_falls_back_when_default_summary_missing() -> None:
 
 def test_plan_includes_summary_note() -> None:
     w = _load()
+    assert w.default_summary is not None
     plan = w.attio_get_operations()
 
     assert len(plan) == 2
@@ -133,6 +135,7 @@ def test_plan_skips_summary_when_missing() -> None:
 
 def test_plan_skips_summary_when_empty_markdown() -> None:
     w = _load()
+    assert w.default_summary is not None
     w.default_summary.markdown_formatted = "   "
     plan = w.attio_get_operations()
     assert len(plan) == 1

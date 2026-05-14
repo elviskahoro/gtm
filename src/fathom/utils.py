@@ -78,7 +78,7 @@ def _format_playback_link(url: str | None, timestamp: str | None) -> str | None:
     return f"[▶ {label}]({url})"
 
 
-def _render_action_items_markdown(items: list[ActionItem]) -> str:
+def render_action_items_markdown(items: list[ActionItem]) -> str:
     """Render Fathom action items as a markdown checklist.
 
     Output shape::
@@ -120,7 +120,7 @@ def _render_action_items_markdown(items: list[ActionItem]) -> str:
     return "\n".join(rendered_lines)
 
 
-def _fathom_summary_title(template_name: str | None) -> str:
+def fathom_summary_title(template_name: str | None) -> str:
     """Build the title used for the Fathom-summary AddNote.
 
     Fathom ships templates like "General", "Sales Discovery", etc. When

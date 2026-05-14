@@ -8,8 +8,8 @@ from libs.dlt.bucket_naming import etl_bucket_name
 from libs.fathom import Webhook as FathomWebhook
 from libs.meetings import canonical_meeting_uid
 from src.fathom.utils import (
-    _fathom_summary_title,
-    _render_action_items_markdown,
+    fathom_summary_title,
+    render_action_items_markdown,
     generate_gcs_filename,
     recording_to_jsonl,
 )
@@ -135,13 +135,13 @@ class Webhook(FathomWebhook):
             ops.append(
                 AddNote(
                     parent=MeetingRef(ical_uid=ical_uid),
-                    title=_fathom_summary_title(self.default_summary.template_name),
+                    title=fathom_summary_title(self.default_summary.template_name),
                     content=self.default_summary.markdown_formatted,
                 ),
             )
 
         if self.action_items:
-            rendered = _render_action_items_markdown(self.action_items)
+            rendered = render_action_items_markdown(self.action_items)
             if rendered.strip():
                 ops.append(
                     AddNote(
