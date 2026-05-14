@@ -125,6 +125,7 @@ class Webhook(Rb2bWebhook):
         if self.payload.business_email:
             ops.append(
                 UpsertPerson(
+                    matching_attribute="email",
                     email=self.payload.business_email,
                     first_name=self.payload.first_name,
                     last_name=self.payload.last_name,

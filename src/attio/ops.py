@@ -18,17 +18,17 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class PersonRef(BaseModel):
+    """Identifies an Attio Person by exactly one Attio attribute.
+
+    The `attribute` names which Attio Person attribute to match on; `value` is the literal
+    value of that attribute. New identity attributes are added by extending the Literal union.
+    """
+
     model_config = ConfigDict(extra="forbid")
 
     ref_kind: Literal["person"] = "person"
-    email: str | None = None
-    linkedin: str | None = None
-
-    @model_validator(mode="after")
-    def _require_identity(self) -> PersonRef:
-        if not self.email and not self.linkedin:
-            raise ValueError("At least one of 'email' or 'linkedin' must be set")
-        return self
+    attribute: Literal["email", "linkedin", "github_handle"]
+    value: str
 
 
 class CompanyRef(BaseModel):
@@ -83,17 +83,23 @@ class UpsertPerson(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     op_type: Literal["upsert_person"] = "upsert_person"
+    matching_attribute: Literal["email", "linkedin", "github_handle"]
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
     linkedin: str | None = None
+    github_handle: str | None = None
+    github_url: str | None = None
     phone: str | None = None
     company_domain: str | None = None
 
     @model_validator(mode="after")
-    def _require_identity(self) -> UpsertPerson:
-        if not self.email and not self.linkedin:
-            raise ValueError("At least one of 'email' or 'linkedin' must be set")
+    def _require_match_value(self) -> UpsertPerson:
+        if not getattr(self, self.matching_attribute):
+            raise ValueError(
+                f"UpsertPerson.matching_attribute={self.matching_attribute!r} "
+                f"requires the corresponding field to be set.",
+            )
         return self
 
 

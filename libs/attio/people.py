@@ -196,6 +196,7 @@ def _search_people_raw(
     phone: str | None = None,
     company: str | None = None,
     linkedin: str | None = None,
+    github_handle: str | None = None,
     sample: bool = False,
     limit: int = 25,
 ) -> list[PersonSearchResult]:
@@ -217,6 +218,8 @@ def _search_people_raw(
             conditions.append({"linkedin": variants[0]})
         else:
             conditions.append({"$or": [{"linkedin": v} for v in variants]})
+    if github_handle:
+        conditions.append({"github_handle": github_handle})
 
     if not sample and not conditions and not company:
         raise AttioValidationError(
@@ -559,17 +562,23 @@ def update_person(
 def upsert_person(
     input: PersonInput,
     *,
-    matching_attribute: Literal["email", "linkedin"] = "email",
+    matching_attribute: Literal["email", "linkedin", "github_handle"] = "email",
     strict: bool = False,
 ) -> ReliabilityEnvelope:
-    if matching_attribute == "linkedin":
-        matches = _search_people_raw(linkedin=input.linkedin, limit=50)
-        identity_value = input.linkedin
-        identity_label = "linkedin"
-    else:
+    if matching_attribute == "email":
         matches = _search_people_raw(email=input.email, limit=50)
         identity_value = input.email
         identity_label = "email"
+    elif matching_attribute == "linkedin":
+        matches = _search_people_raw(linkedin=input.linkedin, limit=50)
+        identity_value = input.linkedin
+        identity_label = "linkedin"
+    elif matching_attribute == "github_handle":
+        matches = _search_people_raw(github_handle=input.github_handle, limit=50)
+        identity_value = input.github_handle
+        identity_label = "github_handle"
+    else:
+        raise ValueError(f"Unknown matching_attribute: {matching_attribute!r}")
 
     if len(matches) == 0:
         return add_person(input)

@@ -52,14 +52,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class LookupTable:
-    """In-plan registry mapping (kind, key) -> Attio record_id.
+    """In-plan registry mapping (kind, attribute, value) -> Attio record_id.
 
     Handlers consult the table to resolve ``Ref`` values (e.g. ``AddNote.parent``)
     against earlier ops in the same plan. Pass 3 wires ``_handle_add_note`` to
     use this.
     """
 
-    _store: dict[tuple[str, str], str] = field(default_factory=dict)
+    _store: dict[tuple[str, str, str], str] = field(default_factory=dict)
 
     def record(self, op: AttioOp, record_id: str | None) -> None:
         if record_id is None:
@@ -73,31 +73,25 @@ class LookupTable:
         return self._store.get(self._key_for_ref(ref))
 
     @staticmethod
-    def _key_for_op(op: AttioOp) -> list[tuple[str, str]] | None:
+    def _key_for_op(op: AttioOp) -> list[tuple[str, str, str]] | None:
         if isinstance(op, UpsertPerson):
-            keys: list[tuple[str, str]] = []
-            if op.email:
-                keys.append(("person:email", op.email))
-            if op.linkedin:
-                keys.append(("person:linkedin", op.linkedin))
-            return keys if keys else None
+            value = getattr(op, op.matching_attribute)
+            if value is None:
+                return None
+            return [("person", op.matching_attribute, value)]
         if isinstance(op, UpsertCompany):
-            return [("company", op.domain)]
+            return [("company", "domain", op.domain)]
         if isinstance(op, UpsertMeeting):
-            return [("meeting", op.external_ref.ical_uid)]
+            return [("meeting", "ical_uid", op.external_ref.ical_uid)]
         return None
 
     @staticmethod
-    def _key_for_ref(ref: PersonRef | CompanyRef | MeetingRef) -> tuple[str, str]:
+    def _key_for_ref(ref: PersonRef | CompanyRef | MeetingRef) -> tuple[str, str, str]:
         if isinstance(ref, PersonRef):
-            if ref.email:
-                return ("person:email", ref.email)
-            if ref.linkedin:
-                return ("person:linkedin", ref.linkedin)
-            raise ValueError("PersonRef must have email or linkedin")
+            return ("person", ref.attribute, ref.value)
         if isinstance(ref, CompanyRef):
-            return ("company", ref.domain)
-        return ("meeting", ref.ical_uid)
+            return ("company", "domain", ref.domain)
+        return ("meeting", "ical_uid", ref.ical_uid)
 
 
 # ---------- Outcomes ----------
@@ -152,19 +146,20 @@ def _handle_upsert_person(
     op: UpsertPerson,
     table: LookupTable,  # noqa: ARG001 — kept for handler signature parity
 ) -> ReliabilityEnvelope:
-    matching_attribute = "linkedin" if op.linkedin and not op.email else "email"
     return libs_upsert_person(
         PersonInput(
             email=op.email,
             first_name=op.first_name,
             last_name=op.last_name,
             linkedin=op.linkedin,
+            github_handle=op.github_handle,
+            github_url=op.github_url,
             phone=op.phone,
             company_domain=op.company_domain,
             additional_emails=[],
             replace_emails=False,
         ),
-        matching_attribute=matching_attribute,
+        matching_attribute=op.matching_attribute,
     )
 
 

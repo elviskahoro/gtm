@@ -69,7 +69,7 @@ def test_update_person_skips_email_addresses_when_not_merging(monkeypatch) -> No
         record_id="rec_1",
         email=None,
         input=PersonInput(
-            email="",
+            email="a@example.com",
             first_name="Pat",
         ),
     )
@@ -135,7 +135,7 @@ def test_update_person_merges_additional_emails(monkeypatch) -> None:
         record_id="rec_1",
         email=None,
         input=PersonInput(
-            email="",
+            email="a@example.com",
             additional_emails=["b@example.com"],
         ),
     )
@@ -179,7 +179,7 @@ def test_update_person_replace_emails_requires_one_address(monkeypatch) -> None:
             record_id="rec_1",
             email=None,
             input=PersonInput(
-                email="",
+                linkedin="https://www.linkedin.com/in/foo",
                 additional_emails=[],
                 replace_emails=True,
             ),

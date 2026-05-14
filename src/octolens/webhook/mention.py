@@ -30,6 +30,45 @@ def normalize_linkedin_profile_url(url: str | None) -> str | None:
     return f"https://www.linkedin.com/in/{handle}"
 
 
+def _extract_github_handle(
+    author: str | None,
+    author_profile_link: str | None,
+) -> str | None:
+    """Extract and validate a GitHub handle from author or profile URL.
+
+    Rules:
+    - Handles are 1-39 chars, alphanumeric with hyphens, no leading/trailing hyphens
+    - If author_profile_link is a valid github.com/user URL, extract the handle
+    - Otherwise, if author field matches handle pattern, use it
+    - Return None for invalid formats (display names, org/repo paths, non-GitHub URLs)
+    """
+    if not author:
+        return None
+
+    author = author.strip()
+    if not author:
+        return None
+
+    # Pattern 1: GitHub profile URL (https?://(www.)?github.com/<handle>)
+    # Must be exactly one path segment (the username) after domain
+    if author_profile_link:
+        profile_url_pattern = r"^https?://(?:www\.)?github\.com/([a-zA-Z0-9_-]+)/?$"
+        match = re.match(profile_url_pattern, author_profile_link, re.IGNORECASE)
+        if match:
+            return match.group(1)
+        # If URL doesn't match profile pattern, it might be org/repo or invalid
+        # Don't try to fall back to bare author in this case
+
+    # Pattern 2: Bare handle (alphanumeric + hyphens, 1-39 chars, no leading/trailing hyphens)
+    # Only try this if no profile_link was provided or profile_link wasn't a valid URL
+    if not author_profile_link:
+        bare_handle_pattern = r"^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$"
+        if re.match(bare_handle_pattern, author):
+            return author
+
+    return None
+
+
 def split_author_name(full: str | None) -> tuple[str | None, str | None]:
     """Split author name into first and last name (best-effort).
 
@@ -135,12 +174,28 @@ class Webhook(OctolensMentionWebhook):
                 first_name, last_name = split_author_name(m.author)
                 ops.append(
                     UpsertPerson(
+                        matching_attribute="linkedin",
                         linkedin=linkedin_url,
                         first_name=first_name,
                         last_name=last_name,
                     ),
                 )
-                related_person_ref = PersonRef(linkedin=linkedin_url)
+                related_person_ref = PersonRef(attribute="linkedin", value=linkedin_url)
+        elif m.source == "github":
+            # Emit UpsertPerson for GitHub mentions.
+            github_handle = _extract_github_handle(m.author, m.author_profile_link)
+            if github_handle:
+                ops.append(
+                    UpsertPerson(
+                        matching_attribute="github_handle",
+                        github_handle=github_handle,
+                        github_url=f"https://github.com/{github_handle}",
+                    ),
+                )
+                related_person_ref = PersonRef(
+                    attribute="github_handle",
+                    value=github_handle,
+                )
 
         ops.append(
             UpsertMention(

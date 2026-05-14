@@ -66,13 +66,16 @@ def _meeting(ical_uid: str = "fathom-call-1") -> UpsertMeeting:
 
 def test_lookup_table_resolves_person_ref() -> None:
     table = LookupTable()
-    table.record(UpsertPerson(email="a@example.com"), "rec-1")
-    assert table.resolve(PersonRef(email="a@example.com")) == "rec-1"
+    table.record(
+        UpsertPerson(matching_attribute="email", email="a@example.com"),
+        "rec-1",
+    )
+    assert table.resolve(PersonRef(attribute="email", value="a@example.com")) == "rec-1"
 
 
 def test_lookup_table_missing_returns_none() -> None:
     table = LookupTable()
-    assert table.resolve(PersonRef(email="nope@example.com")) is None
+    assert table.resolve(PersonRef(attribute="email", value="nope@example.com")) is None
 
 
 def test_lookup_table_resolves_meeting_ref() -> None:
@@ -83,8 +86,8 @@ def test_lookup_table_resolves_meeting_ref() -> None:
 
 def test_lookup_table_ignores_none_record_id() -> None:
     table = LookupTable()
-    table.record(UpsertPerson(email="a@example.com"), None)
-    assert table.resolve(PersonRef(email="a@example.com")) is None
+    table.record(UpsertPerson(matching_attribute="email", email="a@example.com"), None)
+    assert table.resolve(PersonRef(attribute="email", value="a@example.com")) is None
 
 
 def test_execute_happy_single_op(monkeypatch) -> None:
@@ -110,7 +113,7 @@ def test_execute_fail_fast(monkeypatch) -> None:
     )
 
     plan = [
-        UpsertPerson(email="a@example.com"),
+        UpsertPerson(matching_attribute="email", email="a@example.com"),
         UpsertCompany(domain="example.com"),
         _meeting(),
     ]
@@ -153,7 +156,7 @@ def test_execute_handler_exception_becomes_failed_outcome(monkeypatch) -> None:
 
     monkeypatch.setattr("src.attio.export.OP_HANDLERS", {UpsertPerson: boom})
 
-    result = execute([UpsertPerson(email="a@example.com")])
+    result = execute([UpsertPerson(matching_attribute="email", email="a@example.com")])
 
     assert result.success is False
     assert result.fail_index == 0
@@ -168,7 +171,7 @@ def test_execute_handler_exception_becomes_failed_outcome(monkeypatch) -> None:
 
 def test_execute_unknown_op(monkeypatch) -> None:
     monkeypatch.setattr("src.attio.export.OP_HANDLERS", {})
-    result = execute([UpsertPerson(email="a@example.com")])
+    result = execute([UpsertPerson(matching_attribute="email", email="a@example.com")])
     assert result.success is False
     assert result.fail_reason is not None
     assert "unknown_op" in result.fail_reason
@@ -199,7 +202,7 @@ def test_handle_add_note_happy_path(monkeypatch) -> None:
 
     _handle_add_note = OP_HANDLERS[AddNote]
 
-    person_op = UpsertPerson(email="a@example.com")
+    person_op = UpsertPerson(matching_attribute="email", email="a@example.com")
     table = LookupTable()
     table.record(person_op, "person-rec-1")
 
@@ -210,7 +213,7 @@ def test_handle_add_note_happy_path(monkeypatch) -> None:
 
     envelope = _handle_add_note(
         AddNote(
-            parent=PersonRef(email="a@example.com"),
+            parent=PersonRef(attribute="email", value="a@example.com"),
             title="hi",
             content="body",
         ),
@@ -278,7 +281,7 @@ def test_handle_add_note_unresolved_ref_returns_failed_envelope(monkeypatch) -> 
 
     envelope = _handle_add_note(
         AddNote(
-            parent=PersonRef(email="missing@example.com"),
+            parent=PersonRef(attribute="email", value="missing@example.com"),
             title="hi",
             content="body",
         ),
@@ -300,9 +303,48 @@ def test_execution_result_body_failure(monkeypatch) -> None:
     import orjson
 
     monkeypatch.setattr("src.attio.export.OP_HANDLERS", {})
-    result = execute([UpsertPerson(email="a@example.com")])
+    result = execute([UpsertPerson(matching_attribute="email", email="a@example.com")])
     body = orjson.loads(result.body())
 
     assert body["success"] is False
     assert body["fail_index"] == 0
     assert body["fail_reason"].startswith("unknown_op")
+
+
+def test_lookup_table_records_and_resolves_github_handle_person() -> None:
+    table = LookupTable()
+    op = UpsertPerson(
+        matching_attribute="github_handle",
+        github_handle="elviskahoro",
+        github_url="https://github.com/elviskahoro",
+    )
+    table.record(op, "rec_gh_1")
+    assert (
+        table.resolve(PersonRef(attribute="github_handle", value="elviskahoro"))
+        == "rec_gh_1"
+    )
+
+
+def test_lookup_table_records_and_resolves_email_person_generalized() -> None:
+    table = LookupTable()
+    op = UpsertPerson(matching_attribute="email", email="a@example.com")
+    table.record(op, "rec_email_1")
+    assert (
+        table.resolve(PersonRef(attribute="email", value="a@example.com"))
+        == "rec_email_1"
+    )
+
+
+def test_lookup_table_records_and_resolves_linkedin_person_generalized() -> None:
+    table = LookupTable()
+    op = UpsertPerson(
+        matching_attribute="linkedin",
+        linkedin="https://www.linkedin.com/in/foo",
+    )
+    table.record(op, "rec_li_1")
+    assert (
+        table.resolve(
+            PersonRef(attribute="linkedin", value="https://www.linkedin.com/in/foo"),
+        )
+        == "rec_li_1"
+    )
