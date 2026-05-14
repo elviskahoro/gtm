@@ -54,3 +54,16 @@ def generate_gcs_filename(
     timestamp = clean_timestamp(recording_start_time)
     clean_title = clean_string(meeting_title)
     return f"{timestamp}-{recording_id}-{clean_title}.jsonl"
+
+
+def _fathom_summary_title(template_name: str | None) -> str:
+    """Build the title used for the Fathom-summary AddNote.
+
+    Fathom ships templates like "General", "Sales Discovery", etc. When
+    present, surface the template in the title so a teammate scanning the
+    Attio note list immediately recognises which summary template produced it.
+    """
+    name = (template_name or "").strip()
+    if not name:
+        return "Fathom summary"
+    return f"Fathom summary — {name}"
