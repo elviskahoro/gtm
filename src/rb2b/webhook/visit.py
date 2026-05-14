@@ -107,31 +107,83 @@ class Webhook(Rb2bWebhook):
         return "rb2b visit has neither business_email nor a resolvable company domain"
 
     def attio_get_operations(self) -> list[Any]:
-        from src.attio.ops import UpsertCompany, UpsertPerson
+        import json
+        from datetime import datetime, timezone
+
+        from src.attio.ops import (
+            CompanyRef,
+            PersonRef,
+            UpsertCompany,
+            UpsertPerson,
+            UpsertTrackingEvent,
+        )
 
         ops: list[Any] = []
         domain = self._attio_domain()
+        email = self.payload.business_email
+        linkedin = self.payload.linkedin_url
 
-        # Attio record references are not auto-created, so the company must be
-        # upserted before any person op that points at it via company_domain.
         if domain:
             ops.append(
                 UpsertCompany(
                     domain=domain,
                     name=self.payload.company_name,
-                ),
+                    industry=self.payload.industry,
+                    employee_count=self.payload.employee_count,
+                    estimate_revenue=self.payload.estimate_revenue,
+                    merge_only_if_empty=["industry", "employee_count", "estimate_revenue"],
+                )
             )
 
-        if self.payload.business_email:
+        if email:
             ops.append(
                 UpsertPerson(
                     matching_attribute="email",
-                    email=self.payload.business_email,
+                    email=email,
                     first_name=self.payload.first_name,
                     last_name=self.payload.last_name,
-                    linkedin=self.payload.linkedin_url,
+                    linkedin=linkedin,
                     company_domain=domain,
-                ),
+                    title=self.payload.title,
+                    city=self.payload.city,
+                    state=self.payload.state,
+                    zipcode=self.payload.zipcode,
+                    merge_only_if_empty=["title", "city", "state", "zipcode"],
+                )
             )
+
+        # tracking_events always emitted if validity gate passed (anonymous already rejected).
+        subject_person = (
+            PersonRef(attribute="email", value=email)
+            if email
+            else None
+        )
+        subject_company = CompanyRef(domain=domain) if domain else None
+
+        tags_list = [
+            t.strip()
+            for t in (self.payload.tags or "").split(",")
+            if t.strip()
+        ]
+        seen_at = self.payload.seen_at or self.timestamp or datetime.now(timezone.utc)
+
+        ops.append(
+            UpsertTrackingEvent(
+                external_id=f"rb2b:{self.event_id}",
+                name=self.payload.captured_url or "",
+                event_type="rb2b_visit",
+                event_timestamp=seen_at,
+                body_json=json.dumps(self.model_dump(mode="json")),
+                captured_url=self.payload.captured_url or "",
+                referrer=self.payload.referrer,
+                is_repeat_visit=self.payload.is_repeat_visit,
+                tags=tags_list,
+                city=self.payload.city,
+                state=self.payload.state,
+                zipcode=self.payload.zipcode,
+                subject_person=subject_person,
+                subject_company=subject_company,
+            )
+        )
 
         return ops
