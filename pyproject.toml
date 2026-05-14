@@ -37,7 +37,7 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["cli*", "data_gen*", "libs*", "src*"]
+include = ["cli*", "libs*", "src*"]
 exclude = ["tests*"]
 
 [project.scripts]

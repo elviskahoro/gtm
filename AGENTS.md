@@ -7,7 +7,7 @@ Rules for working in this repo. `CLAUDE.md` and `WARP.md` symlink here. The repo
 - `libs/<service>/` — wrap **one** external SDK/API. Idiomatic Python types/functions only.
 - `src/` — orchestration. Multi-step flows, side effects, Modal `@app.function` / `@modal.fastapi_endpoint` decorators.
 - `cli/` — Typer subapps. Parse → preflight → call `src/` → render. **No business logic.**
-- `data_gen/` — independent, composable data products.
+- `data-gen/` — independent, composable data products.
 - `webhooks/` — standalone Modal apps. Deploy individually with `modal deploy webhooks/<file>.py`. Do **not** register them in `src/app.py`.
 - `api/specs/`, `api/samples/` — external API specs and fixture payloads. Read-only reference.
 - `tmp/` — scratch only. Gitignored. Never write temp files anywhere else.
@@ -16,7 +16,7 @@ Rules for working in this repo. `CLAUDE.md` and `WARP.md` symlink here. The repo
 
 - **No cross-lib imports.** `libs/<x>` must not import from `libs/<y>`. If two adapters need to coordinate, do it in `src/`.
 - **No orchestration in `libs/`.** Adapter modules must be callable in isolation.
-- **New top-level package?** Update `[tool.setuptools.packages.find]` in `pyproject.toml` (currently `cli*`, `data_gen*`, `libs*`, `src*`).
+- **New top-level package?** Update `[tool.setuptools.packages.find]` in `pyproject.toml` (currently `cli*`, `libs*`, `src*`).
 
 ## Modal gotchas
 
