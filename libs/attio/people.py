@@ -605,6 +605,38 @@ def upsert_person(
     return envelope
 
 
+def get_person_values(
+    email: str | None = None,
+    linkedin: str | None = None,
+) -> dict[str, Any] | None:
+    """Look up a person by email or linkedin; return their field values dict or None."""
+    if not email and not linkedin:
+        return None
+
+    try:
+        with get_client() as client:
+            filter_: dict[str, Any] = {}
+            if email:
+                filter_["email_addresses"] = email
+            elif linkedin:
+                filter_["linkedin"] = linkedin
+
+            response = client.records.post_v2_objects_object_records_query(
+                object="people",
+                filter_=filter_,
+                limit=1,
+            )
+
+            if not response.data:
+                return None
+
+            record = response.data[0]
+            return dict(record.values or {})
+    except Exception:
+        # If lookup fails, return None to allow the upsert to proceed
+        return None
+
+
 def error_envelope(error: Exception, *, strict: bool = False) -> ReliabilityEnvelope:
     classified = classify_error(
         translate_modal_signature_error(error),

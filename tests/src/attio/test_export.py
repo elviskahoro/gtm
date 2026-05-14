@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from libs.attio.contracts import ErrorEntry, ReliabilityEnvelope
 from src.attio.export import LookupTable, execute
@@ -404,3 +404,127 @@ def test_lookup_table_records_and_resolves_linkedin_person_generalized() -> None
         )
         == "rec_li_1"
     )
+
+
+# Tests for merge_only_if_empty behavior
+
+
+@patch("src.attio.export.get_person_values")
+@patch("src.attio.export.libs_upsert_person")
+def test_handle_upsert_person_no_merge_list_overwrites(
+    mock_upsert, mock_get_values,
+) -> None:
+    """When merge_only_if_empty is empty, all fields flow through unchanged."""
+    mock_get_values.return_value = None
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "pe_1"
+
+    from src.attio.export import _handle_upsert_person
+    from src.attio.ops import UpsertPerson
+
+    result = _handle_upsert_person(
+        UpsertPerson(matching_attribute="email", email="a@b.test", title="New Title"),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    # PersonInput passed to libs_upsert_person should have title set
+    person_input = mock_upsert.call_args.args[0]
+    assert person_input.title == "New Title"
+    # get_person_values should not have been called since merge_only_if_empty is empty
+    mock_get_values.assert_not_called()
+
+
+@patch("src.attio.export.get_person_values")
+@patch("src.attio.export.libs_upsert_person")
+def test_handle_upsert_person_merge_strips_populated_slugs(
+    mock_upsert, mock_get_values,
+) -> None:
+    """When merge_only_if_empty is set, populated fields on existing record are nulled."""
+    # Simulate existing person with title populated
+    mock_get_values.return_value = {
+        "name": [{"full_name": "Existing Person"}],
+        "title": [{"value": "Existing Title"}],
+        "primary_location": None,
+    }
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "pe_1"
+
+    from src.attio.export import _handle_upsert_person
+    from src.attio.ops import UpsertPerson
+
+    result = _handle_upsert_person(
+        UpsertPerson(
+            matching_attribute="email",
+            email="a@b.test",
+            title="Incoming Title",
+            city="Brooklyn",
+            merge_only_if_empty=["title", "city"],
+        ),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    person_input = mock_upsert.call_args.args[0]
+    assert person_input.title is None  # stripped (existing was populated)
+    assert person_input.city == "Brooklyn"  # kept (existing was None)
+    mock_get_values.assert_called_once_with(email="a@b.test", linkedin=None)
+
+
+@patch("src.attio.export.get_company_values")
+@patch("src.attio.export.libs_upsert_company")
+def test_handle_upsert_company_no_merge_list_overwrites(
+    mock_upsert, mock_get_values,
+) -> None:
+    """When merge_only_if_empty is empty, all fields flow through unchanged."""
+    mock_get_values.return_value = None
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "co_1"
+
+    from src.attio.export import _handle_upsert_company
+    from src.attio.ops import UpsertCompany
+
+    result = _handle_upsert_company(
+        UpsertCompany(domain="example.test", industry="Software"),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    company_input = mock_upsert.call_args.args[0]
+    assert company_input.industry == "Software"
+    mock_get_values.assert_not_called()
+
+
+@patch("src.attio.export.get_company_values")
+@patch("src.attio.export.libs_upsert_company")
+def test_handle_upsert_company_merge_strips_populated_slugs(
+    mock_upsert, mock_get_values,
+) -> None:
+    """When merge_only_if_empty is set, populated fields on existing record are nulled."""
+    mock_get_values.return_value = {
+        "industry": [{"option": "Technology"}],
+        "employee_count": None,
+        "estimate_revenue": None,
+    }
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "co_1"
+
+    from src.attio.export import _handle_upsert_company
+    from src.attio.ops import UpsertCompany
+
+    result = _handle_upsert_company(
+        UpsertCompany(
+            domain="example.test",
+            name="Example Corp",
+            industry="SaaS",
+            employee_count="50-100",
+            merge_only_if_empty=["industry", "employee_count"],
+        ),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    company_input = mock_upsert.call_args.args[0]
+    assert company_input.industry is None  # stripped (existing was populated)
+    assert company_input.employee_count == "50-100"  # kept (existing was None)
+    mock_get_values.assert_called_once_with("example.test")
