@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from libs.attio.contracts import ErrorEntry, ReliabilityEnvelope
 from src.attio.export import LookupTable, execute
@@ -404,3 +404,229 @@ def test_lookup_table_records_and_resolves_linkedin_person_generalized() -> None
         )
         == "rec_li_1"
     )
+
+
+# Tests for merge_only_if_empty behavior
+
+
+@patch("src.attio.export.get_person_values")
+@patch("src.attio.export.libs_upsert_person")
+def test_handle_upsert_person_no_merge_list_overwrites(
+    mock_upsert,
+    mock_get_values,
+) -> None:
+    """When merge_only_if_empty is empty, all fields flow through unchanged."""
+    mock_get_values.return_value = None
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "pe_1"
+
+    from src.attio.export import _handle_upsert_person
+    from src.attio.ops import UpsertPerson
+
+    result = _handle_upsert_person(
+        UpsertPerson(matching_attribute="email", email="a@b.test", title="New Title"),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    # PersonInput passed to libs_upsert_person should have title set
+    person_input = mock_upsert.call_args.args[0]
+    assert person_input.title == "New Title"
+    # get_person_values should not have been called since merge_only_if_empty is empty
+    mock_get_values.assert_not_called()
+
+
+@patch("src.attio.export.get_person_values")
+@patch("src.attio.export.libs_upsert_person")
+def test_handle_upsert_person_merge_strips_populated_slugs(
+    mock_upsert,
+    mock_get_values,
+) -> None:
+    """When merge_only_if_empty is set, populated fields on existing record are nulled."""
+    # Simulate existing person with title populated
+    mock_get_values.return_value = {
+        "name": [{"full_name": "Existing Person"}],
+        "title": [{"value": "Existing Title"}],
+        "primary_location": None,
+    }
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "pe_1"
+
+    from src.attio.export import _handle_upsert_person
+    from src.attio.ops import UpsertPerson
+
+    result = _handle_upsert_person(
+        UpsertPerson(
+            matching_attribute="email",
+            email="a@b.test",
+            title="Incoming Title",
+            city="Brooklyn",
+            merge_only_if_empty=["title", "city"],
+        ),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    person_input = mock_upsert.call_args.args[0]
+    assert person_input.title is None  # stripped (existing was populated)
+    assert person_input.city == "Brooklyn"  # kept (existing was None)
+    mock_get_values.assert_called_once_with(email="a@b.test", linkedin=None)
+
+
+@patch("src.attio.export.get_company_values")
+@patch("src.attio.export.libs_upsert_company")
+def test_handle_upsert_company_no_merge_list_overwrites(
+    mock_upsert,
+    mock_get_values,
+) -> None:
+    """When merge_only_if_empty is empty, all fields flow through unchanged."""
+    mock_get_values.return_value = None
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "co_1"
+
+    from src.attio.export import _handle_upsert_company
+    from src.attio.ops import UpsertCompany
+
+    result = _handle_upsert_company(
+        UpsertCompany(domain="example.test", industry="Software"),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    company_input = mock_upsert.call_args.args[0]
+    assert company_input.industry == "Software"
+    mock_get_values.assert_not_called()
+
+
+@patch("src.attio.export.get_company_values")
+@patch("src.attio.export.libs_upsert_company")
+def test_handle_upsert_company_merge_strips_populated_slugs(
+    mock_upsert,
+    mock_get_values,
+) -> None:
+    """When merge_only_if_empty is set, populated fields on existing record are nulled."""
+    mock_get_values.return_value = {
+        "industry": [{"option": "Technology"}],
+        "employee_count": None,
+        "estimate_revenue": None,
+    }
+    mock_upsert.return_value.success = True
+    mock_upsert.return_value.record_id = "co_1"
+
+    from src.attio.export import _handle_upsert_company
+    from src.attio.ops import UpsertCompany
+
+    result = _handle_upsert_company(
+        UpsertCompany(
+            domain="example.test",
+            name="Example Corp",
+            industry="SaaS",
+            employee_count="50-100",
+            merge_only_if_empty=["industry", "employee_count"],
+        ),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    company_input = mock_upsert.call_args.args[0]
+    assert company_input.industry is None  # stripped (existing was populated)
+    assert company_input.employee_count == "50-100"  # kept (existing was None)
+    mock_get_values.assert_called_once_with("example.test")
+
+
+# Tests for _handle_upsert_tracking_event
+
+
+@patch("src.attio.export.find_or_create_tracking_event")
+def test_handle_upsert_tracking_event_resolves_refs(mock_libs) -> None:
+    """Test that refs are resolved through LookupTable and passed to the lib."""
+    mock_libs.return_value = MagicMock(success=True, record_id="te_1", action="created")
+
+    from src.attio.export import _handle_upsert_tracking_event
+    from src.attio.ops import (
+        CompanyRef,
+        PersonRef,
+        UpsertPerson,
+        UpsertCompany,
+        UpsertTrackingEvent,
+    )
+
+    table = LookupTable()
+    table.record(
+        UpsertPerson(matching_attribute="email", email="a@b.test"),
+        "pe_1",
+    )
+    table.record(
+        UpsertCompany(domain="b.test"),
+        "co_1",
+    )
+
+    result = _handle_upsert_tracking_event(
+        UpsertTrackingEvent(
+            external_id="rb2b:abc123",
+            name="https://example.test/pricing",
+            event_type="rb2b_visit",
+            event_timestamp=datetime(2026, 5, 14, tzinfo=timezone.utc),
+            body_json='{"raw": "payload"}',
+            captured_url="https://example.test/pricing",
+            subject_person=PersonRef(attribute="email", value="a@b.test"),
+            subject_company=CompanyRef(domain="b.test"),
+        ),
+        table,
+    )
+
+    assert result.success is True
+    input_arg = mock_libs.call_args.args[0]
+    assert input_arg.related_person_record_id == "pe_1"
+    assert input_arg.related_company_record_id == "co_1"
+
+
+@patch("src.attio.export.find_or_create_tracking_event")
+def test_handle_upsert_tracking_event_unresolved_ref_is_fatal(mock_libs) -> None:
+    """Test that unresolvable PersonRef causes fatal error."""
+    from src.attio.export import _handle_upsert_tracking_event
+    from src.attio.ops import PersonRef, UpsertTrackingEvent
+
+    result = _handle_upsert_tracking_event(
+        UpsertTrackingEvent(
+            external_id="rb2b:abc123",
+            name="https://example.test/pricing",
+            event_type="rb2b_visit",
+            event_timestamp=datetime(2026, 5, 14, tzinfo=timezone.utc),
+            body_json='{"raw": "payload"}',
+            captured_url="https://example.test/pricing",
+            subject_person=PersonRef(attribute="email", value="missing@b.test"),
+        ),
+        LookupTable(),  # empty — nothing to resolve
+    )
+
+    assert result.success is False
+    assert result.errors[0].code == "unresolved_ref"
+    assert result.errors[0].fatal is True
+    mock_libs.assert_not_called()
+
+
+@patch("src.attio.export.find_or_create_tracking_event")
+def test_handle_upsert_tracking_event_no_refs_passes_none(mock_libs) -> None:
+    """Test that when no refs are provided, None is passed to the lib."""
+    mock_libs.return_value = MagicMock(success=True, record_id="te_2", action="created")
+
+    from src.attio.export import _handle_upsert_tracking_event
+    from src.attio.ops import UpsertTrackingEvent
+
+    result = _handle_upsert_tracking_event(
+        UpsertTrackingEvent(
+            external_id="rb2b:abc123",
+            name="https://example.test/pricing",
+            event_type="rb2b_visit",
+            event_timestamp=datetime(2026, 5, 14, tzinfo=timezone.utc),
+            body_json='{"raw": "payload"}',
+            captured_url="https://example.test/pricing",
+        ),
+        LookupTable(),
+    )
+
+    assert result.success is True
+    input_arg = mock_libs.call_args.args[0]
+    assert input_arg.related_person_record_id is None
+    assert input_arg.related_company_record_id is None

@@ -236,6 +236,26 @@ def error_envelope(error: Exception, *, strict: bool = False) -> ReliabilityEnve
     )
 
 
+def get_company_values(domain: str) -> dict[str, Any] | None:
+    """Look up a company by domain; return their field values dict or None."""
+    try:
+        with get_client() as client:
+            response = client.records.post_v2_objects_object_records_query(
+                object="companies",
+                filter_={"domains": domain},
+                limit=1,
+            )
+
+            if not response.data:
+                return None
+
+            record = response.data[0]
+            return dict(record.values or {})
+    except Exception:
+        # If lookup fails, return None to allow the upsert to proceed
+        return None
+
+
 def update_company(
     record_id: str | None,
     domain: str | None,

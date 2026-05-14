@@ -13,7 +13,10 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Any
 
-from libs.attio.companies import upsert_company as libs_upsert_company
+from libs.attio.companies import (
+    get_company_values,
+    upsert_company as libs_upsert_company,
+)
 from libs.attio.contracts import ErrorEntry, ReliabilityEnvelope
 from libs.attio.meetings import find_or_create_meeting
 from libs.attio.mentions import upsert_mention as libs_upsert_mention
@@ -37,7 +40,10 @@ from libs.attio.notes import (
 from libs.attio.notes import (
     list_notes_for_parent as libs_list_notes_for_parent,
 )
-from libs.attio.people import upsert_person as libs_upsert_person
+from libs.attio.people import (
+    get_person_values,
+    upsert_person as libs_upsert_person,
+)
 from libs.attio.tracking_events import find_or_create_tracking_event
 from src.attio.ops import (
     AttioOp,
@@ -150,10 +156,64 @@ class ExecutionResult:
 # ---------- Handlers ----------
 
 
+def _has_populated_value(existing: dict[str, Any], key: str) -> bool:
+    """Check if a field in the existing values dict has a non-empty value."""
+    value = existing.get(key)
+    if not value:
+        return False
+    # value is typically a list of dicts from Attio
+    if isinstance(value, list):
+        return any(_is_value_populated(v) for v in value)
+    return True
+
+
+def _is_value_populated(v: Any) -> bool:
+    """Check if an individual value object is populated."""
+    if not v:
+        return False
+    if isinstance(v, dict):
+        # Check if any meaningful field exists
+        return any(
+            v.get(k)
+            for k in ["value", "option", "email_address", "full_name", "locality"]
+        )
+    return bool(str(v).strip())
+
+
 def _handle_upsert_person(
     op: UpsertPerson,
     table: LookupTable,  # noqa: ARG001 — kept for handler signature parity
 ) -> ReliabilityEnvelope:
+    title = op.title
+    city = op.city
+    state = op.state
+    zipcode = op.zipcode
+
+    if op.merge_only_if_empty:
+        existing = get_person_values(email=op.email, linkedin=op.linkedin)
+        if existing is not None:
+            # For each field in merge_only_if_empty, check if existing has a non-empty value
+            if "title" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "name",
+            ):
+                title = None
+            if "city" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "primary_location",
+            ):
+                city = None
+            if "state" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "primary_location",
+            ):
+                state = None
+            if "zipcode" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "primary_location",
+            ):
+                zipcode = None
+
     return libs_upsert_person(
         PersonInput(
             email=op.email,
@@ -164,10 +224,10 @@ def _handle_upsert_person(
             github_url=op.github_url,
             phone=op.phone,
             company_domain=op.company_domain,
-            title=op.title,
-            city=op.city,
-            state=op.state,
-            zipcode=op.zipcode,
+            title=title,
+            city=city,
+            state=state,
+            zipcode=zipcode,
             additional_emails=[],
             replace_emails=False,
         ),
@@ -179,13 +239,36 @@ def _handle_upsert_company(
     op: UpsertCompany,
     table: LookupTable,  # noqa: ARG001 — kept for handler signature parity
 ) -> ReliabilityEnvelope:
+    industry = op.industry
+    employee_count = op.employee_count
+    estimate_revenue = op.estimate_revenue
+
+    if op.merge_only_if_empty:
+        existing = get_company_values(op.domain)
+        if existing is not None:
+            if "industry" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "industry",
+            ):
+                industry = None
+            if "employee_count" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "employee_count",
+            ):
+                employee_count = None
+            if "estimate_revenue" in op.merge_only_if_empty and _has_populated_value(
+                existing,
+                "estimate_revenue",
+            ):
+                estimate_revenue = None
+
     return libs_upsert_company(
         CompanyInput(
             name=op.name or op.domain,
             domain=op.domain,
-            industry=op.industry,
-            employee_count=op.employee_count,
-            estimate_revenue=op.estimate_revenue,
+            industry=industry,
+            employee_count=employee_count,
+            estimate_revenue=estimate_revenue,
         ),
     )
 

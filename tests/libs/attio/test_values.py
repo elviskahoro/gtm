@@ -208,7 +208,7 @@ def test_build_tracking_event_values_minimum() -> None:
     vs = build_tracking_event_values(i)
     # Required slugs always present
     assert vs["name"] == [{"value": "https://example.test/p"}]
-    assert vs["event_type"] == [{"value": "rb2b_visit"}]
+    assert vs["event_type"] == [{"option": "rb2b_visit"}]
     assert vs["external_id"] == [{"value": "rb2b:abc"}]
     assert vs["captured_url"] == [{"value": "https://example.test/p"}]
     assert vs["body"] == [{"value": '{"x":1}'}]
