@@ -48,25 +48,30 @@ OPTIONAL_FIELD_ALIASES = {
 
 logger = logging.getLogger(__name__)
 
-_LINKEDIN_PROFILE_RE = re.compile(r"^https?://(?:www\.)?linkedin\.com/in/([^/?#]+)")
+_LINKEDIN_PROFILE_RE = re.compile(
+    r"^https?://(?:www\.)?linkedin\.com/in/([^/?#]+)",
+    re.IGNORECASE,
+)
 
 
 def _linkedin_url_variants(linkedin: str) -> list[str]:
-    """Return the canonical URL variants Attio records may store for a profile.
+    """Return URL variants Attio records may store for a LinkedIn profile.
 
-    Different writers in this repo normalize LinkedIn differently
-    (`format_linkedin` emits `https://linkedin.com/in/<handle>`, the Octolens
-    path emits `https://www.linkedin.com/in/<handle>`, and user-provided URLs
-    are preserved as-is). Search both common forms before falling through to
-    creating a duplicate Person.
+    Historical writers in this repo (and user-provided URLs) differ on scheme
+    (``http`` vs ``https``), host prefix (``www.`` vs bare), and trailing
+    slash. To avoid creating duplicate People for the same profile, search
+    across the full Cartesian product of those axes plus the original input.
     """
     match = _LINKEDIN_PROFILE_RE.match(linkedin)
     if not match:
         return [linkedin]
     handle = match.group(1).rstrip("/")
-    canonical = f"https://www.linkedin.com/in/{handle}"
-    bare = f"https://linkedin.com/in/{handle}"
-    variants = [linkedin, canonical, bare]
+    variants: list[str] = [linkedin]
+    for scheme in ("https", "http"):
+        for host in ("www.linkedin.com", "linkedin.com"):
+            base = f"{scheme}://{host}/in/{handle}"
+            variants.append(base)
+            variants.append(f"{base}/")
     seen: set[str] = set()
     return [v for v in variants if not (v in seen or seen.add(v))]
 

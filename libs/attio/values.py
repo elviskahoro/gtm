@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable
 from typing import Any, Literal
 
@@ -9,6 +10,27 @@ from libs.attio.models import (
     PersonInput,
     TrackingEventInput,
 )
+
+_LINKEDIN_PROFILE_RE = re.compile(
+    r"^https?://(?:www\.)?linkedin\.com/in/([^/?#]+)",
+    re.IGNORECASE,
+)
+
+
+def normalize_linkedin_url(url: str | None) -> str | None:
+    """Canonicalize a LinkedIn profile URL to ``https://www.linkedin.com/in/<handle>``.
+
+    Returns ``None`` for falsy input or URLs that are not profile (``/in/<handle>``)
+    shape — e.g. company, feed, or posts URLs — so callers can decide whether to
+    pass the original through or reject it.
+    """
+    if not url:
+        return None
+    match = _LINKEDIN_PROFILE_RE.match(url.strip())
+    if not match:
+        return None
+    handle = match.group(1).rstrip("/")
+    return f"https://www.linkedin.com/in/{handle}"
 
 
 def normalize_email_address_list(candidates: Iterable[str | None]) -> list[str]:
@@ -93,8 +115,9 @@ def format_linkedin(url: str | None) -> list[str] | None:
     if not url:
         return None
     if not url.startswith("http"):
-        url = f"https://linkedin.com/in/{url}"
-    return [url]
+        return [f"https://www.linkedin.com/in/{url.rstrip('/')}"]
+    canonical = normalize_linkedin_url(url)
+    return [canonical or url]
 
 
 def format_location(

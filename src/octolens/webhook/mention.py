@@ -5,6 +5,7 @@ from typing import Any, ClassVar, Literal, cast
 
 from pydantic import BaseModel
 
+from libs.attio.values import normalize_linkedin_url
 from libs.dlt.bucket_naming import etl_bucket_name
 from libs.octolens import Webhook as OctolensMentionWebhook
 from src.octolens.utils import generate_gcs_filename
@@ -13,21 +14,13 @@ from src.octolens.utils import generate_gcs_filename
 def normalize_linkedin_profile_url(url: str | None) -> str | None:
     """Parse and normalize a LinkedIn profile URL.
 
-    Accepts only https?://(www.)?linkedin.com/in/<handle> URLs (reject company/feed/posts).
-    Returns canonical form: https://www.linkedin.com/in/<handle> (lowercase host, no trailing slash).
+    Accepts only https?://(www.)?linkedin.com/in/<handle> URLs (reject
+    company/feed/posts). Returns canonical form
+    ``https://www.linkedin.com/in/<handle>`` or ``None`` if the URL is not a
+    profile shape. Delegates to the shared helper in ``libs/attio/values.py``
+    so the write and search paths cannot drift.
     """
-    if not url:
-        return None
-
-    url = url.strip()
-    pattern = r"^https?://(?:www\.)?linkedin\.com/in/([^/?#]+)"
-    match = re.match(pattern, url, re.IGNORECASE)
-
-    if not match:
-        return None
-
-    handle = match.group(1)
-    return f"https://www.linkedin.com/in/{handle}"
+    return normalize_linkedin_url(url)
 
 
 def _extract_github_handle(

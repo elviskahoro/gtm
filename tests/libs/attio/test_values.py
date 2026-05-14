@@ -8,7 +8,9 @@ from libs.attio.values import (
     build_create_mention_values,
     build_optional_person_values,
     build_update_mention_values,
+    format_linkedin,
     format_location,
+    normalize_linkedin_url,
 )
 
 
@@ -144,6 +146,51 @@ def test_build_core_person_values_skips_github_when_absent() -> None:
     values = build_core_person_values(pi)
     assert "github_handle" not in values
     assert "github_url" not in values
+
+
+CANONICAL_LINKEDIN = "https://www.linkedin.com/in/foo-bar"
+
+
+def test_normalize_linkedin_url_returns_canonical_form() -> None:
+    cases = [
+        "https://www.linkedin.com/in/foo-bar",
+        "https://linkedin.com/in/foo-bar",
+        "http://www.linkedin.com/in/foo-bar",
+        "http://linkedin.com/in/foo-bar",
+        "https://www.linkedin.com/in/foo-bar/",
+        "https://www.linkedin.com/in/foo-bar?utm=x",
+        "  https://www.LinkedIn.com/in/foo-bar  ",
+    ]
+    for url in cases:
+        assert normalize_linkedin_url(url) == CANONICAL_LINKEDIN, url
+
+
+def test_normalize_linkedin_url_rejects_non_profile() -> None:
+    assert normalize_linkedin_url(None) is None
+    assert normalize_linkedin_url("") is None
+    assert normalize_linkedin_url("not a url") is None
+    assert normalize_linkedin_url("https://www.linkedin.com/company/acme") is None
+    assert normalize_linkedin_url("https://www.linkedin.com/feed/update/123") is None
+
+
+def test_format_linkedin_emits_canonical_for_bare_handle() -> None:
+    assert format_linkedin("foo-bar") == [CANONICAL_LINKEDIN]
+    assert format_linkedin("foo-bar/") == [CANONICAL_LINKEDIN]
+
+
+def test_format_linkedin_canonicalizes_profile_urls() -> None:
+    assert format_linkedin("https://linkedin.com/in/foo-bar/") == [CANONICAL_LINKEDIN]
+    assert format_linkedin("http://www.linkedin.com/in/foo-bar") == [CANONICAL_LINKEDIN]
+
+
+def test_format_linkedin_passes_through_non_profile_urls() -> None:
+    company_url = "https://www.linkedin.com/company/acme"
+    assert format_linkedin(company_url) == [company_url]
+
+
+def test_format_linkedin_returns_none_for_empty() -> None:
+    assert format_linkedin(None) is None
+    assert format_linkedin("") is None
 
 
 def test_build_tracking_event_values_minimum() -> None:
