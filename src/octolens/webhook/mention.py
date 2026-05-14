@@ -6,7 +6,7 @@ from typing import Any, ClassVar, Literal, cast
 from pydantic import BaseModel
 
 from libs.dlt.bucket_naming import etl_bucket_name
-from libs.octolens import Webhook as OctolensWebhook
+from libs.octolens import Webhook as OctolensMentionWebhook
 from src.octolens.utils import generate_gcs_filename
 
 
@@ -46,7 +46,7 @@ def split_author_name(full: str | None) -> tuple[str | None, str | None]:
     return parts[0], parts[1]
 
 
-class Webhook(OctolensWebhook):
+class Webhook(OctolensMentionWebhook):
     """Webhook subclass implementing ETL contract for Octolens mentions."""
 
     @staticmethod

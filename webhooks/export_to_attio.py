@@ -20,7 +20,7 @@ from src.fathom.webhook.message import (
     Webhook as FathomMessageWebhook,
 )
 from src.octolens.webhook import (
-    Webhook as OctolensWebhook,
+    Webhook as OctolensMentionWebhook,
 )
 from src.rb2b.webhook.visit import (
     Webhook as Rb2bVisitWebhook,
@@ -29,6 +29,7 @@ from src.rb2b.webhook.visit import (
 # fmt: on
 # trunk-ignore-end(ruff/F401,ruff/I001,pyright/reportUnusedImport)
 
+OctolensWebhook = OctolensMentionWebhook  # Backwards-compat alias for documented deploy flow
 
 class WebhookModel(WebhookModelToReplace):  # type: ignore # trunk-ignore(ruff/F821)
     pass
